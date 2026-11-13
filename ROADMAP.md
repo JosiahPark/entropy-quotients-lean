@@ -102,5 +102,3 @@ and no hypotheses beyond the paper's.
 - A proof of the entropic Marton theorem itself (Gowers–Green–Manners–Tao); it is the paper's
   one external input.
 - Constructive or algorithmic versions (Section 10).
-- `EntropyLean/FeatureMap.lean` (p-frame feature map) belongs to a different project and is kept
-  only as a compiled stub.
