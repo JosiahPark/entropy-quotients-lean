@@ -10,9 +10,13 @@ processing (`entropyBits_map_le`) and subadditivity (`entropyBits_subadditive`) 
 `H(P * Q) ≤ H(P) + H(Q)`, i.e. `interaction_nonneg : 0 ≤ s(P, Q)`, and averaging gives
 `meanInteraction_nonneg : 0 ≤ e(𝒫)`.
 
-What this file does NOT prove: the upper bounds `s(P, Q) ≤ min(H(P), H(Q))` of (9) and
-`e(𝒫) ≤ h(𝒫)` of (14) (roadmap items B3b, B3c); those need `H(A + B) ≥ H(B)` for independent
-`A`, `B` in a group.
+Roadmap item B3b adds the upper bounds of (9): `H(P ⊗ Q) = H(P) + H(Q)` (`entropyBits_prodLaw`),
+hence `H(A + B) ≥ H(B)` and `H(A + B) ≥ H(A)` for independent `A`, `B` in a finite group
+(`entropyBits_le_conv_right`, `entropyBits_le_conv_left`), and `interaction_le_left`,
+`interaction_le_right`.
+
+What this file does NOT prove: the averaged bound `e(𝒫) ≤ h(𝒫)` of (14) (roadmap item B3c),
+equation (15), or anything about quotients.
 -/
 
 namespace EntropyLean
@@ -34,9 +38,7 @@ theorem prodLaw_map_fst {α β : Type*} (P : PMF α) (Q : PMF β) :
     show Q.map (Function.const β a) = PMF.pure a
     rw [PMF.map_const]
   simp only [h]
-  first
-    | exact PMF.bind_pure _
-    | exact PMF.bind_pure
+  exact PMF.bind_pure _
 
 /-- The second marginal of `prodLaw P Q` is `Q`. -/
 theorem prodLaw_map_snd {α β : Type*} (P : PMF α) (Q : PMF β) :
@@ -58,9 +60,7 @@ theorem prodLaw_map_add {V : Type*} [Add V] (P Q : PMF V) :
   rw [PMF.map_bind]
   congr 1
   funext a
-  first
-    | exact (PMF.map_comp _ _ _).trans rfl
-    | (simp only [PMF.map_comp, Function.comp_def]; done)
+  exact (PMF.map_comp _ _ _).trans rfl
 
 /-- `H(P * Q) ≤ H(P) + H(Q)`. -/
 theorem entropyBits_conv_le {V : Type*} [Fintype V] [Add V] (P Q : PMF V) :
@@ -86,5 +86,121 @@ theorem WeightedFamily.meanInteraction_nonneg {V : Type*} [Fintype V] [Add V]
   refine Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => ?_
   exact mul_nonneg (mul_nonneg (P.weights_pos i).le (P.weights_pos j).le)
     (interaction_nonneg _ _)
+
+/-! ## Upper bounds `s(P, Q) ≤ min(H(P), H(Q))` (roadmap item B3b) -/
+
+/-- Masses of the product law: `(P ⊗ Q)(a, b) = P(a) Q(b)`. -/
+theorem prodLaw_apply {α β : Type*} [Fintype α] [Fintype β] (P : PMF α) (Q : PMF β)
+    (a : α) (b : β) : prodLaw P Q (a, b) = P a * Q b := by
+  classical
+  unfold prodLaw
+  rw [PMF.bind_apply, tsum_fintype, Finset.sum_eq_single a]
+  · rw [PMF.map_apply, tsum_fintype, Finset.sum_eq_single b]
+    · simp
+    · intro b' _ hb'
+      simp [hb', Ne.symm hb']
+    · intro hb
+      exact absurd (Finset.mem_univ b) hb
+  · intro a' _ ha'
+    rw [PMF.map_apply, tsum_fintype]
+    simp [ha', Ne.symm ha']
+  · intro ha
+    exact absurd (Finset.mem_univ a) ha
+
+/-- Entropy is additive on independent pairs: `H(P ⊗ Q) = H(P) + H(Q)`. -/
+theorem entropyBits_prodLaw {α β : Type*} [Fintype α] [Fintype β] (P : PMF α) (Q : PMF β) :
+    entropyBits (prodLaw P Q) = entropyBits P + entropyBits Q := by
+  have hpt : ∀ x y : ℝ, 0 ≤ x → 0 ≤ y →
+      -(x * y) * Real.logb 2 (x * y) =
+        y * (-x * Real.logb 2 x) + x * (-y * Real.logb 2 y) := by
+    intro x y hx hy
+    rcases hx.eq_or_lt with h | h
+    · rw [← h]
+      ring
+    rcases hy.eq_or_lt with h' | h'
+    · rw [← h']
+      ring
+    rw [Real.logb_mul h.ne' h'.ne']
+    ring
+  have e : ∀ (a : α) (b : β),
+      -((prodLaw P Q) (a, b)).toReal * Real.logb 2 ((prodLaw P Q) (a, b)).toReal =
+        (Q b).toReal * (-(P a).toReal * Real.logb 2 (P a).toReal) +
+          (P a).toReal * (-(Q b).toReal * Real.logb 2 (Q b).toReal) := by
+    intro a b
+    rw [prodLaw_apply, ENNReal.toReal_mul]
+    exact hpt _ _ ENNReal.toReal_nonneg ENNReal.toReal_nonneg
+  have hP1 := pmf_sum_toReal P
+  have hQ1 := pmf_sum_toReal Q
+  rw [entropyBits_eq_sum (prodLaw P Q), entropyBits_eq_sum P, entropyBits_eq_sum Q,
+    Fintype.sum_prod_type]
+  simp only [e, Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum, hP1, hQ1, one_mul]
+
+/-- `(a, b) ↦ (a, a + b)` is injective in a group. -/
+theorem fst_add_injective {V : Type*} [AddGroup V] :
+    Function.Injective (fun x : V × V => (x.1, x.1 + x.2)) := by
+  intro x y h
+  have h1 : x.1 = y.1 := congrArg Prod.fst h
+  have h2 : x.1 + x.2 = y.1 + y.2 := congrArg Prod.snd h
+  rw [h1] at h2
+  exact Prod.ext h1 (add_left_cancel h2)
+
+/-- `(a, b) ↦ (b, a + b)` is injective in a group. -/
+theorem snd_add_injective {V : Type*} [AddGroup V] :
+    Function.Injective (fun x : V × V => (x.2, x.1 + x.2)) := by
+  intro x y h
+  have h1 : x.2 = y.2 := congrArg Prod.fst h
+  have h2 : x.1 + x.2 = y.1 + y.2 := congrArg Prod.snd h
+  rw [h1] at h2
+  exact Prod.ext (add_right_cancel h2) h1
+
+/-- `H(B) ≤ H(A + B)` for independent `A ∼ P`, `B ∼ Q` in a finite group:
+`H(A) + H(B) = H(A, A + B) ≤ H(A) + H(A + B)`. -/
+theorem entropyBits_le_conv_right {V : Type*} [Fintype V] [AddGroup V] (P Q : PMF V) :
+    entropyBits Q ≤ entropyBits (conv P Q) := by
+  have hfst : ((prodLaw P Q).map (fun x : V × V => (x.1, x.1 + x.2))).map Prod.fst = P := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_fst P Q
+  have hsnd : ((prodLaw P Q).map (fun x : V × V => (x.1, x.1 + x.2))).map Prod.snd =
+      conv P Q := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_add P Q
+  have hR : entropyBits ((prodLaw P Q).map (fun x : V × V => (x.1, x.1 + x.2))) =
+      entropyBits P + entropyBits Q := by
+    rw [entropyBits_map_injective _ fst_add_injective, entropyBits_prodLaw]
+  have hsub := entropyBits_subadditive ((prodLaw P Q).map (fun x : V × V => (x.1, x.1 + x.2)))
+  rw [hfst, hsnd, hR] at hsub
+  linarith
+
+/-- `H(A) ≤ H(A + B)` for independent `A ∼ P`, `B ∼ Q` in a finite group:
+`H(A) + H(B) = H(B, A + B) ≤ H(B) + H(A + B)`. -/
+theorem entropyBits_le_conv_left {V : Type*} [Fintype V] [AddGroup V] (P Q : PMF V) :
+    entropyBits P ≤ entropyBits (conv P Q) := by
+  have hfst : ((prodLaw P Q).map (fun x : V × V => (x.2, x.1 + x.2))).map Prod.fst = Q := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_snd P Q
+  have hsnd : ((prodLaw P Q).map (fun x : V × V => (x.2, x.1 + x.2))).map Prod.snd =
+      conv P Q := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_add P Q
+  have hR : entropyBits ((prodLaw P Q).map (fun x : V × V => (x.2, x.1 + x.2))) =
+      entropyBits P + entropyBits Q := by
+    rw [entropyBits_map_injective _ snd_add_injective, entropyBits_prodLaw]
+  have hsub := entropyBits_subadditive ((prodLaw P Q).map (fun x : V × V => (x.2, x.1 + x.2)))
+  rw [hfst, hsnd, hR] at hsub
+  linarith
+
+/-- Upper half of equation (9), first bound: `s(P, Q) ≤ H(P)`. -/
+theorem interaction_le_left {V : Type*} [Fintype V] [AddGroup V] (P Q : PMF V) :
+    interaction P Q ≤ entropyBits P := by
+  have h := entropyBits_le_conv_right P Q
+  unfold interaction
+  linarith
+
+/-- Upper half of equation (9), second bound: `s(P, Q) ≤ H(Q)`. -/
+theorem interaction_le_right {V : Type*} [Fintype V] [AddGroup V] (P Q : PMF V) :
+    interaction P Q ≤ entropyBits Q := by
+  have h := entropyBits_le_conv_left P Q
+  unfold interaction
+  linarith
 
 end EntropyLean
