@@ -45,12 +45,17 @@ and no hypotheses beyond the paper's.
   - Written by the hourly task 2026-11-13 (uncompiled at push): `neg_mul_logb_sum_le`,
     `pmf_map_toReal`, `entropyBits_map_le`, `entropyBits_map_injective`
     (`EntropyLean/EntropyFacts.lean`).
-- [ ] A4. `conv_map_hom`: for an additive map `q`, `(conv P Q).map q = conv (P.map q) (Q.map q)`
+- [x] A4. `conv_map_hom`: for an additive map `q`, `(conv P Q).map q = conv (P.map q) (Q.map q)`
       (quotient commutes with convolution, used in Lemma 4.1).
   - Written by the hourly task 2026-11-13 (uncompiled at push): `conv_map_of_add`,
     `conv_map_hom`, `conv_map_mkQ` (`EntropyLean/EntropyFacts.lean`).
 - [ ] A5. `WeightedFamily.quotient_quotient`: quotienting by `G`, then by `W ≤ V ⧸ G`, equals
       quotienting by the inverse image of `W` (entropy-level statement), used in Lemma 9.1.
+  - Written by the hourly task 2026-11-13 (uncompiled at push): `pmf_map_apply_injective`,
+    `pmf_map_apply_of_not_mem_range`, `entropyBits_map_of_injective`,
+    `entropyBits_map_eq_of_fibres`, `mkQ_mkQ_surjective`, `mkQ_mkQ_fibres`,
+    `entropyBits_map_mkQ_mkQ`, `WeightedFamily.quotient_quotient`,
+    `WeightedFamily.averagedLoss_quotient` (`EntropyLean/QuotientFacts.lean`).
 
 ## B. Information-theory layer
 
