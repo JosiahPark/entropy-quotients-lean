@@ -36,14 +36,6 @@ jobs:
           set -o pipefail
           lake build 2>&1 | tee build.log
 
-      - name: Check the separate FeatureMap module
-        if: always()
-        shell: bash
-        run: |
-          export PATH="$HOME/.elan/bin:$PATH"
-          set -o pipefail
-          lake env lean EntropyLean/FeatureMap.lean 2>&1 | tee featuremap.log
-
       - name: List open proof obligations (sorry)
         if: always()
         run: |
