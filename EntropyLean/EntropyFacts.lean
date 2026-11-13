@@ -12,8 +12,15 @@ Roadmap item A2: a point mass has entropy zero (`entropyBits_pure`), and a law o
 has entropy at most `log₂` of the cardinality (`entropyBits_le_log_card`), via the pointwise
 Gibbs bound `-p log p ≤ p log c + (1/c - p)` (`neg_mul_log_le_gibbs`).
 
-What this file does NOT prove: no data-processing inequality, no equality case of the
-cardinality bound, and nothing about convolutions or quotients (roadmap items A3–A5, B2–B6).
+Roadmap item A3: data processing for a function, `H(f(X)) ≤ H(X)` for `PMF.map f` on finite
+types (`entropyBits_map_le`), with equality for injective `f` (`entropyBits_map_injective`).
+It rests on the elementary bound `-(∑ xᵢ) log₂ (∑ xᵢ) ≤ ∑ -xᵢ log₂ xᵢ` for `xᵢ ≥ 0`
+(`neg_mul_logb_sum_le`) and the fibre formula for the masses of `PMF.map f` (`pmf_map_toReal`).
+
+What this file does NOT prove: no equality case of the cardinality bound, no conditional
+entropy or data processing for the increment `D` (B5), and nothing about convolutions or
+quotients (roadmap items A4–A5, B2–B6). The map lemmas need a `Fintype` on the target, so they
+do not yet apply to quotients `V ⧸ W` without such an instance.
 -/
 
 namespace EntropyLean
@@ -115,5 +122,69 @@ theorem entropyBits_le_log_card {α : Type*} [Fintype α] (P : PMF α) :
     ring
   rw [entropyBits_eq_sum, e, ← Real.log_div_log]
   exact div_le_div_of_nonneg_right hS hl.le
+
+/-- `-(∑ xᵢ) log₂ (∑ xᵢ) ≤ ∑ -xᵢ log₂ xᵢ` for nonnegative `xᵢ`: merging masses does not
+increase entropy. -/
+theorem neg_mul_logb_sum_le {ι : Type*} (s : Finset ι) (x : ι → ℝ) (hx : ∀ i ∈ s, 0 ≤ x i) :
+    -(∑ i ∈ s, x i) * Real.logb 2 (∑ i ∈ s, x i) ≤ ∑ i ∈ s, -x i * Real.logb 2 (x i) := by
+  have h : ∀ i ∈ s, -x i * Real.logb 2 (∑ j ∈ s, x j) ≤ -x i * Real.logb 2 (x i) := by
+    intro i hi
+    have hxi : 0 ≤ x i := hx i hi
+    have hle : x i ≤ ∑ j ∈ s, x j := Finset.single_le_sum hx hi
+    rcases hxi.eq_or_lt with h0 | hpos
+    · rw [← h0]
+      simp
+    · have hl : Real.logb 2 (x i) ≤ Real.logb 2 (∑ j ∈ s, x j) := by
+        first
+        | exact Real.logb_le_logb_of_le (by norm_num) hpos hle
+        | exact (Real.logb_le_logb (by norm_num) hpos (lt_of_lt_of_le hpos hle)).mpr hle
+      have hm := mul_le_mul_of_nonneg_left hl hxi
+      linarith
+  calc -(∑ i ∈ s, x i) * Real.logb 2 (∑ i ∈ s, x i)
+      = ∑ i ∈ s, -x i * Real.logb 2 (∑ j ∈ s, x j) := by
+        rw [← Finset.sum_mul, Finset.sum_neg_distrib]
+    _ ≤ ∑ i ∈ s, -x i * Real.logb 2 (x i) := Finset.sum_le_sum h
+
+/-- The mass of `PMF.map f P` at `b` is the total mass of the fibre `f⁻¹(b)`. -/
+theorem pmf_map_toReal {α β : Type*} [Fintype α] [DecidableEq β] (P : PMF α) (f : α → β)
+    (b : β) :
+    ((P.map f) b).toReal = ∑ a ∈ Finset.univ.filter (fun a => f a = b), (P a).toReal := by
+  have h1 : (P.map f) b = ∑ a ∈ Finset.univ.filter (fun a => f a = b), P a := by
+    rw [PMF.map_apply, tsum_fintype, Finset.sum_filter]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    by_cases h : f a = b
+    · simp [h]
+    · simp [h, Ne.symm h]
+  rw [h1, ENNReal.toReal_sum (fun a _ => P.apply_ne_top a)]
+
+/-- Data processing for a function: `H(f(X)) ≤ H(X)` on finite types. -/
+theorem entropyBits_map_le {α β : Type*} [Fintype α] [Fintype β] (P : PMF α) (f : α → β) :
+    entropyBits (P.map f) ≤ entropyBits P := by
+  classical
+  rw [entropyBits_eq_sum (P.map f), entropyBits_eq_sum P]
+  have key : ∀ b, -((P.map f) b).toReal * Real.logb 2 ((P.map f) b).toReal ≤
+      ∑ a ∈ Finset.univ.filter (fun a => f a = b), -(P a).toReal * Real.logb 2 (P a).toReal := by
+    intro b
+    rw [pmf_map_toReal P f b]
+    exact neg_mul_logb_sum_le _ (fun a => (P a).toReal) (fun a _ => ENNReal.toReal_nonneg)
+  calc ∑ b, -((P.map f) b).toReal * Real.logb 2 ((P.map f) b).toReal
+      ≤ ∑ b, ∑ a ∈ Finset.univ.filter (fun a => f a = b),
+          -(P a).toReal * Real.logb 2 (P a).toReal := Finset.sum_le_sum fun b _ => key b
+    _ = ∑ a, -(P a).toReal * Real.logb 2 (P a).toReal := by
+        first
+        | exact Finset.sum_fiberwise Finset.univ f _
+        | exact Finset.sum_fiberwise_of_maps_to (fun a _ => Finset.mem_univ (f a))
+
+/-- An injective map preserves entropy: `H(f(X)) = H(X)` for injective `f` on finite types. -/
+theorem entropyBits_map_injective {α β : Type*} [Fintype α] [Fintype β] (P : PMF α)
+    {f : α → β} (hf : Function.Injective f) :
+    entropyBits (P.map f) = entropyBits P := by
+  obtain ⟨a0, _⟩ := P.support_nonempty
+  haveI : Nonempty α := ⟨a0⟩
+  apply le_antisymm (entropyBits_map_le P f)
+  have h : (P.map f).map (Function.invFun f) = P := by
+    rw [PMF.map_comp, Function.invFun_comp hf, PMF.map_id]
+  calc entropyBits P = entropyBits ((P.map f).map (Function.invFun f)) := by rw [h]
+    _ ≤ entropyBits (P.map f) := entropyBits_map_le _ _
 
 end EntropyLean
