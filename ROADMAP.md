@@ -64,7 +64,7 @@ and no hypotheses beyond the paper's.
       formalizes Shannon entropy, Ruzsa distance and an entropic PFR theorem. Check its
       toolchain against Lean 4.35.0 and whether its constant matches the 6 in (35). If (ii),
       prove `entropyBits` agrees with PFR's entropy divided by `log 2`.
-- [ ] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
+- [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - [x] B2a. `condEntropy`, `mutualInfo`, chain rule `entropyBits_chain`, `condEntropy_nonneg`,
         `mutualInfo_le_left`, `mutualInfo_le_right`, `mutualInfo_swap`.
@@ -75,7 +75,7 @@ and no hypotheses beyond the paper's.
       `pmf_toReal_le_map`, `sum_toReal_mul_comp`, `entropyBits_eq_div_log`,
       `entropyNats_subadditive`, `entropyBits_subadditive`, `mutualInfo_nonneg`, `condEntropy_le`.
       First push failed CI (`div_add_div_same` no longer exists); fixed in 36b62fa, CI green.
-  - [ ] B2c. Conditional mutual information `condMutualInfo` for a law on `α × β × γ` and
+  - [x] B2c. Conditional mutual information `condMutualInfo` for a law on `α × β × γ` and
         `condMutualInfo_nonneg : I(A;B|C) ≥ 0` (conditional subadditivity).
     - Written by the hourly task 2026-11-13 (uncompiled at push): `tripleAC`, `tripleC`,
       `condMutualInfo`, `sum_fst_toReal`, `sum_cond_ratio_le_one`, `condMutualInfo_nats_nonneg`,
