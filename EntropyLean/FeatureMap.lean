@@ -5,9 +5,14 @@ import Mathlib
 
 Not part of entropy quotients. Kept as a distinct module to avoid conflating
 research programs. Original theorem with conclusion `True` was removed.
+
+What this file does NOT prove: the feature map is not constructed and the kernel identity is
+not proved (both are `sorry`).
 -/
 
 namespace EntropyLean.FeatureMap
+
+open scoped RealInnerProductSpace
 
 noncomputable section
 
@@ -22,7 +27,7 @@ def symFeatureMap (m : ℕ) :
 /-- The polynomial-kernel representation remains an open proof obligation. -/
 theorem inner_power_eq_feature_inner (m : ℕ)
     (x y : EuclideanSpace ℝ (Fin d)) :
-    (inner x y) ^ m = inner (symFeatureMap m x) (symFeatureMap m y) := by
+    ⟪x, y⟫_ℝ ^ m = ⟪symFeatureMap m x, symFeatureMap m y⟫_ℝ := by
   sorry
 
 end

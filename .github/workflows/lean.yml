@@ -1,0 +1,59 @@
+name: Lean build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the pinned Lean toolchain and downloads the prebuilt Mathlib cache.
+      - uses: leanprover/lean-action@v1
+        id: setup
+        timeout-minutes: 12
+        continue-on-error: true
+        with:
+          build: false
+          use-mathlib-cache: true
+
+      - name: Retry Mathlib cache download
+        if: steps.setup.outcome != 'success'
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake exe cache get
+
+      - name: Build library
+        shell: bash
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          set -o pipefail
+          lake build 2>&1 | tee build.log
+
+      - name: Check the separate FeatureMap module
+        if: always()
+        shell: bash
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          set -o pipefail
+          lake env lean EntropyLean/FeatureMap.lean 2>&1 | tee featuremap.log
+
+      - name: List open proof obligations (sorry)
+        if: always()
+        run: |
+          {
+            echo "## Open proof obligations"
+            echo '```'
+            python3 scripts/audit_sorries.py
+            echo '```'
+            echo "## Compiler messages (library)"
+            echo '```'
+            grep -E "error|warning: declaration uses 'sorry'" build.log | head -100 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
