@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} *,*::before,*::after{box-sizing:border-box} body{margin:0;font:14px system-ui,sans-serif} [hidden]{display:none!important}</style>
+<title>Entropy Quotients Roadmap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<style>
+/* Layout (same language as the steklov-lean map): header strip, then a pannable SVG map (roadmap sections as horizontal bands, paper results as a spine at right), detail drawer at right / bottom on phones */
+:root{
+  --bg:#f3f4f1; --panel:#fbfbf9; --ink:#1d2430; --muted:#5d6675; --rule:#d6d9d2; --band:#e9ebe5;
+  --paper:#2e8a57; --paperbg:#d7eedf; --cond:#c48413; --condbg:#f7e6c2; --supp:#8b93a1; --suppbg:#e3e6ea;
+  --open:#c0392f; --openbg:#f6dcd8; --ext:#1f5fa8; --extbg:#dbe9f7; --accent:#2b4a7a; --edge:#7b8698;
+  --display:"Newsreader", Georgia, serif; --body:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14181f; --panel:#1b2029; --ink:#e4e7ec; --muted:#9aa3b2; --rule:#2e3542; --band:#1a1f27;
+  --paper:#5cc08a; --paperbg:#1e3a2b; --cond:#e6a93c; --condbg:#3d3018; --supp:#8e97a6; --suppbg:#262c36;
+  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181f; --panel:#1b2029; --ink:#e4e7ec; --muted:#9aa3b2; --rule:#2e3542; --band:#1a1f27;
+  --paper:#5cc08a; --paperbg:#1e3a2b; --cond:#e6a93c; --condbg:#3d3018; --supp:#8e97a6; --suppbg:#262c36;
+  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;display:flex;flex-direction:column}
+header{padding-block:14px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-end}
+header>div{min-width:0}
+h1{font-family:var(--display);font-weight:600;font-size:26px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin-top:2px;max-width:66ch}
+.sub a{color:inherit}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.stat b{display:block;font-family:var(--mono);font-size:18px;font-weight:500}
+.stat span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat.link{cursor:pointer}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--rule)}
+.chip{font:inherit;font-size:12.5px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-pressed="true"]{border-color:var(--ink)}
+.chip[aria-pressed="false"]{opacity:.5}
+.chip:focus-visible,.btn:focus-visible,input:focus-visible,.tl:focus-visible,.ref:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+input[type=search]{font:inherit;font-size:13px;padding:5px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);min-width:0;width:200px}
+.btn{font:inherit;font-size:12.5px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:6px;padding:4px 9px;cursor:pointer}
+.spacer{flex:1}
+main{flex:1;display:flex;min-height:0;position:relative}
+#wrap{flex:1;overflow:auto;min-width:0;cursor:grab}
+#wrap.drag{cursor:grabbing}
+svg{display:block}
+.bandlbl{font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.07em;text-transform:uppercase;fill:var(--muted)}
+.bandref{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.node rect.box{fill:var(--panel);stroke:var(--rule);stroke-width:1}
+.node.next rect.box{stroke:var(--accent);stroke-width:2}
+.node.skipped rect.box,.node.decision rect.box{stroke-dasharray:4 3}
+.node text.id{font-family:var(--mono);font-size:11px;font-weight:500;fill:var(--ink)}
+.node text.nm{font-family:var(--mono);font-size:10.5px;fill:var(--ink)}
+.node text.ct{font-family:var(--body);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;fill:var(--muted)}
+.node text.ct.nx{fill:var(--accent);font-weight:600}
+.node{cursor:pointer}
+.node:hover rect.box,.node.sel rect.box{stroke:var(--ink);stroke-width:2}
+.node.dim,.rnode.dim{opacity:.18}
+.edge{fill:none;stroke:var(--edge);stroke-width:1;opacity:.45}
+.edge.hot{stroke:var(--accent);opacity:1;stroke-width:2}
+.edge.dim,.redge.dim{opacity:.06}
+.redge{fill:none;stroke-dasharray:4 3;stroke-width:1.2;opacity:.6}
+.redge.hot{opacity:1;stroke-width:2}
+.rnode{cursor:pointer}
+.rnode rect{stroke-width:1.5}
+.rnode.proved rect{fill:var(--paperbg);stroke:var(--paper)}
+.rnode.stated rect{fill:var(--condbg);stroke:var(--cond)}
+.rnode.missing rect{fill:var(--suppbg);stroke:var(--supp);stroke-dasharray:4 3}
+.rnode.external rect{fill:var(--extbg);stroke:var(--ext);stroke-dasharray:4 3}
+.rnode.main rect{stroke-width:2.5}
+.rnode:hover rect,.rnode.sel rect{stroke:var(--ink)}
+.rnode text.rt{font-family:var(--display);font-size:14px;font-weight:600;fill:var(--ink)}
+.rnode text{font-family:var(--body);font-size:11.5px;fill:var(--ink)}
+.small{font-family:var(--body);font-size:11px;fill:var(--muted)}
+aside{width:380px;max-width:100%;border-left:1px solid var(--rule);background:var(--panel);overflow:auto;padding-block:14px 24px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px))}
+aside h2{font-family:var(--display);font-size:20px;margin:0 0 2px;font-weight:600;word-break:break-word}
+aside h3{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px;font-weight:600}
+aside .area{color:var(--muted);font-size:12px;margin-bottom:10px}
+aside p{line-height:1.45;margin:0 0 8px}
+aside code,.hint code{font-family:var(--mono);font-size:11.5px;background:var(--band);padding:0 3px;border-radius:2px;word-break:break-word}
+aside a{color:var(--accent)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--band);margin:6px 0 12px}
+.pill{display:inline-block;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:1px}
+.p-done,.p-proved{background:var(--paperbg);color:var(--paper)} .p-written,.p-stated{background:var(--condbg);color:var(--cond)} .p-open,.p-missing{background:var(--suppbg);color:var(--supp)} .p-skipped,.p-decision{background:var(--band);color:var(--muted);outline:1px dashed var(--muted)} .p-next{background:var(--accent);color:var(--panel)} .p-external{background:var(--extbg);color:var(--ext)} .p-failing{background:var(--openbg);color:var(--open)}
+.note{border-left:3px solid var(--cond);background:var(--condbg);padding:6px 9px;margin:8px 0;font-size:13px;line-height:1.4;border-radius:0 4px 4px 0}
+.note.plain{border-left-color:var(--rule);background:var(--band)}
+.refs{display:flex;flex-wrap:wrap;gap:6px}
+.ref{font:inherit;font-family:var(--mono);font-size:11.5px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:4px;padding:2px 7px;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.hint{color:var(--muted);font-size:13px;line-height:1.45}
+.hint ul{padding-left:18px;margin:4px 0}
+.src{font-size:12px;color:var(--muted);margin-top:14px;border-top:1px solid var(--rule);padding-top:8px}
+@media (max-width:760px){main{flex-direction:column} #wrap{flex:none;height:55vh} aside{width:auto;border-left:0;border-top:1px solid var(--rule);max-height:45vh;padding-left:max(16px,env(safe-area-inset-left,0px))} input[type=search]{width:140px}}
+@media (prefers-reduced-motion:no-preference){.node rect.box,.edge,.redge{transition:opacity .15s,stroke .15s}}
+</style>
+
+</head>
+<body>
+<header>
+  <div>
+    <h1>Entropy Quotients Roadmap</h1>
+    <div class="sub">Every item of <a href="https://github.com/JosiahPark/entropy-quotients-lean/blob/main/ROADMAP.md">ROADMAP.md</a> placed in its roadmap section, with the results of arXiv:2610.38525 it feeds on the right-hand spine. Lines join items to the items they need. <span id="built"></span></div>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+<div class="controls">
+  <button class="chip" data-f="done" aria-pressed="true"><span class="dot" style="background:var(--paper)"></span>Done, compiled</button>
+  <button class="chip" data-f="written" aria-pressed="true"><span class="dot" style="background:var(--cond)"></span>Written, awaiting CI</button>
+  <button class="chip" data-f="open" aria-pressed="true"><span class="dot" style="background:var(--supp)"></span>Open</button>
+  <button class="chip" data-f="skipped" aria-pressed="true"><span class="dot" style="background:var(--band);border:1px dashed var(--muted)"></span>Skipped or Josiah's decision</button>
+  <span class="chip" style="cursor:default"><span class="dot" style="background:var(--panel);border:2px solid var(--accent)"></span>Next for the hourly task</span>
+  <span class="spacer"></span>
+  <input type="search" id="q" placeholder="Find item or theorem" aria-label="Find item or theorem">
+  <button class="btn" id="zin" aria-label="Zoom in">+</button><button class="btn" id="zout" aria-label="Zoom out">−</button><button class="btn" id="zfit">Fit</button>
+</div>
+<main>
+  <div id="wrap"><svg id="map" role="img" aria-label="Roadmap items by section, with the paper results they feed"></svg></div>
+  <aside id="side"></aside>
+</main>
+<script>
+const SNAPSHOT = {"sha": "2b471eb", "at": "13 Nov 2026, 17:50 UTC", "sorry": 8, "ci": {"status": "completed", "conclusion": "success", "sha": "2b471eb1226ff6f3cfd17b5ae700dc8ac06196b0"}, "roadmap": "# Roadmap\n\nOrdered work list for formalizing arXiv:2610.38525. Items are sized for one change each\n(roughly under 120 new Lean lines) and name their file and theorem names. Take the first\nunchecked item; tick it (`- [x]`) only after CI shows it compiled. The dependency chart in\n[docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) shows how the items connect.\n\nMarkers: `- [ ]` open, `- [x]` done and compiled, `- [-]` deliberately skipped (with a reason).\n\nRules: no `sorry` in a ticked item, no `axiom`, `opaque`, `admit`, `native_decide` or `unsafe`.\nAn analytic input that is not proved here enters as a named hypothesis or structure field, never\nas a hidden assumption. No item claims that Theorem 1.1 is proved until its proof has no `sorry`\nand no hypotheses beyond the paper's.\n\n## Done (v0.2, CI-verified at 9130247)\n\n- [x] Definitions: `entropyBits`, `conv`, `entropyIncrement`, `entropyDefect`, `interaction`,\n      `quotientLoss`, `IsSparse` (`EntropyLean/Basic.lean`); `WeightedFamily`, `meanEntropy`,\n      `meanInteraction`, `averagedLoss`, `WeightedFamily.IsSparse`, `quotient`, `convFamily`\n      (`EntropyLean/Families.lean`).\n- [x] Identities: `entropyBits_eq_sum`, `entropyDefect_eq`, `interaction_self`,\n      `meanEntropy_quotient`, `conv_weights_sum`.\n- [x] `bernoulli_parameter_mem_Ioo`; `entropy_le_increment_of_defect_le` (the algebraic step in\n      the proof of Theorem 1.1).\n- [x] Statements with `sorry`: Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1,\n      Proposition 9.3 (`EntropyLean/Statements.lean`).\n\n## A. Entropy basics (`EntropyLean/Basic.lean` or `EntropyLean/EntropyFacts.lean`)\n\n- [x] A1. `negMulLogb_nonneg`: `0 ≤ -p * logb 2 p` for `0 ≤ p ≤ 1`; `entropyBits_nonneg` for a\n      law on a finite type.\n  - Written by the hourly task 2026-11-13 (uncompiled at push): `negMulLogb_nonneg`,\n    `pmf_toReal_le_one`, `entropyBits_term_nonneg`, `entropyBits_nonneg`, `entropyBits_nonneg'`\n    (`EntropyLean/EntropyFacts.lean`).\n- [ ] A2. `entropyBits_pure`: `entropyBits (PMF.pure a) = 0`; `entropyBits_le_log_card`:\n      `entropyBits P ≤ logb 2 (Fintype.card α)`.\n  - Written by the hourly task 2026-11-13 (uncompiled at push): `entropyBits_pure`,\n    `neg_mul_log_le_gibbs`, `pmf_sum_toReal`, `entropyBits_le_log_card`\n    (`EntropyLean/EntropyFacts.lean`).\n- [ ] A3. `entropyBits_map_le`: `H(f ∘ X) ≤ H(X)` for `PMF.map f` on finite types (data\n      processing for a function); `entropyBits_map_injective`: equality for injective `f`.\n- [ ] A4. `conv_map_hom`: for an additive map `q`, `(conv P Q).map q = conv (P.map q) (Q.map q)`\n      (quotient commutes with convolution, used in Lemma 4.1).\n- [ ] A5. `WeightedFamily.quotient_quotient`: quotienting by `G`, then by `W ≤ V ⧸ G`, equals\n      quotienting by the inverse image of `W` (entropy-level statement), used in Lemma 9.1.\n\n## B. Information-theory layer\n\n- [ ] B1. Decide the entropy backend and record the decision here: (i) continue with the\n      `PMF`-based definitions, or (ii) depend on the PFR project (github.com/teorth/pfr), which\n      formalizes Shannon entropy, Ruzsa distance and an entropic PFR theorem. Check its\n      toolchain against Lean 4.35.0 and whether its constant matches the 6 in (35). If (ii),\n      prove `entropyBits` agrees with PFR's entropy divided by `log 2`.\n- [ ] B2. Conditional entropy and mutual information for finite joint laws; chain rule;\n      `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`).\n- [ ] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;\n      equation (14): `0 ≤ e(𝒫) ≤ h(𝒫)` (`meanInteraction_nonneg`, `meanInteraction_le`).\n- [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.\n- [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.\n- [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).\n\n## C. Variational steps and the reduction of Theorem 1.1\n\n- [ ] C1. Lemma 9.1: prove `variational_sparsification` by minimizing `h(q_G 𝒫) + λ dim G`\n      over the finite set of subspaces (needs A1, A5).\n- [ ] C2. Conditional Theorem 1.1: `exponential_entropy_quotient_of_rigidity`, proving the\n      statement of Theorem 1.1 from Lemma 9.1, B5, `entropy_le_increment_of_defect_le` and\n      Theorem 8.2 taken as an explicit hypothesis. Also the singleton family\n      `WeightedFamily.singleton` and `meanEntropy_singleton`.\n- [ ] C3. Theorem 1.2 from Theorem 8.2: `sparse_rigidity_of_family_rigidity` via the singleton\n      family (Theorem 8.2 as an explicit hypothesis).\n- [ ] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,\n      B3, B4).\n- [ ] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a\n      hypothesis.\n\n## D. Rigidity core (Sections 2.3, 3, 5–8)\n\n- [ ] D1. Iteration arithmetic of Theorem 8.2, pure real analysis: from (43) derive\n      `d * logb 2 (1/λ) < 320` for `0 < d ≤ 1` (`EntropyLean/RigidityArith.lean`).\n- [ ] D2. Theorem 8.2 from Lemma 8.1: `weighted_family_rigidity_of_growth`, with Lemma 8.1 as an\n      explicit hypothesis, using D1.\n- [ ] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).\n- [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).\n- [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).\n- [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.\n- [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its\n      consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant\n      matches.\n- [ ] D8. Lemma 7.1 from D4–D7.\n- [ ] D9. Lemma 8.1 from C4, D3, D6, D8.\n\n## E. Proposition 9.3 (independent of Theorem 8.2)\n\n- [ ] E1. `entropyBits` of a Bernoulli law on `ZMod 2` equals `binaryEntropy p`; the sum of two\n      independent Bernoulli(p) bits is Bernoulli(2p(1−p)).\n- [ ] E2. Bernoulli expansions: `binaryEntropy p = p logb 2 (1/p) + p logb 2 e + O(p²)` and\n      `bernoulliDefect p = 2p + O(p² log(1/p))` as explicit inequalities for small `p`.\n- [ ] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.\n\n## F. Corollary 9.4\n\n- [ ] F1. Statement of Corollary 9.4 and its proof from Theorem 1.1 (as a hypothesis until\n      Theorem 1.1 is proved).\n\n## G. Tracking and improving the constant 320\n\nThe exponent `2^(320(1+ε)/ε)` in Theorem 1.1 comes from the iteration arithmetic (42)–(43)\n(item D1) and, through it, from the constant 6 in the entropic Marton bound (35) and the constants\n12, 13 in (36). These items make that dependence explicit in Lean and then look for slack. They\ncome after A–F on purpose: none of them blocks Theorem 1.1. No item may claim a constant below\nwhat its proof actually gives.\n\n- [ ] G1. Parametric iteration arithmetic (`EntropyLean/RigidityArith.lean`): redo D1 with the\n      Marton constant `C` and the constants of (36) as real parameters, deriving\n      `d * logb 2 (1/λ) < K` for an explicit expression `K` in them\n      (`rigidity_arith_param`), and recover D1 by `K ≤ 320` at `C = 6`\n      (`rigidity_arith_param_six`).\n- [ ] G2. Constant as a field: give D7's `MartonInput` its constant as a field `C` (with (36)\n      in terms of `C`), and restate the conditional Theorem 1.1 of C2 with exponent\n      `K(C) * (1+ε)/ε` (`exponential_entropy_quotient_of_rigidity_const`), so that any\n      better Marton constant gives a better exponent with no further work.\n- [ ] G3. Slack in the paper's argument: find the smallest constant `c₀` that the arithmetic of\n      (42)–(43) gives at `C = 6` (prove `K(6) ≤ c₀`), and if `c₀ < 320` state Theorem 1.1\n      with `c₀`. Record in this file where the slack came from, so Josiah can check it against\n      the paper.\n- [ ] G4. Constant from the PFR backend: only if B1 chooses PFR, check which Marton constant\n      that project proves and instantiate G2 with it.\n\n## Not attempted here\n\n- Improving the constant beyond what the paper's argument gives (a new proof of Theorem 8.2 with\n  a better iteration); item G only tracks and tightens the existing argument.\n\n- A proof of the entropic Marton theorem itself (Gowers–Green–Manners–Tao); it is the paper's\n  one external input.\n- Constructive or algorithmic versions (Section 10).\n", "deps": "# Result dependency chart\n\nHow the results of arXiv:2610.38525 depend on each other, and how far each one is in Lean.\nAn arrow `A → B` means the paper's proof of B uses A. Colours give the Lean status at commit\ntime; [ROADMAP.md](../ROADMAP.md) is the ordered work list that moves nodes from grey to green.\n\n| Colour | Meaning |\n| --- | --- |\n| green | proved in Lean (no `sorry`) |\n| amber | stated in Lean, proof is `sorry` |\n| grey | not yet stated in Lean |\n| blue | external input (cited, not proved in the paper) |\n\n```mermaid\nflowchart TD\n  classDef proved fill:#d4edda,stroke:#2e7d32,color:#1b3d1f\n  classDef stated fill:#fff3cd,stroke:#b8860b,color:#4d3800\n  classDef missing fill:#eceff1,stroke:#78909c,color:#263238\n  classDef external fill:#dbe9f7,stroke:#1f5fa8,color:#0d2a4d\n\n  %% Definitions and elementary identities\n  DEF[\"Definitions: H, convolution, D, E, s, F_P(W),<br/>sparsity, weighted families, q_G 𝒫, 𝒫 * 𝒫<br/>(Basic, Families)\"]:::proved\n  ID[\"Identities: E = H − D, s(P,P) = E(P),<br/>h(q_G 𝒫) = h(𝒫) − F_𝒫(G), weights a_i a_j sum to 1\"]:::proved\n  ALG[\"Algebraic step: E(Z) ≤ θH(Z) ⇒ H(Z) ≤ (1+ε)D(Z)<br/>entropy_le_increment_of_defect_le\"]:::proved\n  BPAR[\"2^(−c/ε) ∈ (0,1)<br/>bernoulli_parameter_mem_Ioo\"]:::proved\n\n  %% Entropy toolkit (Section 2)\n  NN[\"H ≥ 0, chain rule,<br/>I(A;B|C) ≥ 0\"]:::missing\n  E9[\"(9): 0 ≤ s(P,Q) ≤ min(H(P),H(Q));<br/>(14): 0 ≤ e(𝒫) ≤ h(𝒫)\"]:::missing\n  DP[\"Data processing: D(q_G X) ≤ D(X)\"]:::missing\n  E15[\"(15): h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)\"]:::missing\n  QC[\"Quotient commutes with convolution\"]:::missing\n  L21[\"Lemma 2.1: F_P supermodular\"]:::missing\n  L22[\"Lemma 2.2: posterior closure\"]:::missing\n\n  %% Sections 3-7\n  L31[\"Lemma 3.1: fibring, nested interaction (20)–(22)\"]:::missing\n  L41[\"Lemma 4.1: ratio-preserving sparsification<br/>ratio_preserving_sparsification\"]:::stated\n  L51[\"Lemma 5.1: averaged density estimate\"]:::missing\n  L61[\"Lemma 6.1: four-sample splitting\"]:::missing\n  L62[\"Lemma 6.2: conditional BSG inequality\"]:::missing\n  L63[\"Lemma 6.3: posterior doubling estimate\"]:::missing\n  MAR[\"Entropic Marton theorem (35)<br/>Gowers–Green–Manners–Tao\"]:::external\n  E36[\"(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)\"]:::missing\n  L71[\"Lemma 7.1: sparse posterior estimate\"]:::missing\n\n  %% Section 8\n  L81[\"Lemma 8.1: ratio growth\"]:::missing\n  ARITH[\"Iteration arithmetic (42)–(43):<br/>d log₂(1/λ) < 320\"]:::missing\n  T82[\"Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity\"]:::stated\n  T12[\"Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity\"]:::stated\n\n  %% Section 9\n  L91[\"Lemma 9.1: variational sparsification<br/>variational_sparsification\"]:::stated\n  T11[\"Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient\"]:::stated\n  C92[\"Corollary 9.2: two-input almost-additivity\"]:::missing\n  BEXP[\"Bernoulli expansions of h₂(p), 2h₂(p) − h₂(2p(1−p))\"]:::missing\n  P93[\"Proposition 9.3: exponential scale is necessary<br/>exponential_scale_necessary\"]:::stated\n  C94[\"Corollary 9.4: subspace-coset concentration\"]:::missing\n\n  DEF --> ID\n  DEF --> NN\n  NN --> E9\n  NN --> DP\n  NN --> L21\n  NN --> L22\n  ID --> E15\n  DEF --> QC\n  E9 --> L31\n  L21 --> L31\n\n  E15 --> L41\n  E9 --> L41\n  QC --> L41\n  L31 --> L51\n  L21 --> L51\n  E15 --> L61\n  L22 --> L61\n  NN --> L62\n  L62 --> L63\n  MAR --> E36\n  E36 --> L71\n  L31 --> L71\n  L63 --> L71\n  L51 --> L71\n\n  L41 --> L81\n  L22 --> L81\n  L61 --> L81\n  L71 --> L81\n  L81 --> T82\n  ARITH --> T82\n  E9 --> T82\n  T82 --> T12\n\n  NN --> L91\n  L91 --> T11\n  T82 --> T11\n  ALG --> T11\n  DP --> T11\n  L91 --> C92\n  T82 --> C92\n  DP --> C92\n  BPAR --> P93\n  BEXP --> P93\n  T11 --> C94\n```\n\n## Reading the chart\n\n- The only external input is the entropic Marton theorem (35). Everything else is proved in the\n  paper, so every grey node is a formalization target, not an assumption.\n- Theorem 1.1 is three steps away from its inputs: Lemma 9.1, Theorem 8.2 and data processing,\n  plus the algebraic step already proved. A conditional version, with Theorem 8.2 as a named\n  hypothesis, is item C2 of the roadmap.\n- Theorem 8.2 carries the depth of the paper: Lemmas 4.1, 5.1, 6.1–6.3, 7.1 and 8.1 all feed it.\n- Proposition 9.3 is independent of Theorem 8.2: it needs only Bernoulli calculus (items E1–E3).\n", "live": false};
+const REPO = "JosiahPark/entropy-quotients-lean";
+// Structure that ROADMAP.md does not carry: paper sections per band, short labels, item dependencies, and which items feed which result.
+// Items added later (splits like A3a, new sections) still appear, in their section, with no lines until listed here.
+const CFG = {
+  bandRef: {Done: "v0.2", A: "§2", B: "§2", C: "§4, §9", D: "§2.3, §3, §5–8", E: "§9", F: "§9", G: "§8 · (35)"},
+  short: {V1: "definitions", V2: "identities", V3: "algebraic step", V4: "statements (sorry)",
+    A1: "entropyBits_nonneg", A2: "entropyBits_le_log_card", A3: "entropyBits_map_le", A4: "conv_map_hom", A5: "quotient_quotient",
+    B1: "entropy backend", B2: "chain rule, I ≥ 0", B3: "interaction bounds", B4: "meanEntropy_convFamily", B5: "D(q_G X) ≤ D(X)", B6: "Lemma 2.1",
+    C1: "Lemma 9.1", C2: "Thm 1.1 | Thm 8.2", C3: "Thm 1.2 | Thm 8.2", C4: "Lemma 4.1", C5: "Corollary 9.2",
+    D1: "d log₂(1/λ) < 320", D2: "Thm 8.2 | Lem 8.1", D3: "Lemma 2.2", D4: "Lemma 3.1", D5: "Lemma 5.1", D6: "Lemmas 6.1–6.3", D7: "MartonInput", D8: "Lemma 7.1", D9: "Lemma 8.1",
+    E1: "Bernoulli entropy", E2: "Bernoulli expansions", E3: "Prop 9.3", F1: "Corollary 9.4",
+    G1: "parametric arithmetic", G2: "constant as a field", G3: "slack in (42)–(43)", G4: "PFR constant"},
+  deps: {B2: ["A1"], B3: ["B2"], B4: ["B3", "V2"], B5: ["B2", "A3"], B6: ["B2"],
+    C1: ["A1", "A5"], C2: ["C1", "B5", "V3"], C3: ["V4"], C4: ["A4", "B3", "B4"], C5: ["C1", "B5"],
+    D2: ["D1"], D3: ["B2"], D4: ["B3", "B6"], D5: ["D4", "B6"], D6: ["B2", "B4", "D3"], D8: ["D4", "D5", "D6", "D7"], D9: ["C4", "D3", "D6", "D8"],
+    E2: ["E1"], E3: ["E1", "E2", "V3"], F1: ["C2"], G1: ["D1"], G2: ["G1", "D7", "D2", "C2"], G3: ["G1"], G4: ["B1", "G2"]},
+  decision: ["B1"],
+  results: [
+    {id: "T11", name: "Theorem 1.1", sub: "exponential entropy quotient", main: true, items: ["C2", "C1", "B5"]},
+    {id: "T82", name: "Theorem 8.2", sub: "weighted-family rigidity", items: ["D2", "D9", "D1"]},
+    {id: "T12", name: "Theorem 1.2", sub: "sparse-law rigidity", items: ["C3"]},
+    {id: "L91", name: "Lemma 9.1", sub: "variational sparsification", items: ["C1"]},
+    {id: "L41", name: "Lemma 4.1", sub: "ratio-preserving sparsification", items: ["C4"]},
+    {id: "C92", name: "Corollary 9.2", sub: "two-input almost-additivity", items: ["C5"]},
+    {id: "P93", name: "Proposition 9.3", sub: "exponential scale is necessary", items: ["E3", "E2", "E1"]},
+    {id: "C94", name: "Corollary 9.4", sub: "subspace-coset concentration", items: ["F1"]},
+    {id: "MAR", name: "Entropic Marton (35)", sub: "external input, not proved here", items: ["D7", "G2"]}
+  ]
+};
+const STATUS_TEXT = {done: "done", written: "awaiting CI", open: "open", skipped: "skipped", decision: "decision"};
+const STATUS_COL = {done: "var(--paper)", written: "var(--cond)", open: "var(--supp)", skipped: "var(--muted)", decision: "var(--muted)"};
+const RES_TEXT = {proved: "proved", stated: "stated, sorry", missing: "not yet stated", external: "external"};
+const NS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("map"), side = document.getElementById("side"), wrap = document.getElementById("wrap");
+const filt = {done: true, written: true, open: true, skipped: true};
+let scale = 1, sel = null, M = null, src = SNAPSHOT, fitted = false;
+
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const md = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, t, u) => `<a href="${/^https?:/.test(u) ? u : `https://github.com/${REPO}/blob/main/${u.replace(/^\.\.\//, "")}`}" target="_blank" rel="noopener">${t}</a>`);
+const trunc = (s, n) => s.length > n ? s.slice(0, n - 1) + "…" : s;
+
+function parseRoadmap(text) {
+  const bands = [], notAttempted = [], items = [];
+  let band = null, item = null, inNA = false;
+  for (const raw of text.split("\n")) {
+    const h = raw.match(/^##\s+(.*)$/);
+    if (h) {
+      item = null; const t = h[1].trim();
+      if (/^not attempted/i.test(t)) { inNA = true; band = null; continue; }
+      inNA = false;
+      const m = t.match(/^([A-Z])\.\s+(.*)$/);
+      band = {key: m ? m[1] : (/^done/i.test(t) ? "Done" : t.slice(0, 12)), title: m ? m[2] : t, intro: [], items: []};
+      bands.push(band); continue;
+    }
+    if (inNA) { const b = raw.match(/^-\s+(.*)$/); if (b) notAttempted.push(b[1]); else if (raw.trim() && notAttempted.length) notAttempted[notAttempted.length - 1] += " " + raw.trim(); continue; }
+    if (!band) continue;
+    const it = raw.match(/^-\s+\[( |x|X|-)\]\s+(.*)$/);
+    if (it) {
+      let t = it[2], id; const idm = t.match(/^([A-Z]\d+[a-z]*)\.\s+(.*)$/);
+      if (idm) { id = idm[1]; t = idm[2]; } else id = (band.key === "Done" ? "V" : band.key) + (band.items.length + 1);
+      item = {id, mark: it[1].toLowerCase(), text: t, notes: [], band: band.key};
+      band.items.push(item); items.push(item); continue;
+    }
+    const sub = raw.match(/^\s{2,4}-\s+(.*)$/);
+    if (sub && item) { item.notes.push(sub[1]); continue; }
+    if (!raw.trim()) continue;
+    if (/^\s+\S/.test(raw) && item) {
+      const ind = raw.match(/^\s*/)[0].length;
+      if (item.notes.length && ind <= 5) item.notes[item.notes.length - 1] += " " + raw.trim(); else item.text += " " + raw.trim();
+      continue;
+    }
+    item = null; band.intro.push(raw.trim());
+  }
+  for (const b of bands) b.intro = b.intro.join(" ").trim();
+  return {bands: bands.filter(b => b.items.length), notAttempted, items};
+}
+function parseDeps(text) {
+  const st = {};
+  for (const line of (text || "").split("\n")) { const m = line.match(/^\s*([A-Z][A-Z0-9]*)\[.*\]:::(\w+)\s*$/); if (m) st[m[1]] = m[2]; }
+  return st;
+}
+function model(s) {
+  const R = parseRoadmap(s.roadmap), rs = parseDeps(s.deps), byId = {};
+  for (const it of R.items) {
+    byId[it.id] = it;
+    const written = it.notes.some(n => /written by the hourly task/i.test(n));
+    it.status = it.mark === "x" ? "done" : it.mark === "-" ? "skipped" : CFG.decision.includes(it.id) ? "decision" : written ? "written" : "open";
+    const code = [...(it.text + " " + it.notes.join(" ")).matchAll(/`([^`]+)`/g)].map(m => m[1]);
+    it.files = [...new Set(code.filter(c => /^EntropyLean\/\w+\.lean$/.test(c)))];
+    it.names = [...new Set(code.filter(c => /^[\w.']+$/.test(c) && !/\.lean$/.test(c)))];
+    it.short = CFG.short[it.id] || it.names[0] || trunc(it.text.replace(/`/g, ""), 22);
+  }
+  const next = R.items.find(it => it.band !== "Done" && it.status === "open");
+  if (next) next.next = true;
+  // dependencies: configured ones, plus a parent item for split items (A3a needs nothing extra, but inherits A3's)
+  const deps = {};
+  for (const it of R.items) {
+    const base = it.id.replace(/[a-z]+$/, "");
+    deps[it.id] = (CFG.deps[it.id] || CFG.deps[base] || []).filter(d => byId[d] && d !== it.id);
+  }
+  const usedBy = {};
+  for (const [a, ds] of Object.entries(deps)) for (const d of ds) (usedBy[d] ||= []).push(a);
+  const results = CFG.results.map(r => ({...r, status: rs[r.id] || (r.id === "MAR" ? "external" : "missing"), items: r.items.filter(i => byId[i])}));
+  const feeds = {};
+  for (const r of results) for (const i of r.items) (feeds[i] ||= []).push(r.id);
+  // layout
+  const NW = 178, NH = 44, GX = 12, GY = 12, PER = 6, X0 = 24;
+  let y = 16; const bands = [];
+  for (const b of R.bands) {
+    b.items.forEach((it, i) => { const r = Math.floor(i / PER), c = i % PER; it.x = X0 + c * (NW + GX); it.y = y + 32 + r * (NH + GY); });
+    const h = 32 + Math.ceil(b.items.length / PER) * (NH + GY) + 6;
+    bands.push({...b, y, h}); y += h + 10;
+  }
+  const spineX = X0 + PER * (NW + GX) + 48, RW = 236, RH = 52;
+  results.forEach((r, i) => { r.x = spineX; r.y = 96 + i * (RH + 12); r.w = RW; r.h = RH; });
+  const H = Math.max(y + 10, results.length ? results[results.length - 1].y + RH + 24 : 0);
+  return {R, byId, deps, usedBy, results, feeds, next, bands, L: {NW, NH, W: spineX + RW + 24, H, spineX}};
+}
+
+function draw() {
+  const {L} = M;
+  svg.innerHTML = "";
+  svg.setAttribute("viewBox", `0 0 ${L.W} ${L.H}`);
+  svg.setAttribute("width", L.W * scale); svg.setAttribute("height", L.H * scale);
+  const gB = el("g", {}, svg), gE = el("g", {}, svg), gN = el("g", {}, svg);
+  M.bands.forEach((b, i) => {
+    el("rect", {x: 8, y: b.y, width: L.spineX - 32, height: b.h, rx: 6, fill: i % 2 ? "var(--bg)" : "var(--band)"}, gB);
+    const label = b.key === "Done" ? b.title : `${b.key}. ${b.title.replace(/\s*\(`[^)]*\)\s*$/, "")}`;
+    const t = el("text", {x: 24, y: b.y + 20, class: "bandlbl"}, gB); t.textContent = trunc(label, 70);
+    const r = el("text", {x: L.spineX - 40, y: b.y + 20, class: "bandref", "text-anchor": "end"}, gB); r.textContent = CFG.bandRef[b.key] || "";
+  });
+  const lbl = el("text", {x: L.spineX, y: 36, class: "bandlbl"}, gB); lbl.textContent = "Paper results";
+  ["Status from docs/DEPENDENCIES.md. A result", "counts as proved only with no sorry and", "no hypotheses beyond the paper's."].forEach((s, k) => { const t = el("text", {x: L.spineX, y: 54 + 14 * k, class: "small"}, gB); t.textContent = s; });
+  const curve = (x1, y1, x2, y2) => { const mx = (x1 + x2) / 2; return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`; };
+  const edges = [];
+  for (const [a, ds] of Object.entries(M.deps)) for (const d of ds) {
+    const A = M.byId[a], B = M.byId[d];
+    const p = el("path", {d: curve(B.x + L.NW / 2, B.y + L.NH / 2, A.x + L.NW / 2, A.y + L.NH / 2), class: "edge"}, gE);
+    p.dataset.a = a; p.dataset.b = d; edges.push(p);
+  }
+  const RCOL = {proved: "var(--paper)", stated: "var(--cond)", missing: "var(--supp)", external: "var(--ext)"};
+  for (const r of M.results) for (const i of r.items) {
+    const it = M.byId[i];
+    const p = el("path", {d: curve(it.x + L.NW, it.y + L.NH / 2, r.x, r.y + r.h / 2), class: "redge", stroke: RCOL[r.status] || "var(--supp)"}, gE);
+    p.dataset.a = i; p.dataset.b = r.id; edges.push(p);
+  }
+  for (const r of M.results) {
+    const g = el("g", {class: `rnode ${r.status}${r.main ? " main" : ""}`, tabindex: 0, role: "button", "aria-label": r.name}, gN);
+    g.dataset.id = r.id;
+    el("rect", {x: r.x, y: r.y, width: r.w, height: r.h, rx: 7}, g);
+    const t1 = el("text", {x: r.x + 11, y: r.y + 21, class: "rt"}, g); t1.textContent = r.name;
+    const t2 = el("text", {x: r.x + r.w - 10, y: r.y + 20, class: "small", "text-anchor": "end"}, g); t2.textContent = RES_TEXT[r.status] || r.status;
+    const t3 = el("text", {x: r.x + 11, y: r.y + 39, class: "small"}, g); t3.textContent = r.sub;
+    const ti = el("title", {}, g); ti.textContent = `${r.name}: ${RES_TEXT[r.status] || r.status}. Roadmap items: ${r.items.join(", ") || "none"}`;
+    g.addEventListener("click", () => selectResult(r.id));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectResult(r.id); } });
+    g.addEventListener("mouseenter", () => hot(r.id)); g.addEventListener("mouseleave", () => hot(sel));
+  }
+  for (const it of M.R.items) {
+    const key = it.status === "decision" ? "skipped" : it.status;
+    const g = el("g", {class: `node ${it.status}${it.next ? " next" : ""}${filt[key] ? "" : " dim"}`, tabindex: 0, role: "button", "aria-label": `${it.id} ${it.short}`}, gN);
+    g.dataset.id = it.id;
+    el("rect", {x: it.x, y: it.y, width: L.NW, height: L.NH, rx: 5, class: "box"}, g);
+    const t = el("text", {x: it.x + 8, y: it.y + 17, class: "id"}, g); t.textContent = it.id;
+    const nm = el("text", {x: it.x + 8 + 8 * it.id.length + 6, y: it.y + 17, class: "nm"}, g); nm.textContent = trunc(it.short, 23 - it.id.length);
+    const ct = el("text", {x: it.x + L.NW - 8, y: it.y + 36, class: "ct" + (it.next ? " nx" : ""), "text-anchor": "end"}, g); ct.textContent = it.next ? "next" : STATUS_TEXT[it.status];
+    el("rect", {x: it.x + 8, y: it.y + 29, width: L.NW - 80, height: 6, rx: 1, fill: STATUS_COL[it.status], opacity: it.status === "skipped" || it.status === "decision" ? .35 : 1}, g);
+    const ti = el("title", {}, g); ti.textContent = `${it.id}: ${it.text.replace(/`/g, "")}`;
+    g.addEventListener("click", () => select(it.id));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(it.id); } });
+    g.addEventListener("mouseenter", () => hot(it.id)); g.addEventListener("mouseleave", () => hot(sel));
+  }
+  svg._edges = edges;
+  hot(sel);
+  applySearch();
+}
+function hot(id) {
+  for (const p of svg._edges || []) { const on = id && (p.dataset.a === id || p.dataset.b === id); p.classList.toggle("hot", !!on); p.classList.toggle("dim", !!id && !on); }
+  svg.querySelectorAll(".node,.rnode").forEach(n => n.classList.toggle("sel", n.dataset.id === sel));
+}
+const pill = s => `<span class="pill p-${s}">${esc(STATUS_TEXT[s] || RES_TEXT[s] || s)}</span>`;
+function refBtn(id) {
+  const it = M.byId[id], r = M.results.find(x => x.id === id);
+  const col = it ? STATUS_COL[it.status] : r ? ({proved: "var(--paper)", stated: "var(--cond)", missing: "var(--supp)", external: "var(--ext)"}[r.status]) : "var(--supp)";
+  return `<button class="ref" data-ref="${esc(id)}"><span class="dot" style="background:${col}"></span>${esc(it ? id + " " + it.short : r ? r.name : id)}</button>`;
+}
+function wireRefs() {
+  side.querySelectorAll("[data-ref]").forEach(b => b.addEventListener("click", () => { const id = b.dataset.ref; M.byId[id] ? select(id, true) : selectResult(id, true); }));
+}
+function select(id, scroll) {
+  sel = id; hot(id);
+  const it = M.byId[id], band = M.bands.find(b => b.key === it.band);
+  const needs = M.deps[id] || [], unl = M.usedBy[id] || [], fd = M.feeds[id] || [];
+  const blocked = needs.filter(d => M.byId[d].status !== "done");
+  side.innerHTML = `<h2>${esc(id)} · ${esc(it.short)}</h2>
+    <div class="area">${esc(band.key === "Done" ? band.title : band.key + ". " + band.title.replace(/\s*\(`[^)]*\)\s*$/, ""))}${CFG.bandRef[band.key] ? " · " + esc(CFG.bandRef[band.key]) : ""}</div>
+    <div>${pill(it.status)}${it.next ? pill("next") : ""}</div>
+    <p style="margin-top:10px">${md(it.text)}</p>
+    ${it.notes.map(n => `<div class="note${/written by the hourly task/i.test(n) ? "" : " plain"}">${md(n)}</div>`).join("")}
+    ${it.next ? `<div class="note plain">The hourly task takes this item on its next run: it is the first open item, after any item still awaiting CI, skipping B1 and skipped items.</div>` : ""}
+    ${it.status === "decision" ? `<div class="note plain">This is Josiah's decision; the hourly task skips it and keeps the PMF-based definitions.</div>` : ""}
+    ${it.files.length ? `<h3>Files</h3><div class="refs">${it.files.map(f => `<a class="ref" href="https://github.com/${REPO}/blob/main/${esc(f)}" target="_blank" rel="noopener">${esc(f)}</a>`).join("")}</div>` : ""}
+    ${needs.length ? `<h3>Needs${blocked.length ? ` · ${blocked.length} not done` : " · all done"}</h3><div class="refs">${needs.map(refBtn).join("")}</div>` : ""}
+    ${unl.length ? `<h3>Unlocks</h3><div class="refs">${unl.map(refBtn).join("")}</div>` : ""}
+    ${fd.length ? `<h3>Feeds</h3><div class="refs">${fd.map(refBtn).join("")}</div>` : ""}`;
+  wireRefs();
+  if (scroll) scrollTo(it.x + M.L.NW / 2, it.y);
+}
+function selectResult(id, scroll) {
+  sel = id; hot(id);
+  const r = M.results.find(x => x.id === id);
+  const extra = {T11: "Not claimed proved until its proof has no sorry and no hypotheses beyond the paper's. C2 gives it with Theorem 8.2 as an explicit hypothesis.",
+    T82: "Carries the depth of the paper: Lemmas 4.1, 5.1, 6.1–6.3, 7.1 and 8.1 all feed it (section D).",
+    MAR: "Gowers–Green–Manners–Tao. The paper's one external input; it enters Lean as a named structure field (D7), never as an axiom.",
+    P93: "Independent of Theorem 8.2: it needs only Bernoulli calculus."}[id];
+  side.innerHTML = `<h2>${esc(r.name)}</h2><div class="area">${esc(r.sub)}</div><div>${pill(r.status)}</div>
+    ${extra ? `<p style="margin-top:10px">${esc(extra)}</p>` : ""}
+    <h3>Roadmap items</h3><div class="refs">${r.items.map(refBtn).join("") || "<span class='hint'>none yet</span>"}</div>`;
+  wireRefs();
+  if (scroll) scrollTo(r.x + r.w / 2, r.y);
+}
+function scrollTo(x, y) { wrap.scrollTo({left: x * scale - wrap.clientWidth / 2, top: y * scale - wrap.clientHeight / 3, behavior: "smooth"}); }
+function intro() {
+  const na = M.R.notAttempted;
+  side.innerHTML = `<h2>How to read the roadmap</h2><div class="hint">
+    <p>Each box is one roadmap item, in its section of ROADMAP.md. Its bar shows its state: <b style="color:var(--paper)">done</b> (ticked after CI compiled it), <b style="color:var(--cond)">awaiting CI</b> (written by the hourly task, not yet ticked), <b>open</b>, or dashed when skipped or left to Josiah.</p>
+    <p>Solid lines join an item to the items it needs. Dashed lines run to the paper results on the right, coloured by their Lean status: proved, stated with <code>sorry</code>, not yet stated, or external.</p>
+    <p>The box outlined in blue is the next item the hourly task will take. Select any box for its full text, files, and what it needs and unlocks.</p>
+    ${na.length ? `<h3>Not attempted here</h3><ul>${na.map(n => `<li>${md(n)}</li>`).join("")}</ul>` : ""}</div>
+    <div class="src" id="srcnote"></div>`;
+  renderSrc();
+}
+function renderSrc() {
+  const n = document.getElementById("srcnote");
+  if (n) n.textContent = src.live ? `Read live from main at ${src.at}.` : `Snapshot of commit ${src.sha} (${src.at}); live data could not be fetched here.`;
+}
+function stats() {
+  const its = M.R.items, c = s => its.filter(i => i.status === s).length;
+  const total = its.length, ci = src.ci;
+  const ciTxt = ci ? (ci.status !== "completed" ? "running" : ci.conclusion === "success" ? "passing" : "failing") : "–";
+  const ciCol = ciTxt === "passing" ? "var(--paper)" : ciTxt === "failing" ? "var(--open)" : "var(--cond)";
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><b>${c("done")}/${total}</b><span>items done</span></div>` +
+    `<div class="stat"><b style="color:var(--cond)">${c("written")}</b><span>awaiting CI</span></div>` +
+    `<div class="stat"><b style="color:var(--supp)">${c("open") + c("decision")}</b><span>open</span></div>` +
+    `<div class="stat"><b>${src.sorry ?? "–"}</b><span>sorry left</span></div>` +
+    `<div class="stat"><b style="color:${ciCol}">${ciTxt}</b><span>CI ${ci ? esc(ci.sha.slice(0, 7)) : ""}</span></div>` +
+    (M.next ? `<div class="stat link" id="nextstat" role="button" tabindex="0"><b style="color:var(--accent)">${esc(M.next.id)}</b><span>next item</span></div>` : "");
+  const ns = document.getElementById("nextstat");
+  if (ns) { ns.onclick = () => select(M.next.id, true); ns.onkeydown = e => { if (e.key === "Enter") select(M.next.id, true); }; }
+  document.getElementById("built").textContent = src.live ? `Live from main, ${src.at}.` : `Snapshot of ${src.sha}, ${src.at}.`;
+}
+function render() {
+  M = model(src); stats(); draw();
+  if (sel && (M.byId[sel])) select(sel); else if (sel && M.results.find(r => r.id === sel)) selectResult(sel); else intro();
+  if (!fitted) { setScale(Math.min(1, (wrap.clientWidth || M.L.W) / M.L.W)); fitted = true; }
+}
+function setScale(s) { scale = Math.max(.35, Math.min(2.2, s)); svg.setAttribute("width", M.L.W * scale); svg.setAttribute("height", M.L.H * scale); }
+document.getElementById("zin").onclick = () => setScale(scale * 1.2);
+document.getElementById("zout").onclick = () => setScale(scale / 1.2);
+document.getElementById("zfit").onclick = () => setScale(wrap.clientWidth / M.L.W);
+document.querySelectorAll(".chip[data-f]").forEach(b => b.addEventListener("click", () => { const f = b.dataset.f; filt[f] = !filt[f]; b.setAttribute("aria-pressed", String(filt[f])); draw(); }));
+let dr = null;
+wrap.addEventListener("pointerdown", e => { if (e.target.closest(".node,.rnode")) return; dr = {x: e.clientX, y: e.clientY, l: wrap.scrollLeft, t: wrap.scrollTop}; wrap.classList.add("drag"); });
+addEventListener("pointermove", e => { if (!dr) return; wrap.scrollLeft = dr.l - (e.clientX - dr.x); wrap.scrollTop = dr.t - (e.clientY - dr.y); });
+addEventListener("pointerup", () => { dr = null; wrap.classList.remove("drag"); });
+function applySearch() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  svg.querySelectorAll(".node").forEach(n => {
+    const it = M.byId[n.dataset.id];
+    const hit = !q || (it.id + " " + it.short + " " + it.text + " " + it.notes.join(" ")).toLowerCase().includes(q);
+    n.style.opacity = hit ? "" : ".15";
+  });
+}
+document.getElementById("q").addEventListener("input", applySearch);
+
+async function live() {
+  const raw = p => fetch(`https://raw.githubusercontent.com/${REPO}/main/${p}?t=${Date.now()}`, {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+  try {
+    const [roadmap, deps] = await Promise.all([raw("ROADMAP.md"), raw("docs/DEPENDENCIES.md")]);
+    const next = {...src, roadmap, deps, live: true, at: new Date().toLocaleString([], {dateStyle: "medium", timeStyle: "short"})};
+    try {
+      const runs = await fetch(`https://api.github.com/repos/${REPO}/actions/runs?per_page=1&branch=main`).then(r => r.json());
+      const r0 = runs.workflow_runs[0]; next.ci = {status: r0.status, conclusion: r0.conclusion, sha: r0.head_sha, title: r0.display_title};
+      const tree = await fetch(`https://api.github.com/repos/${REPO}/git/trees/${r0.head_sha}?recursive=1`).then(r => r.json());
+      const files = tree.tree.map(x => x.path).filter(p => /^EntropyLean\/[^/]+\.lean$/.test(p));
+      const texts = await Promise.all(files.map(f => fetch(`https://raw.githubusercontent.com/${REPO}/${r0.head_sha}/${f}`).then(r => r.text())));
+      next.sorry = texts.reduce((n, t) => n + (t.replace(/\/-[\s\S]*?-\//g, "").replace(/--.*$/gm, "").match(/\bsorry\b/g) || []).length, 0);
+    } catch (e) { /* keep snapshot CI and sorry count */ }
+    src = next; render();
+  } catch (e) { renderSrc(); }
+}
+render();
+live();
+</script>
+
+</body>
+</html>
