@@ -82,6 +82,17 @@ and no hypotheses beyond the paper's.
       `condMutualInfo_nonneg` (`EntropyLean/CondInformation.lean`).
 - [ ] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;
       equation (14): `0 ≤ e(𝒫) ≤ h(𝒫)` (`meanInteraction_nonneg`, `meanInteraction_le`).
+      Split by the hourly task 2026-11-13 (`EntropyLean/Interaction.lean`):
+  - [ ] B3a. Joint law `prodLaw P Q` with marginals `P`, `Q` and sum law `conv P Q`;
+        `entropyBits_conv_le : H(P * Q) ≤ H(P) + H(Q)`, `interaction_nonneg`,
+        `WeightedFamily.meanInteraction_nonneg`.
+    - Written by the hourly task 2026-11-13 (uncompiled at push): `prodLaw`, `prodLaw_map_fst`,
+      `prodLaw_map_snd`, `prodLaw_map_add`, `entropyBits_conv_le`, `interaction_nonneg`,
+      `WeightedFamily.meanInteraction_nonneg`.
+  - [ ] B3b. `H(A + B) ≥ H(B)` for independent `A`, `B` in a finite additive group
+        (`entropyBits_le_conv_right`, `entropyBits_le_conv_left`), hence `interaction_le_left`,
+        `interaction_le_right`.
+  - [ ] B3c. `WeightedFamily.meanInteraction_le : e(𝒫) ≤ h(𝒫)` from B3b.
 - [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
 - [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
 - [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
