@@ -4,9 +4,6 @@ Ordered work list for formalizing arXiv:2610.38525. Items are sized for one chan
 (roughly under 120 new Lean lines) and name their file and theorem names. Take the first
 unchecked item; tick it (`- [x]`) only after CI shows it compiled. The dependency chart in
 [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) shows how the items connect.
-[docs/roadmap.html](docs/roadmap.html) is an interactive map of this file (open it in a browser; it reads
-this file live from main). [docs/PARALLEL_EFFORTS.md](docs/PARALLEL_EFFORTS.md) records two independent
-Grok attempts at the same formalization and how they compare with this repository.
 
 Markers: `- [ ]` open, `- [x]` done and compiled, `- [-]` deliberately skipped (with a reason).
 
@@ -35,13 +32,16 @@ and no hypotheses beyond the paper's.
   - Written by the hourly task 2026-11-13 (uncompiled at push): `negMulLogb_nonneg`,
     `pmf_toReal_le_one`, `entropyBits_term_nonneg`, `entropyBits_nonneg`, `entropyBits_nonneg'`
     (`EntropyLean/EntropyFacts.lean`).
-- [ ] A2. `entropyBits_pure`: `entropyBits (PMF.pure a) = 0`; `entropyBits_le_log_card`:
+- [x] A2. `entropyBits_pure`: `entropyBits (PMF.pure a) = 0`; `entropyBits_le_log_card`:
       `entropyBits P ≤ logb 2 (Fintype.card α)`.
   - Written by the hourly task 2026-11-13 (uncompiled at push): `entropyBits_pure`,
     `neg_mul_log_le_gibbs`, `pmf_sum_toReal`, `entropyBits_le_log_card`
     (`EntropyLean/EntropyFacts.lean`).
 - [ ] A3. `entropyBits_map_le`: `H(f ∘ X) ≤ H(X)` for `PMF.map f` on finite types (data
       processing for a function); `entropyBits_map_injective`: equality for injective `f`.
+  - Written by the hourly task 2026-11-13 (uncompiled at push): `neg_mul_logb_sum_le`,
+    `pmf_map_toReal`, `entropyBits_map_le`, `entropyBits_map_injective`
+    (`EntropyLean/EntropyFacts.lean`).
 - [ ] A4. `conv_map_hom`: for an additive map `q`, `(conv P Q).map q = conv (P.map q) (Q.map q)`
       (quotient commutes with convolution, used in Lemma 4.1).
 - [ ] A5. `WeightedFamily.quotient_quotient`: quotienting by `G`, then by `W ≤ V ⧸ G`, equals
