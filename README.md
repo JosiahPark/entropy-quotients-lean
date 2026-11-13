@@ -7,7 +7,12 @@ Lean 4 / Mathlib formalization work for
 
 **Status: research scaffold, not a verified proof.** The main results are stated in Lean with
 `sorry`; only definitions and elementary identities are proved. GitHub Actions compiles the
-project with Lean 4.35.0 and Mathlib v4.35.0 on every push (see the Actions tab).
+project with Lean 4.35.0 and Mathlib v4.35.0 on every push (see the Actions tab); the library
+first compiled at commit `9130247`.
+
+- [ROADMAP.md](ROADMAP.md): the ordered work list.
+- [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md): chart of how the paper's results depend on each
+  other, coloured by Lean status (GitHub renders it as a diagram).
 
 ## Layout
 
@@ -42,8 +47,6 @@ python3 scripts/audit_sorries.py
 
 ## Next proof work
 
-1. Nonnegativity of entropy and `0 ≤ s(P,Q) ≤ min(H(P), H(Q))` (eq. (9)), then data processing for quotients.
-2. Lemma 9.1, by minimizing `h(q_G 𝒫) + λ dim G` over the finite lattice of subspaces.
-3. The Bernoulli expansions and Proposition 9.3.
-4. Lemma 2.1 (supermodularity of `F_P`), posterior families (Lemma 2.2), Lemma 4.1.
-5. Theorem 8.2 needs the entropic Marton theorem, which is not in Mathlib.
+See [ROADMAP.md](ROADMAP.md). The first items are entropy nonnegativity and data processing
+(section A), then the conditional reduction of Theorem 1.1 to Theorem 8.2 (item C2) and the
+iteration arithmetic of Theorem 8.2 (item D1).
