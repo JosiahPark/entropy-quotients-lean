@@ -12,8 +12,6 @@ not proved (both are `sorry`).
 
 namespace EntropyLean.FeatureMap
 
-open scoped RealInnerProductSpace
-
 noncomputable section
 
 variable {d : ℕ} [NeZero d]
@@ -27,7 +25,7 @@ def symFeatureMap (m : ℕ) :
 /-- The polynomial-kernel representation remains an open proof obligation. -/
 theorem inner_power_eq_feature_inner (m : ℕ)
     (x y : EuclideanSpace ℝ (Fin d)) :
-    ⟪x, y⟫_ℝ ^ m = ⟪symFeatureMap m x, symFeatureMap m y⟫_ℝ := by
+    (@inner ℝ _ _ x y) ^ m = @inner ℝ _ _ (symFeatureMap m x) (symFeatureMap m y) := by
   sorry
 
 end

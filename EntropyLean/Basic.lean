@@ -31,9 +31,7 @@ noncomputable def entropyBits {α : Type*} (P : PMF α) : ℝ :=
 theorem entropyBits_eq_sum {α : Type*} [Fintype α] (P : PMF α) :
     entropyBits P = ∑ a, -(P a).toReal * Real.logb 2 (P a).toReal := by
   unfold entropyBits
-  first
-    | exact tsum_fintype _
-    | simp [tsum_fintype]
+  exact tsum_fintype _
 
 /-- Law of `A + B` for independent `A ∼ P`, `B ∼ Q`. -/
 noncomputable def conv {V : Type*} [Add V] (P Q : PMF V) : PMF V :=

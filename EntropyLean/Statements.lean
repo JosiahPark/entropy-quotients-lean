@@ -93,9 +93,7 @@ theorem entropy_le_of_defect_le (ε : ℝ) (hε : 0 < ε) (H D : ℝ)
   have h1 : 0 < 1 + ε := by linarith
   have hne : (1 + ε) ≠ 0 := ne_of_gt h1
   have h2 : ε / (1 + ε) * H * (1 + ε) = ε * H := by
-    first
-      | (field_simp; done)
-      | (field_simp; ring)
+    field_simp
   have h3 := mul_le_mul_of_nonneg_right h h1.le
   nlinarith [h2, h3]
 

@@ -40,10 +40,6 @@ theorem bernoulli_parameter_mem_Ioo (c : ℝ) (hc : 0 < c) :
   have hε' : (0 : ℝ) < ε := Set.mem_Ioi.mp hε
   have hx : -c / ε < 0 := div_neg_of_neg_of_pos (by linarith) hε'
   refine ⟨by positivity, ?_⟩
-  first
-    | exact Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) hx
-    | calc (2 : ℝ) ^ (-c / ε) < (2 : ℝ) ^ (0 : ℝ) :=
-            Real.rpow_lt_rpow_of_exponent_lt (by norm_num) hx
-        _ = 1 := Real.rpow_zero 2
+  exact Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) hx
 
 end EntropyLean
