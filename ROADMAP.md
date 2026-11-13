@@ -4,6 +4,9 @@ Ordered work list for formalizing arXiv:2610.38525. Items are sized for one chan
 (roughly under 120 new Lean lines) and name their file and theorem names. Take the first
 unchecked item; tick it (`- [x]`) only after CI shows it compiled. The dependency chart in
 [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) shows how the items connect.
+[docs/roadmap.html](docs/roadmap.html) is an interactive map of this file (open it in a browser; it reads
+this file live from main). [docs/PARALLEL_EFFORTS.md](docs/PARALLEL_EFFORTS.md) records two independent
+Grok attempts at the same formalization and how they compare with this repository.
 
 Markers: `- [ ]` open, `- [x]` done and compiled, `- [-]` deliberately skipped (with a reason).
 
