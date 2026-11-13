@@ -29,6 +29,9 @@ and no hypotheses beyond the paper's.
 
 - [ ] A1. `negMulLogb_nonneg`: `0 ≤ -p * logb 2 p` for `0 ≤ p ≤ 1`; `entropyBits_nonneg` for a
       law on a finite type.
+  - Written by the hourly task 2026-11-13 (uncompiled at push): `negMulLogb_nonneg`,
+    `pmf_toReal_le_one`, `entropyBits_term_nonneg`, `entropyBits_nonneg`, `entropyBits_nonneg'`
+    (`EntropyLean/EntropyFacts.lean`).
 - [ ] A2. `entropyBits_pure`: `entropyBits (PMF.pure a) = 0`; `entropyBits_le_log_card`:
       `entropyBits P ≤ logb 2 (Fintype.card α)`.
 - [ ] A3. `entropyBits_map_le`: `H(f ∘ X) ≤ H(X)` for `PMF.map f` on finite types (data
