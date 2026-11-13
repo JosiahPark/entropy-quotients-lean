@@ -29,7 +29,7 @@ flowchart TD
   E9["(9): 0 ≤ s(P,Q) ≤ min(H(P),H(Q));<br/>(14): 0 ≤ e(𝒫) ≤ h(𝒫)"]:::missing
   DP["Data processing: D(q_G X) ≤ D(X)"]:::missing
   E15["(15): h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)"]:::missing
-  QC["Quotient commutes with convolution"]:::missing
+  QC["Quotient commutes with convolution<br/>conv_map_mkQ"]:::proved
   L21["Lemma 2.1: F_P supermodular"]:::missing
   L22["Lemma 2.2: posterior closure"]:::missing
 
