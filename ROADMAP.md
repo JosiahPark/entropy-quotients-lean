@@ -103,7 +103,34 @@ and no hypotheses beyond the paper's.
 - [ ] F1. Statement of Corollary 9.4 and its proof from Theorem 1.1 (as a hypothesis until
       Theorem 1.1 is proved).
 
+## G. Tracking and improving the constant 320
+
+The exponent `2^(320(1+ε)/ε)` in Theorem 1.1 comes from the iteration arithmetic (42)–(43)
+(item D1) and, through it, from the constant 6 in the entropic Marton bound (35) and the constants
+12, 13 in (36). These items make that dependence explicit in Lean and then look for slack. They
+come after A–F on purpose: none of them blocks Theorem 1.1. No item may claim a constant below
+what its proof actually gives.
+
+- [ ] G1. Parametric iteration arithmetic (`EntropyLean/RigidityArith.lean`): redo D1 with the
+      Marton constant `C` and the constants of (36) as real parameters, deriving
+      `d * logb 2 (1/λ) < K` for an explicit expression `K` in them
+      (`rigidity_arith_param`), and recover D1 by `K ≤ 320` at `C = 6`
+      (`rigidity_arith_param_six`).
+- [ ] G2. Constant as a field: give D7's `MartonInput` its constant as a field `C` (with (36)
+      in terms of `C`), and restate the conditional Theorem 1.1 of C2 with exponent
+      `K(C) * (1+ε)/ε` (`exponential_entropy_quotient_of_rigidity_const`), so that any
+      better Marton constant gives a better exponent with no further work.
+- [ ] G3. Slack in the paper's argument: find the smallest constant `c₀` that the arithmetic of
+      (42)–(43) gives at `C = 6` (prove `K(6) ≤ c₀`), and if `c₀ < 320` state Theorem 1.1
+      with `c₀`. Record in this file where the slack came from, so Josiah can check it against
+      the paper.
+- [ ] G4. Constant from the PFR backend: only if B1 chooses PFR, check which Marton constant
+      that project proves and instantiate G2 with it.
+
 ## Not attempted here
+
+- Improving the constant beyond what the paper's argument gives (a new proof of Theorem 8.2 with
+  a better iteration); item G only tracks and tightens the existing argument.
 
 - A proof of the entropic Marton theorem itself (Gowers–Green–Manners–Tao); it is the paper's
   one external input.
