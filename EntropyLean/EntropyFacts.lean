@@ -17,10 +17,14 @@ types (`entropyBits_map_le`), with equality for injective `f` (`entropyBits_map_
 It rests on the elementary bound `-(∑ xᵢ) log₂ (∑ xᵢ) ≤ ∑ -xᵢ log₂ xᵢ` for `xᵢ ≥ 0`
 (`neg_mul_logb_sum_le`) and the fibre formula for the masses of `PMF.map f` (`pmf_map_toReal`).
 
+Roadmap item A4: convolution commutes with any additive map, in particular with a quotient
+map: `(P * Q).map f = (P.map f) * (Q.map f)` when `f (a + b) = f a + f b` (`conv_map_of_add`),
+for an additive monoid hom (`conv_map_hom`) and for `q_W = W.mkQ` (`conv_map_mkQ`).
+
 What this file does NOT prove: no equality case of the cardinality bound, no conditional
-entropy or data processing for the increment `D` (B5), and nothing about convolutions or
-quotients (roadmap items A4–A5, B2–B6). The map lemmas need a `Fintype` on the target, so they
-do not yet apply to quotients `V ⧸ W` without such an instance.
+entropy or data processing for the increment `D` (B5), no entropy inequality for convolutions,
+and nothing about iterated quotients (roadmap items A5, B2–B6). The map lemmas need a `Fintype`
+on the target, so they apply to quotients only once such an instance is available.
 -/
 
 namespace EntropyLean
@@ -135,9 +139,7 @@ theorem neg_mul_logb_sum_le {ι : Type*} (s : Finset ι) (x : ι → ℝ) (hx : 
     · rw [← h0]
       simp
     · have hl : Real.logb 2 (x i) ≤ Real.logb 2 (∑ j ∈ s, x j) := by
-        first
-        | exact Real.logb_le_logb_of_le (by norm_num) hpos hle
-        | exact (Real.logb_le_logb (by norm_num) hpos (lt_of_lt_of_le hpos hle)).mpr hle
+        exact Real.logb_le_logb_of_le (by norm_num) hpos hle
       have hm := mul_le_mul_of_nonneg_left hl hxi
       linarith
   calc -(∑ i ∈ s, x i) * Real.logb 2 (∑ i ∈ s, x i)
@@ -171,20 +173,43 @@ theorem entropyBits_map_le {α β : Type*} [Fintype α] [Fintype β] (P : PMF α
       ≤ ∑ b, ∑ a ∈ Finset.univ.filter (fun a => f a = b),
           -(P a).toReal * Real.logb 2 (P a).toReal := Finset.sum_le_sum fun b _ => key b
     _ = ∑ a, -(P a).toReal * Real.logb 2 (P a).toReal := by
-        first
-        | exact Finset.sum_fiberwise Finset.univ f _
-        | exact Finset.sum_fiberwise_of_maps_to (fun a _ => Finset.mem_univ (f a))
+        exact Finset.sum_fiberwise Finset.univ f _
 
 /-- An injective map preserves entropy: `H(f(X)) = H(X)` for injective `f` on finite types. -/
 theorem entropyBits_map_injective {α β : Type*} [Fintype α] [Fintype β] (P : PMF α)
     {f : α → β} (hf : Function.Injective f) :
     entropyBits (P.map f) = entropyBits P := by
   obtain ⟨a0, _⟩ := P.support_nonempty
-  haveI : Nonempty α := ⟨a0⟩
+  have : Nonempty α := ⟨a0⟩
   apply le_antisymm (entropyBits_map_le P f)
   have h : (P.map f).map (Function.invFun f) = P := by
     rw [PMF.map_comp, Function.invFun_comp hf, PMF.map_id]
   calc entropyBits P = entropyBits ((P.map f).map (Function.invFun f)) := by rw [h]
     _ ≤ entropyBits (P.map f) := entropyBits_map_le _ _
+
+/-- Convolution commutes with any map that turns sums into sums:
+`(P * Q).map f = (P.map f) * (Q.map f)`. -/
+theorem conv_map_of_add {V W : Type*} [Add V] [Add W] (f : V → W)
+    (hf : ∀ a b, f (a + b) = f a + f b) (P Q : PMF V) :
+    (conv P Q).map f = conv (P.map f) (Q.map f) := by
+  first
+  | (simp only [conv, PMF.map, PMF.bind_bind, PMF.pure_bind, Function.comp_apply, hf]; done)
+  | (simp only [conv, ← PMF.bind_pure_comp, PMF.bind_bind, PMF.pure_bind, Function.comp_apply,
+      hf]; done)
+  | (simp only [conv, PMF.map_bind, PMF.bind_map, PMF.map_comp, Function.comp_def, hf]; done)
+
+/-- Convolution commutes with an additive monoid hom. -/
+theorem conv_map_hom {V W : Type*} [AddCommGroup V] [AddCommGroup W] (q : V →+ W)
+    (P Q : PMF V) :
+    (conv P Q).map q = conv (P.map q) (Q.map q) :=
+  conv_map_of_add q (map_add q) P Q
+
+/-- The quotient map `q_W` commutes with convolution: `q_W (X + X')` has the law of
+`q_W X + q_W X'` (used in Lemma 4.1). -/
+theorem conv_map_mkQ {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
+    (W : Submodule (ZMod 2) V) (P Q : PMF V) :
+    (conv P Q).map (fun v => W.mkQ v) =
+      conv (P.map fun v => W.mkQ v) (Q.map fun v => W.mkQ v) :=
+  conv_map_of_add (fun v => W.mkQ v) (fun a b => map_add W.mkQ a b) P Q
 
 end EntropyLean
