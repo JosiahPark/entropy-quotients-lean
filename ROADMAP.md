@@ -49,7 +49,7 @@ and no hypotheses beyond the paper's.
       (quotient commutes with convolution, used in Lemma 4.1).
   - Written by the hourly task 2026-11-13 (uncompiled at push): `conv_map_of_add`,
     `conv_map_hom`, `conv_map_mkQ` (`EntropyLean/EntropyFacts.lean`).
-- [ ] A5. `WeightedFamily.quotient_quotient`: quotienting by `G`, then by `W ≤ V ⧸ G`, equals
+- [x] A5. `WeightedFamily.quotient_quotient`: quotienting by `G`, then by `W ≤ V ⧸ G`, equals
       quotienting by the inverse image of `W` (entropy-level statement), used in Lemma 9.1.
   - Written by the hourly task 2026-11-13 (uncompiled at push): `pmf_map_apply_injective`,
     `pmf_map_apply_of_not_mem_range`, `entropyBits_map_of_injective`,
@@ -65,7 +65,17 @@ and no hypotheses beyond the paper's.
       toolchain against Lean 4.35.0 and whether its constant matches the 6 in (35). If (ii),
       prove `entropyBits` agrees with PFR's entropy divided by `log 2`.
 - [ ] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
-      `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`).
+      `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
+  - [x] B2a. `condEntropy`, `mutualInfo`, chain rule `entropyBits_chain`, `condEntropy_nonneg`,
+        `mutualInfo_le_left`, `mutualInfo_le_right`, `mutualInfo_swap`.
+    - Written by the hourly task 2026-11-13 (uncompiled at push; CI green at 2e3eabd).
+  - [ ] B2b. Subadditivity `entropyBits_subadditive : H(A,B) ≤ H(A) + H(B)`, hence
+        `mutualInfo_nonneg` and `condEntropy_le`.
+    - Written by the hourly task 2026-11-13 (uncompiled at push): `neg_mul_log_le_cross`,
+      `pmf_toReal_le_map`, `sum_toReal_mul_comp`, `entropyBits_eq_div_log`,
+      `entropyNats_subadditive`, `entropyBits_subadditive`, `mutualInfo_nonneg`, `condEntropy_le`.
+  - [ ] B2c. Conditional mutual information `condMutualInfo` for a law on `α × β × γ` and
+        `condMutualInfo_nonneg : I(A;B|C) ≥ 0` (conditional subadditivity).
 - [ ] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;
       equation (14): `0 ≤ e(𝒫) ≤ h(𝒫)` (`meanInteraction_nonneg`, `meanInteraction_le`).
 - [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
