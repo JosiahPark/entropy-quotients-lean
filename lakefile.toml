@@ -9,6 +9,7 @@ rev = "v4.35.0"
 
 [[lean_lib]]
 name = "EntropyLean"
+globs = ["EntropyLean", "EntropyLean.+"]
 
 [[lean_exe]]
 name = "entropy_lean"
