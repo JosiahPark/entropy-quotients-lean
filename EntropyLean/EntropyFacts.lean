@@ -67,16 +67,11 @@ theorem neg_mul_log_le_gibbs {p c : ℝ} (hp : 0 ≤ p) (hc : 0 < c) :
     simp only [neg_zero, zero_mul, zero_add, sub_zero]
     exact h1.le
   · have hx : (0 : ℝ) < 1 / (c * p) := one_div_pos.mpr (mul_pos hc h)
-    have key : Real.log (1 / (c * p)) ≤ 1 / (c * p) - 1 := by
-      first
-      | exact Real.log_le_sub_one_of_pos hx
-      | linarith [Real.add_one_le_exp (Real.log (1 / (c * p))), Real.exp_log hx]
+    have key : Real.log (1 / (c * p)) ≤ 1 / (c * p) - 1 := Real.log_le_sub_one_of_pos hx
     have e : Real.log (1 / (c * p)) = -(Real.log c + Real.log p) := by
       rw [one_div, Real.log_inv, Real.log_mul hc.ne' h.ne']
     have h2 : p * (1 / (c * p)) = 1 / c := by
-      first
-      | rw [mul_one_div, mul_comm c p, div_mul_eq_div_div, div_self h.ne']
-      | field_simp
+      rw [mul_one_div, mul_comm c p, div_mul_eq_div_div, div_self h.ne']
     have h4 : p * (1 / (c * p) - 1) = 1 / c - p := by
       rw [mul_sub, h2, mul_one]
     have h3 := mul_le_mul_of_nonneg_left key h.le
@@ -87,9 +82,9 @@ theorem neg_mul_log_le_gibbs {p c : ℝ} (hp : 0 ≤ p) (hc : 0 < c) :
 
 /-- The masses of a law on a finite type sum to one (as reals). -/
 theorem pmf_sum_toReal {α : Type*} [Fintype α] (P : PMF α) : ∑ a, (P a).toReal = 1 := by
-  have h1 : ∑ a, P a = 1 := by
-    rw [← tsum_fintype]
-    exact P.tsum_coe
+  have h1 : ∑ a, P a = 1 :=
+    calc ∑ a, P a = ∑' a, P a := (tsum_fintype _).symm
+      _ = 1 := P.tsum_coe
   rw [← ENNReal.toReal_sum (fun a _ => P.apply_ne_top a), h1]
   simp
 
@@ -119,8 +114,6 @@ theorem entropyBits_le_log_card {α : Type*} [Fintype α] (P : PMF α) :
     rw [← Real.log_div_log]
     ring
   rw [entropyBits_eq_sum, e, ← Real.log_div_log]
-  first
-  | exact div_le_div_of_nonneg_right hS hl.le
-  | exact (div_le_div_iff_of_pos_right hl).mpr hS
+  exact div_le_div_of_nonneg_right hS hl.le
 
 end EntropyLean
