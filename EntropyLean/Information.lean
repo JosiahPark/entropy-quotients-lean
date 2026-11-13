@@ -193,7 +193,7 @@ theorem entropyNats_subadditive [Fintype α] [Fintype β] (P : PMF (α × β)) :
 theorem entropyBits_subadditive [Fintype α] [Fintype β] (P : PMF (α × β)) :
     entropyBits P ≤ entropyBits (P.map Prod.fst) + entropyBits (P.map Prod.snd) := by
   rw [entropyBits_eq_div_log P, entropyBits_eq_div_log (P.map Prod.fst),
-    entropyBits_eq_div_log (P.map Prod.snd), div_add_div_same]
+    entropyBits_eq_div_log (P.map Prod.snd), ← add_div]
   exact div_le_div_of_nonneg_right (entropyNats_subadditive P) (Real.log_pos (by norm_num)).le
 
 /-- `I(A ; B) ≥ 0` on finite types. -/
