@@ -51,7 +51,7 @@ flowchart TD
   T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity"]:::stated
 
   %% Section 9
-  L91["Lemma 9.1: variational sparsification<br/>variational_sparsification"]:::stated
+  L91["Lemma 9.1: variational sparsification<br/>variational_sparsification"]:::proved
   T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient"]:::stated
   C92["Corollary 9.2: two-input almost-additivity"]:::missing
   BEXP["Bernoulli expansions of h₂(p), 2h₂(p) − h₂(2p(1−p))"]:::missing
