@@ -1,5 +1,6 @@
 import EntropyLean.Families
 import EntropyLean.Variational
+import EntropyLean.RatioSparsification
 
 /-!
 # Main results of arXiv:2610.38525: statements (open) and the elementary steps (proved)
@@ -7,9 +8,11 @@ import EntropyLean.Variational
 Every `sorry` below is an open proof obligation, **not** a certified theorem. The statements are
 checked against the paper (v1, 28 Oct 2026) but have not been independently reviewed.
 
-Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1,
+Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2,
 Proposition 9.3. Lemma 9.1 (`variational_sparsification`) is proved from
-`WeightedFamily.variational_sparsification_proof` in `EntropyLean/Variational.lean`.
+`WeightedFamily.variational_sparsification_proof` in `EntropyLean/Variational.lean`; Lemma 4.1
+(`ratio_preserving_sparsification`) from `WeightedFamily.ratio_preserving_sparsification_proof`
+in `EntropyLean/RatioSparsification.lean`.
 
 Proved here: `entropy_le_of_defect_le` and `entropy_le_increment_of_defect_le`, the algebraic step
 in the proof of Theorem 1.1 turning `E(Z) ≤ θ H(Z)` with `θ = ε/(1+ε)` into
@@ -65,8 +68,8 @@ theorem ratio_preserving_sparsification
       P.meanInteraction / P.meanEntropy ≤
         (P.quotient G).meanInteraction / (P.quotient G).meanEntropy ∧
       (P.quotient G).IsSparse (2 * lam) ∧
-      (P.quotient G).convFamily.IsSparse (4 * lam) := by
-  sorry
+      (P.quotient G).convFamily.IsSparse (4 * lam) :=
+  WeightedFamily.ratio_preserving_sparsification_proof lam P hsparse hpos
 
 /-- **Lemma 9.1** (variational sparsification), equation (44). -/
 theorem variational_sparsification

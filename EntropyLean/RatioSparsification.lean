@@ -20,10 +20,18 @@ Proved here:
 * `WeightedFamily.ratioObjective_min_sparse`: for `d ≥ 0`, at a minimizer `q_G 𝒫` is
   `2λ`-sparse and `q_G 𝒫 * q_G 𝒫` is `4λ`-sparse (items 2 and 3 of Lemma 4.1).
 
-What this file does NOT prove: items 1 (ratio `e/h` does not decrease, equation (25)) and the
-positivity `h(q_G 𝒫) > 0` of Lemma 4.1, nor Lemma 4.1 itself (`ratio_preserving_sparsification`
-in `EntropyLean/Statements.lean` remains an open obligation); those are roadmap item C4b. Nothing here
-concerns Theorem 1.1, 1.2 or 8.2.
+Roadmap item C4b (second half of Lemma 4.1):
+* `WeightedFamily.ratioObjective_eq`: by (15) on `q_G 𝒫`,
+  `Φ(G) = (4 + d) h(q_G 𝒫) - e(q_G 𝒫) + 4λ dim G`.
+* `WeightedFamily.ratioObjective_bot_of`: `Φ(0) = 4 h(𝒫)` when `d h(𝒫) = e(𝒫)`.
+* `WeightedFamily.ratioObjective_min_ratio`: equation (25), `d h(q_G 𝒫) ≤ e(q_G 𝒫)` at a
+  minimizer, using the `λ`-sparsity of `𝒫` at `G`.
+* `WeightedFamily.ratioObjective_min_pos`: `h(q_G 𝒫) > 0` at a minimizer of least dimension.
+* `WeightedFamily.ratio_preserving_sparsification_proof`: **Lemma 4.1**, with `d = e(𝒫)/h(𝒫)`;
+  it discharges `ratio_preserving_sparsification` in `EntropyLean/Statements.lean`.
+
+What this file does NOT prove: nothing about Theorem 1.1, 1.2 or 8.2 beyond supplying Lemma 4.1,
+one of the inputs of Lemma 8.1 (which is not formalized).
 -/
 
 namespace EntropyLean
@@ -128,6 +136,106 @@ theorem ratioObjective_min_sparse [Fintype V] (P : WeightedFamily V) (lam d : �
     have h := P.ratioObjective_min_loss lam d G hG W
     have hP := (P.quotient G).averagedLoss_nonneg W
     nlinarith [mul_nonneg hd hP]
+
+/-- By (15) on `q_G 𝒫`: `Φ(G) = (4 + d) h(q_G 𝒫) - e(q_G 𝒫) + 4λ dim G`. -/
+theorem ratioObjective_eq (P : WeightedFamily V) (lam d : ℝ) (G : Submodule (ZMod 2) V) :
+    P.ratioObjective lam d G = (4 + d) * (P.quotient G).meanEntropy -
+      (P.quotient G).meanInteraction + 4 * lam * (Module.finrank (ZMod 2) G : ℝ) := by
+  unfold ratioObjective
+  rw [← quotient_convFamily_meanEntropy, meanEntropy_convFamily]
+  ring
+
+/-- `Φ(0) = 4 h(𝒫)` when `d h(𝒫) = e(𝒫)`. -/
+theorem ratioObjective_bot_of (P : WeightedFamily V) (lam d : ℝ)
+    (hd : d * P.meanEntropy = P.meanInteraction) :
+    P.ratioObjective lam d ⊥ = 4 * P.meanEntropy := by
+  rw [ratioObjective_bot, meanEntropy_convFamily]
+  linear_combination hd
+
+/-- Equation (25): if `d h(𝒫) = e(𝒫)` and `𝒫` is `λ`-sparse, then at a global minimizer `G` of
+`Φ`, `d h(q_G 𝒫) ≤ e(q_G 𝒫)` (compare `G` with `0`, and use `F_𝒫(G) ≤ λ dim G`). -/
+theorem ratioObjective_min_ratio (P : WeightedFamily V) (lam d : ℝ)
+    (hd : d * P.meanEntropy = P.meanInteraction) (hsparse : P.IsSparse lam)
+    (G : Submodule (ZMod 2) V)
+    (hG : ∀ G' : Submodule (ZMod 2) V, P.ratioObjective lam d G ≤ P.ratioObjective lam d G') :
+    d * (P.quotient G).meanEntropy ≤ (P.quotient G).meanInteraction := by
+  have h0 := hG ⊥
+  rw [ratioObjective_bot_of P lam d hd, ratioObjective_eq] at h0
+  have hs := hsparse G
+  have hq := P.meanEntropy_quotient G
+  nlinarith
+
+/-- Positivity in Lemma 4.1: at a global minimizer `G` of `Φ` of least dimension among the
+global minimizers, `h(q_G 𝒫) > 0` (if `h(q_G 𝒫) = 0` then `Φ(0) ≤ Φ(G)`, so `dim G = 0`, and
+sparsity forces `h(𝒫) = 0`). -/
+theorem ratioObjective_min_pos [Fintype V] (P : WeightedFamily V) (lam d : ℝ)
+    (hd : d * P.meanEntropy = P.meanInteraction) (hsparse : P.IsSparse lam)
+    (hpos : 0 < P.meanEntropy) (G : Submodule (ZMod 2) V)
+    (hG : ∀ G' : Submodule (ZMod 2) V, P.ratioObjective lam d G ≤ P.ratioObjective lam d G')
+    (hmin : ∀ G' : Submodule (ZMod 2) V, P.ratioObjective lam d G' ≤ P.ratioObjective lam d G →
+      Module.finrank (ZMod 2) G ≤ Module.finrank (ZMod 2) G') :
+    0 < (P.quotient G).meanEntropy := by
+  haveI : Finite (V ⧸ G) := Finite.of_surjective _ (Submodule.mkQ_surjective G)
+  letI : Fintype (V ⧸ G) := Fintype.ofFinite _
+  by_contra hcon
+  have hnn := (P.quotient G).meanEntropy_nonneg
+  have h0 : (P.quotient G).meanEntropy = 0 := le_antisymm (not_lt.mp hcon) hnn
+  have he0 : 0 ≤ (P.quotient G).meanInteraction := (P.quotient G).meanInteraction_nonneg
+  have he1 : (P.quotient G).meanInteraction ≤ (P.quotient G).meanEntropy :=
+    (P.quotient G).meanInteraction_le
+  have hs := hsparse G
+  have hq := P.meanEntropy_quotient G
+  have hle : P.ratioObjective lam d ⊥ ≤ P.ratioObjective lam d G := by
+    rw [ratioObjective_bot_of P lam d hd, ratioObjective_eq, h0]
+    nlinarith
+  have hdim0 : (Module.finrank (ZMod 2) G : ℝ) ≤ 0 := by
+    have h1 : Module.finrank (ZMod 2) (⊥ : Submodule (ZMod 2) V) = 0 := by simp
+    have h2 := hmin ⊥ hle
+    rw [h1] at h2
+    exact_mod_cast h2
+  have hn : (Module.finrank (ZMod 2) G : ℝ) = 0 := le_antisymm hdim0 (Nat.cast_nonneg _)
+  rw [hn, mul_zero] at hs
+  linarith
+
+/-- **Lemma 4.1** (ratio-preserving sparsification): for `𝒫` `λ`-sparse with `h(𝒫) > 0`, a
+least-dimensional global minimizer `G` of `Φ` with `d = e(𝒫)/h(𝒫)` has `h(q_G 𝒫) > 0`,
+`e(q_G 𝒫)/h(q_G 𝒫) ≥ e(𝒫)/h(𝒫)`, `q_G 𝒫` `2λ`-sparse and `q_G 𝒫 * q_G 𝒫` `4λ`-sparse. -/
+theorem ratio_preserving_sparsification_proof [Fintype V] (lam : ℝ) (P : WeightedFamily V)
+    (hsparse : P.IsSparse lam) (hpos : 0 < P.meanEntropy) :
+    ∃ G : Submodule (ZMod 2) V,
+      0 < (P.quotient G).meanEntropy ∧
+      P.meanInteraction / P.meanEntropy ≤
+        (P.quotient G).meanInteraction / (P.quotient G).meanEntropy ∧
+      (P.quotient G).IsSparse (2 * lam) ∧
+      (P.quotient G).convFamily.IsSparse (4 * lam) := by
+  haveI : Finite (Submodule (ZMod 2) V) :=
+    Finite.of_injective (fun G : Submodule (ZMod 2) V => (G : Set V))
+      (fun _ _ h => SetLike.ext' h)
+  obtain ⟨d, hd_def⟩ : ∃ d : ℝ, d = P.meanInteraction / P.meanEntropy := ⟨_, rfl⟩
+  have hne : P.meanEntropy ≠ 0 := hpos.ne'
+  have hd : d * P.meanEntropy = P.meanInteraction := by
+    rw [hd_def]
+    field_simp
+  have hd0 : 0 ≤ d := by
+    rw [hd_def]
+    exact div_nonneg P.meanInteraction_nonneg hpos.le
+  obtain ⟨G0, hG0⟩ := Finite.exists_min (P.ratioObjective lam d)
+  obtain ⟨G, hGmem, hGmin⟩ := Set.exists_min_image
+    {G : Submodule (ZMod 2) V | ∀ G', P.ratioObjective lam d G ≤ P.ratioObjective lam d G'}
+    (fun G => Module.finrank (ZMod 2) G) (Set.toFinite _) ⟨G0, hG0⟩
+  have hG : ∀ G' : Submodule (ZMod 2) V,
+      P.ratioObjective lam d G ≤ P.ratioObjective lam d G' := hGmem
+  have hmin : ∀ G' : Submodule (ZMod 2) V,
+      P.ratioObjective lam d G' ≤ P.ratioObjective lam d G →
+        Module.finrank (ZMod 2) G ≤ Module.finrank (ZMod 2) G' :=
+    fun G' h' => hGmin G' (show ∀ G'' : Submodule (ZMod 2) V,
+      P.ratioObjective lam d G' ≤ P.ratioObjective lam d G'' from fun G'' => h'.trans (hG G''))
+  have hpos0 := ratioObjective_min_pos P lam d hd hsparse hpos G hG hmin
+  have hrat := ratioObjective_min_ratio P lam d hd hsparse G hG
+  obtain ⟨hs2, hs4⟩ := P.ratioObjective_min_sparse lam d hd0 G hG
+  refine ⟨G, hpos0, ?_, hs2, hs4⟩
+  rw [le_div_iff₀ hpos0, ← hd_def]
+  exact hrat
 
 end WeightedFamily
 end EntropyLean
