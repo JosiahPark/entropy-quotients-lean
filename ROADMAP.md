@@ -259,14 +259,23 @@ and no hypotheses beyond the paper's.
     - Written by Claude 2026-11-14 (uncompiled at push): `quotientLoss_mono`,
       `subspaceInteraction_step`, `WeightedFamily.averaged_density_step` (2a1d5f9). CI green at
       2a1d5f9 (checked in the same run).
-  - [ ] D5b. Inequality (28) `A ≤ h/N + λB(N − 1)/2` for every `N ≥ 1`. Avoid product measures over
+  - [x] D5b. Inequality (28) `A ≤ h/N + λB(N − 1)/2` for every `N ≥ 1`. Avoid product measures over
         sample sequences: for fixed `u` define recursively `Φ₀(S) = H(q_S Q_u)`,
         `Φ_{k+1}(S) = ∑_w b_w Φ_k(S ⊔ V(u, w))` and `D₀(S) = dim S`, `D_{k+1}(S) = ∑_w b_w D_k(S ⊔ V(u, w))`;
         prove `N A_u ≤ Φ₀(S) − Φ_N(S) + λ ∑_{k<N} D_k(S)` by induction on `N` generalising `S` (from
         D5a), `Φ_N ≥ 0` and `D_k(S) ≤ dim S + k B_u`; then take `S = 0` and average over `u`
         (`WeightedFamily.averaged_density_estimate`).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `finrank_sup_le_add`,
+      `sum_range_cast_mul_two`, `WeightedFamily.rowInteraction`, `densPhi`, `densDim`,
+      `densPhi_nonneg`, `densDim_le`, `densPhi_induction`, `WeightedFamily.averaged_density_estimate`
+      (e45ffe9). First push failed CI (missing `import EntropyLean.Variational` for
+      `quotientLoss_bot`); fixed in ca39b0e, CI green.
   - [ ] D5c. Inequality (29): `B ≤ 26h ⇒ A ≤ 14√λ h`, with `N = ⌈λ^{-1/2}⌉` for `0 < λ ≤ 1`,
         `A ≤ h` from (19) for `λ > 1`, and `h = 0` for `λ = 0` (`WeightedFamily.averaged_density_sqrt`).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `density_sqrt_arith`,
+      `WeightedFamily.averaged_density_sqrt`, `WeightedFamily.averaged_density_lemma` (Lemma 5.1,
+      (28) and (29)) (`EntropyLean/DensitySqrt.lean`, 066a13a). With `N = ⌈λ^{-1/2}⌉` for `λ > 0`
+      (no separate case `λ > 1` needed) and `N → ∞` for `λ = 0`.
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
