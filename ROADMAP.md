@@ -157,8 +157,15 @@ and no hypotheses beyond the paper's.
       is replaced by it. Proof: with `d = e/h`, `Φ(G) = (4+d)h(q_G 𝒫) − e(q_G 𝒫) + 4λ dim G` and
       `Φ(0) = 4h(𝒫)`; `λ`-sparsity of `𝒫` at `G` gives (25). CI green at 459e514 (checked in the
       same run); L41 marked proved in docs/DEPENDENCIES.md (b74c0ea).
-- [ ] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a
+- [x] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a
       hypothesis.
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `conv_comm_law`, `interaction_comm`,
+    `WeightedFamily.pair`, `WeightedFamily.meanEntropy_pair`, `WeightedFamily.meanInteraction_pair`,
+    `WeightedFamily.meanEntropy_pair_quotient`, `WeightedFamily.meanInteraction_pair_quotient`,
+    `two_input_almost_additivity_of_rigidity` (`EntropyLean/TwoInput.lean`, d8a3bdd): (45), (46), the
+    additive error `s(q_G U, q_G V) ≤ α(H(U) + H(V))` and both mixed-input bounds, with Theorem 8.2
+    as the hypothesis `hrig`. Corollary 9.2 itself stays open. CI green at d8a3bdd (checked in the
+    same run); linter clean-up in 86bf9ad; C92 marked stated in docs/DEPENDENCIES.md (cb95eeb).
 
 ## D. Rigidity core (Sections 2.3, 3, 5–8)
 
