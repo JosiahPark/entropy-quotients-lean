@@ -169,8 +169,15 @@ and no hypotheses beyond the paper's.
 
 ## D. Rigidity core (Sections 2.3, 3, 5–8)
 
-- [ ] D1. Iteration arithmetic of Theorem 8.2, pure real analysis: from (43) derive
+- [x] D1. Iteration arithmetic of Theorem 8.2, pure real analysis: from (43) derive
       `d * logb 2 (1/λ) < 320` for `0 < d ≤ 1` (`EntropyLean/RigidityArith.lean`).
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `inv_ratio_step` (42),
+    `neg_mul_log_le_one_sub`, `half_le_log_two`, `log_1600_lt`, `rigidity_arith_aux`,
+    `rigidity_iteration_bound` (`EntropyLean/RigidityArith.lean`, 2869a24). The hypothesis
+    `λ > (d²/1600)·4^(−⌈149/d⌉)` is written `d^2 / (1600 * 4 ^ ⌈149/d⌉₊) < λ`; the proof uses
+    `−d log d ≤ 1 − d` in place of `d log₂(1/d) ≤ 1/(e ln 2)` and still gives `< 311 + 2/ln 2`.
+    CI green at 2869a24 (checked in the same run); linter clean-up in 1a94cc0; ARITH marked
+    proved in docs/DEPENDENCIES.md (e12507d).
 - [ ] D2. Theorem 8.2 from Lemma 8.1: `weighted_family_rigidity_of_growth`, with Lemma 8.1 as an
       explicit hypothesis, using D1.
 - [ ] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
