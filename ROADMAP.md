@@ -99,10 +99,14 @@ and no hypotheses beyond the paper's.
   - [x] B3c. `WeightedFamily.meanInteraction_le : e(𝒫) ≤ h(𝒫)` from B3b.
     - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanInteraction_le`
       (`EntropyLean/Interaction.lean`, ef95c01). CI green.
-- [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
+- [x] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
   - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanEntropy_convFamily`
-    (`EntropyLean/Interaction.lean`, fe44eaa).
+    (`EntropyLean/Interaction.lean`, fe44eaa). CI green.
 - [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `incTriple`, `incTriple_injective`,
+    `pair_self_injective`, `prodLaw_map_left`, `entropyBits_sub_map_le_conv`,
+    `entropyIncrement_map_le`, `entropyIncrement_quotient_le`, `quotientLoss_le_conv`
+    (`EntropyLean/Increment.lean`, 27d39b9). Proof: `I(X+Y ; (fX, Y) | f(X+Y)) ≥ 0`.
 - [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
 
 ## C. Variational steps and the reduction of Theorem 1.1
