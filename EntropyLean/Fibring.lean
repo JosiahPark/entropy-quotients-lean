@@ -103,7 +103,8 @@ theorem fibreMutualInfo_eq [Fintype V] [Fintype T] (f : V →+ T) (P Q : PMF V) 
   have hinj : Function.Injective (fun y : V × (T × T) => (y.1, y.2, f y.1)) := by
     intro y z h
     have h' : (y.1, y.2, f y.1) = (z.1, z.2, f z.1) := h
-    exact Prod.ext (congrArg Prod.fst h') (congrArg (fun t : V × (T × T) × T => t.2.1) h')
+    obtain ⟨h1, h2⟩ := Prod.mk.inj h'
+    exact Prod.ext h1 (Prod.mk.inj h2).1
   have e1 : entropyBits (((prodLaw P Q).map (fibreTriple f)).map tripleAC) =
       entropyBits (conv P Q) := by
     rw [h1]
