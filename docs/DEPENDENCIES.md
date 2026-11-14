@@ -46,7 +46,7 @@ flowchart TD
 
   %% Section 8
   L81["Lemma 8.1: ratio growth"]:::missing
-  ARITH["Iteration arithmetic (42)–(43):<br/>d log₂(1/λ) < 320"]:::missing
+  ARITH["Iteration arithmetic (42)–(43):<br/>d log₂(1/λ) < 320<br/>rigidity_iteration_bound"]:::proved
   T82["Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity"]:::stated
   T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity"]:::stated
 
