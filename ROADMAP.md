@@ -80,7 +80,7 @@ and no hypotheses beyond the paper's.
     - Written by the hourly task 2026-11-13 (uncompiled at push): `tripleAC`, `tripleC`,
       `condMutualInfo`, `sum_fst_toReal`, `sum_cond_ratio_le_one`, `condMutualInfo_nats_nonneg`,
       `condMutualInfo_nonneg` (`EntropyLean/CondInformation.lean`).
-- [ ] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;
+- [x] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;
       equation (14): `0 ≤ e(𝒫) ≤ h(𝒫)` (`meanInteraction_nonneg`, `meanInteraction_le`).
       Split by the hourly task 2026-11-13 (`EntropyLean/Interaction.lean`):
   - [x] B3a. Joint law `prodLaw P Q` with marginals `P`, `Q` and sum law `conv P Q`;
@@ -96,10 +96,12 @@ and no hypotheses beyond the paper's.
       `entropyBits_prodLaw`, `fst_add_injective`, `snd_add_injective`, `entropyBits_le_conv_right`,
       `entropyBits_le_conv_left`, `interaction_le_left`, `interaction_le_right`.
       First push failed CI (`congrArg Prod.fst h` in `fst_add_injective`); fixed in 352b199, CI green.
-  - [ ] B3c. `WeightedFamily.meanInteraction_le : e(𝒫) ≤ h(𝒫)` from B3b.
+  - [x] B3c. `WeightedFamily.meanInteraction_le : e(𝒫) ≤ h(𝒫)` from B3b.
     - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanInteraction_le`
-      (`EntropyLean/Interaction.lean`, ef95c01).
+      (`EntropyLean/Interaction.lean`, ef95c01). CI green.
 - [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanEntropy_convFamily`
+    (`EntropyLean/Interaction.lean`, fe44eaa).
 - [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
 - [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
 
