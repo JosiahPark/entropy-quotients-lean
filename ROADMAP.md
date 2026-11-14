@@ -186,7 +186,7 @@ and no hypotheses beyond the paper's.
     `sparse_rigidity_of_growth` (`EntropyLean/RatioGrowth.lean`, c74880f). Theorem 8.2 itself stays
     open. CI green at c74880f (checked in the same run; job log not readable this run, so linter
     warnings unchecked); L81 marked stated in docs/DEPENDENCIES.md (6aed3f7).
-- [ ] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
+- [x] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
       Split by the hourly task 2026-11-14 (`EntropyLean/Posterior.lean`):
   - [x] D3a. `conv_apply : (P * Q)(t) = ∑ₐ P(a) Q(t − a)`, the posterior law `posteriorLaw` of `A`
         given `A + B = t`, and the posterior family `WeightedFamily.posterior` (equation (16)) with
@@ -200,7 +200,7 @@ and no hypotheses beyond the paper's.
     - Written by the hourly task 2026-11-14 (uncompiled at push): `posterior_term_eq`,
       `conv_toReal_eq_sum`, `fintype_sum_shift`, `conv_mul_entropy_posterior`,
       `sum_conv_mul_entropy_posterior`, `WeightedFamily.meanEntropy_posterior` (3dab04d). CI green.
-  - [ ] D3c. Second half of (17): `averagedLoss_posterior_le : F_{Post 𝒫}(W) ≤ F_𝒫(W)`, and
+  - [x] D3c. Second half of (17): `averagedLoss_posterior_le : F_{Post 𝒫}(W) ≤ F_𝒫(W)`, and
         `posterior_closure` (posterior formation preserves averaged λ-sparsity).
         Split by the hourly task 2026-11-14:
     - [x] D3c1. Disintegration along `A + B`: `entropyBits_of_kernel` (`H(R) = H(c) + ∑ₜ c(t) H(K_t)`
@@ -215,9 +215,16 @@ and no hypotheses beyond the paper's.
         ∑ₜ (P * Q)(t) H(f_* Q_t) = H(f A, A + B) − H(A + B)` (also `jointLaw_toReal`,
         `jointLaw_map_snd`, `sum_jointLaw_toReal`, `posteriorLaw_map_toReal`, `mul_neg_div_logb_eq`,
         `conv_mul_entropy_posterior_map`). D3c2 may use either version.
-    - [ ] D3c2. `H(A, A + B) − H(q_W A, A + B) ≤ H(A) − H(q_W A)` from `condMutualInfo_nonneg`
+    - [x] D3c2. `H(A, A + B) − H(q_W A, A + B) ≤ H(A) − H(q_W A)` from `condMutualInfo_nonneg`
           on `(A, A + B, q_W A)`, hence `∑ₜ (P * Q)(t) F_{Q_t}(W) ≤ F_P(W)`; averaging gives
           `averagedLoss_posterior_le` and `posterior_closure`.
+      - Written by the hourly task 2026-11-14 (uncompiled at push): `joint_loss_le`,
+        `sum_conv_mul_quotientLoss_posterior_le`, `WeightedFamily.averagedLoss_posterior_le`,
+        `WeightedFamily.posterior_closure`, `WeightedFamily.posterior_lemma` (Lemma 2.2)
+        (`EntropyLean/PosteriorClosure.lean`, 7df22ae). Uses the D3c1 lemmas of `Posterior.lean`.
+        CI green at 7df22ae (checked in the same run); L22 marked proved in docs/DEPENDENCIES.md
+        (685e565). Lemma 2.2 is proved for `V : Type` (the index type of a `WeightedFamily`
+        lives in `Type`).
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
