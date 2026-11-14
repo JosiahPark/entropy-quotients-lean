@@ -102,12 +102,17 @@ and no hypotheses beyond the paper's.
 - [x] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
   - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanEntropy_convFamily`
     (`EntropyLean/Interaction.lean`, fe44eaa). CI green.
-- [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
+- [x] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
   - Written by the hourly task 2026-11-14 (uncompiled at push): `incTriple`, `incTriple_injective`,
     `pair_self_injective`, `prodLaw_map_left`, `entropyBits_sub_map_le_conv`,
     `entropyIncrement_map_le`, `entropyIncrement_quotient_le`, `quotientLoss_le_conv`
-    (`EntropyLean/Increment.lean`, 27d39b9). Proof: `I(X+Y ; (fX, Y) | f(X+Y)) ≥ 0`.
+    (`EntropyLean/Increment.lean`, 27d39b9). Proof: `I(X+Y ; (fX, Y) | f(X+Y)) ≥ 0`. CI green.
 - [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `quot_mkQ_eq_iff`, `quotTriple`,
+    `quotTriple_fibres`, `quotTriple_AC_fibres`, `quotTriple_BC_fibres`,
+    `quotient_entropy_supermodular`, `quotientLoss_supermodular`,
+    `WeightedFamily.averagedLoss_supermodular` (`EntropyLean/Supermodular.lean`, 3a405a2).
+    Proof: `I(q_U A ; q_W A | q_{U ⊔ W} A) ≥ 0`.
 
 ## C. Variational steps and the reduction of Theorem 1.1
 
