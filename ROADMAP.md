@@ -195,13 +195,23 @@ and no hypotheses beyond the paper's.
       `posteriorLaw_apply`, `posteriorLaw_toReal`, `WeightedFamily.postMass`,
       `WeightedFamily.postMass_sum`, `WeightedFamily.postMass_pos`, `WeightedFamily.posterior`
       (5643889). CI green.
-  - [ ] D3b. First half of (17): `meanEntropy_posterior : h(Post 𝒫) = e(𝒫)`, via
+  - [x] D3b. First half of (17): `meanEntropy_posterior : h(Post 𝒫) = e(𝒫)`, via
         `H(A | I, J, A + B) = H(A) + H(B) − H(A + B)` given the indices.
     - Written by the hourly task 2026-11-14 (uncompiled at push): `posterior_term_eq`,
       `conv_toReal_eq_sum`, `fintype_sum_shift`, `conv_mul_entropy_posterior`,
-      `sum_conv_mul_entropy_posterior`, `WeightedFamily.meanEntropy_posterior` (3dab04d).
+      `sum_conv_mul_entropy_posterior`, `WeightedFamily.meanEntropy_posterior` (3dab04d). CI green.
   - [ ] D3c. Second half of (17): `averagedLoss_posterior_le : F_{Post 𝒫}(W) ≤ F_𝒫(W)`, and
         `posterior_closure` (posterior formation preserves averaged λ-sparsity).
+        Split by the hourly task 2026-11-14:
+    - [ ] D3c1. Disintegration along `A + B`: `entropyBits_of_kernel` (`H(R) = H(c) + ∑ₜ c(t) H(K_t)`
+          when `R(a, t) = c(t) K_t(a)`), `kernel_masses_map`, `entropyBits_pair_sum`,
+          `entropyBits_map_pair_sum`.
+      - Written by the hourly task 2026-11-14 (uncompiled at push): `entropyBits_of_kernel`,
+        `kernel_masses_map`, `conv_mul_posteriorLaw_toReal`, `pair_sum_masses`,
+        `entropyBits_pair_sum`, `entropyBits_map_pair_sum` (c54874b).
+    - [ ] D3c2. `H(A, A + B) − H(q_W A, A + B) ≤ H(A) − H(q_W A)` from `condMutualInfo_nonneg`
+          on `(A, A + B, q_W A)`, hence `∑ₜ (P * Q)(t) F_{Q_t}(W) ≤ F_P(W)`; averaging gives
+          `averagedLoss_posterior_le` and `posterior_closure`.
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
