@@ -187,6 +187,18 @@ and no hypotheses beyond the paper's.
     open. CI green at c74880f (checked in the same run; job log not readable this run, so linter
     warnings unchecked); L81 marked stated in docs/DEPENDENCIES.md (6aed3f7).
 - [ ] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
+      Split by the hourly task 2026-11-14 (`EntropyLean/Posterior.lean`):
+  - [ ] D3a. `conv_apply : (P * Q)(t) = ∑ₐ P(a) Q(t − a)`, the posterior law `posteriorLaw` of `A`
+        given `A + B = t`, and the posterior family `WeightedFamily.posterior` (equation (16)) with
+        weights `a_i a_j (P_i * P_j)(t)` summing to one (for `V : Type`).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `conv_apply`, `posteriorLaw`,
+      `posteriorLaw_apply`, `posteriorLaw_toReal`, `WeightedFamily.postMass`,
+      `WeightedFamily.postMass_sum`, `WeightedFamily.postMass_pos`, `WeightedFamily.posterior`
+      (5643889).
+  - [ ] D3b. First half of (17): `meanEntropy_posterior : h(Post 𝒫) = e(𝒫)`, via
+        `H(A | I, J, A + B) = H(A) + H(B) − H(A + B)` given the indices.
+  - [ ] D3c. Second half of (17): `averagedLoss_posterior_le : F_{Post 𝒫}(W) ≤ F_𝒫(W)`, and
+        `posterior_closure` (posterior formation preserves averaged λ-sparsity).
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
