@@ -31,7 +31,7 @@ flowchart TD
   E15["(15): h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)<br/>meanEntropy_convFamily"]:::proved
   QC["Quotient commutes with convolution<br/>conv_map_mkQ"]:::proved
   L21["Lemma 2.1: F_P supermodular<br/>quotient_entropy_supermodular"]:::proved
-  L22["Lemma 2.2: posterior closure"]:::missing
+  L22["Lemma 2.2: posterior closure"]:::proved
 
   %% Sections 3-7
   L31["Lemma 3.1: fibring, nested interaction (20)–(22)"]:::missing
