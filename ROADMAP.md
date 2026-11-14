@@ -226,6 +226,17 @@ and no hypotheses beyond the paper's.
         (685e565). Lemma 2.2 is proved for `V : Type` (the index type of a `WeightedFamily`
         lives in `Type`).
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
+      Split by the hourly task 2026-11-14 (`EntropyLean/Fibring.lean`):
+  - [ ] D4a. Fibre interaction `s_W` (18) along an additive map, the fibring identity (20) and (21).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `prodLaw_map_right`,
+      `prodLaw_map_both`, `fibreJoint`, `fibreInteraction`, `fibreTriple`, `fibreMutualInfo`,
+      `fibreMutualInfo_nonneg`, `fibreInteraction_eq`, `fibreMutualInfo_eq`, `interaction_fibring`,
+      `interaction_sub_le_fibre`, `subspaceInteraction`, `interaction_fibring_quot`,
+      `interaction_sub_le_subspace` (57d684c). Proof: `I(A + B ; (q A, q B) | q (A + B)) ≥ 0`.
+  - [ ] D4b. Equation (19): `0 ≤ s_W(P, Q) ≤ min(F_P(W), F_Q(W))` (`subspaceInteraction_nonneg`,
+        `subspaceInteraction_le_left`, `subspaceInteraction_le_right`).
+  - [ ] D4c. Nested inequality (22) via (23): for `U ≤ W`,
+        `F_Q(U) ≥ s_W(P, Q) − (H(q_U P) − H(q_W P))` (`subspaceInteraction_nested`).
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
