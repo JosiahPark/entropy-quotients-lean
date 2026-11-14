@@ -27,7 +27,7 @@ flowchart TD
   %% Entropy toolkit (Section 2)
   NN["H ≥ 0, chain rule,<br/>I(A;B|C) ≥ 0<br/>entropyBits_nonneg, entropyBits_chain, condMutualInfo_nonneg"]:::proved
   E9["(9): 0 ≤ s(P,Q) ≤ min(H(P),H(Q));<br/>(14): 0 ≤ e(𝒫) ≤ h(𝒫)<br/>interaction_nonneg, interaction_le_left/right, meanInteraction_le"]:::proved
-  DP["Data processing: D(q_G X) ≤ D(X)"]:::missing
+  DP["Data processing: D(q_G X) ≤ D(X)<br/>entropyIncrement_quotient_le"]:::proved
   E15["(15): h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)<br/>meanEntropy_convFamily"]:::proved
   QC["Quotient commutes with convolution<br/>conv_map_mkQ"]:::proved
   L21["Lemma 2.1: F_P supermodular"]:::missing
