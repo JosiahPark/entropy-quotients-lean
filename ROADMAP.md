@@ -252,6 +252,21 @@ and no hypotheses beyond the paper's.
       (f1600fa). CI green at f1600fa (checked in the same run; job log not readable, so linter
       warnings unchecked). L31 marked proved in docs/DEPENDENCIES.md.
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
+      Split by Claude 2026-11-14 (`EntropyLean/DensityEstimate.lean`):
+  - [x] D5a. One-step inequality (30) `subspaceInteraction_step` (from (22) with `U = S ⊓ W`,
+        monotonicity `quotientLoss_mono` and (11)), and its average over a fresh index for a
+        `λ`-sparse family, `WeightedFamily.averaged_density_step`.
+    - Written by Claude 2026-11-14 (uncompiled at push): `quotientLoss_mono`,
+      `subspaceInteraction_step`, `WeightedFamily.averaged_density_step` (2a1d5f9). CI green at
+      2a1d5f9 (checked in the same run).
+  - [ ] D5b. Inequality (28) `A ≤ h/N + λB(N − 1)/2` for every `N ≥ 1`. Avoid product measures over
+        sample sequences: for fixed `u` define recursively `Φ₀(S) = H(q_S Q_u)`,
+        `Φ_{k+1}(S) = ∑_w b_w Φ_k(S ⊔ V(u, w))` and `D₀(S) = dim S`, `D_{k+1}(S) = ∑_w b_w D_k(S ⊔ V(u, w))`;
+        prove `N A_u ≤ Φ₀(S) − Φ_N(S) + λ ∑_{k<N} D_k(S)` by induction on `N` generalising `S` (from
+        D5a), `Φ_N ≥ 0` and `D_k(S) ≤ dim S + k B_u`; then take `S = 0` and average over `u`
+        (`WeightedFamily.averaged_density_estimate`).
+  - [ ] D5c. Inequality (29): `B ≤ 26h ⇒ A ≤ 14√λ h`, with `N = ⌈λ^{-1/2}⌉` for `0 < λ ≤ 1`,
+        `A ≤ h` from (19) for `λ > 1`, and `h = 0` for `λ = 0` (`WeightedFamily.averaged_density_sqrt`).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
