@@ -14,9 +14,10 @@ Roadmap item B3b adds the upper bounds of (9): `H(P ⊗ Q) = H(P) + H(Q)` (`entr
 hence `H(A + B) ≥ H(B)` and `H(A + B) ≥ H(A)` for independent `A`, `B` in a finite group
 (`entropyBits_le_conv_right`, `entropyBits_le_conv_left`), and `interaction_le_left`,
 `interaction_le_right`. Roadmap item B3c averages these: `meanInteraction_le : e(𝒫) ≤ h(𝒫)`, the
-upper half of (14).
+upper half of (14). Roadmap item B4 proves equation (15),
+`meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
 
-What this file does NOT prove: equation (15), or anything about quotients.
+What this file does NOT prove: anything about quotients (data processing for `D`, Lemma 2.1).
 -/
 
 namespace EntropyLean
@@ -224,5 +225,49 @@ theorem WeightedFamily.meanInteraction_le {V : Type*} [Fintype V] [AddGroup V]
           rw [P.weights_sum, mul_one]
   unfold WeightedFamily.meanInteraction WeightedFamily.meanEntropy
   exact Finset.sum_le_sum fun i _ => hrow i
+
+/-! ## Equation (15): `h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)` (roadmap item B4) -/
+
+/-- Equation (15): `h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`. Pure algebra from the definitions and
+`∑ a_i = 1`. -/
+theorem WeightedFamily.meanEntropy_convFamily {V : Type*} [Add V] (P : WeightedFamily V) :
+    P.convFamily.meanEntropy = 2 * P.meanEntropy - P.meanInteraction := by
+  have hs := P.weights_sum
+  have h1 : P.convFamily.meanEntropy =
+      ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (conv (P.laws i) (P.laws j)) := by
+    show ∑ p : P.index × P.index,
+        P.weights p.1 * P.weights p.2 * entropyBits (conv (P.laws p.1) (P.laws p.2)) = _
+    exact Fintype.sum_prod_type _
+  have h2 : P.meanInteraction =
+      ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (P.laws i) +
+        ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (P.laws j) -
+        ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (conv (P.laws i) (P.laws j)) := by
+    unfold WeightedFamily.meanInteraction interaction
+    rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  have h3 : ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (P.laws i) = P.meanEntropy := by
+    unfold WeightedFamily.meanEntropy
+    refine Finset.sum_congr rfl fun i _ => ?_
+    calc ∑ j, P.weights i * P.weights j * entropyBits (P.laws i)
+        = P.weights i * entropyBits (P.laws i) * ∑ j, P.weights j := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          ring
+      _ = P.weights i * entropyBits (P.laws i) := by rw [hs, mul_one]
+  have h4 : ∑ i, ∑ j, P.weights i * P.weights j * entropyBits (P.laws j) = P.meanEntropy := by
+    unfold WeightedFamily.meanEntropy
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    calc ∑ i, P.weights i * P.weights j * entropyBits (P.laws j)
+        = P.weights j * entropyBits (P.laws j) * ∑ i, P.weights i := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          ring
+      _ = P.weights j * entropyBits (P.laws j) := by rw [hs, mul_one]
+  rw [h1, h2, h3, h4]
+  ring
 
 end EntropyLean
