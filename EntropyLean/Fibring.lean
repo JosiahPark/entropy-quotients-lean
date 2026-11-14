@@ -104,7 +104,8 @@ theorem fibreMutualInfo_eq [Fintype V] [Fintype T] (f : V →+ T) (P Q : PMF V) 
     intro y z h
     have h' : (y.1, y.2, f y.1) = (z.1, z.2, f z.1) := h
     obtain ⟨h1, h2⟩ := Prod.mk.inj h'
-    exact Prod.ext h1 (Prod.mk.inj h2).1
+    obtain ⟨h3, -⟩ := Prod.mk.inj h2
+    exact Prod.ext h1 h3
   have e1 : entropyBits (((prodLaw P Q).map (fibreTriple f)).map tripleAC) =
       entropyBits (conv P Q) := by
     rw [h1]
