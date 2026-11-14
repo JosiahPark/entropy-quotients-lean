@@ -89,13 +89,16 @@ and no hypotheses beyond the paper's.
     - Written by the hourly task 2026-11-13 (uncompiled at push): `prodLaw`, `prodLaw_map_fst`,
       `prodLaw_map_snd`, `prodLaw_map_add`, `entropyBits_conv_le`, `interaction_nonneg`,
       `WeightedFamily.meanInteraction_nonneg`. CI green at f39bd51.
-  - [ ] B3b. `H(A + B) ≥ H(B)` for independent `A`, `B` in a finite additive group
+  - [x] B3b. `H(A + B) ≥ H(B)` for independent `A`, `B` in a finite additive group
         (`entropyBits_le_conv_right`, `entropyBits_le_conv_left`), hence `interaction_le_left`,
         `interaction_le_right`.
     - Written by the hourly task 2026-11-13 (uncompiled at push): `prodLaw_apply`,
       `entropyBits_prodLaw`, `fst_add_injective`, `snd_add_injective`, `entropyBits_le_conv_right`,
       `entropyBits_le_conv_left`, `interaction_le_left`, `interaction_le_right`.
+      First push failed CI (`congrArg Prod.fst h` in `fst_add_injective`); fixed in 352b199, CI green.
   - [ ] B3c. `WeightedFamily.meanInteraction_le : e(𝒫) ≤ h(𝒫)` from B3b.
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.meanInteraction_le`
+      (`EntropyLean/Interaction.lean`, ef95c01).
 - [ ] B4. Equation (15): `meanEntropy_convFamily : h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)`.
 - [ ] B5. Data processing for the increment: `entropyIncrement_quotient_le : D(q_G X) ≤ D(X)`.
 - [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
