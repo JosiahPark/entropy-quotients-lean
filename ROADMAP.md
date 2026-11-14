@@ -107,17 +107,23 @@ and no hypotheses beyond the paper's.
     `pair_self_injective`, `prodLaw_map_left`, `entropyBits_sub_map_le_conv`,
     `entropyIncrement_map_le`, `entropyIncrement_quotient_le`, `quotientLoss_le_conv`
     (`EntropyLean/Increment.lean`, 27d39b9). Proof: `I(X+Y ; (fX, Y) | f(X+Y)) ≥ 0`. CI green.
-- [ ] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
+- [x] B6. Lemma 2.1: `quotient_entropy_supermodular` (equation (11)).
   - Written by the hourly task 2026-11-14 (uncompiled at push): `quot_mkQ_eq_iff`, `quotTriple`,
     `quotTriple_fibres`, `quotTriple_AC_fibres`, `quotTriple_BC_fibres`,
     `quotient_entropy_supermodular`, `quotientLoss_supermodular`,
     `WeightedFamily.averagedLoss_supermodular` (`EntropyLean/Supermodular.lean`, 3a405a2).
-    Proof: `I(q_U A ; q_W A | q_{U ⊔ W} A) ≥ 0`.
+    Proof: `I(q_U A ; q_W A | q_{U ⊔ W} A) ≥ 0`. CI green.
 
 ## C. Variational steps and the reduction of Theorem 1.1
 
 - [ ] C1. Lemma 9.1: prove `variational_sparsification` by minimizing `h(q_G 𝒫) + λ dim G`
       over the finite set of subspaces (needs A1, A5).
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `quotientLoss_bot`,
+    `finrank_comap_mkQ`, `WeightedFamily.meanEntropy_nonneg`, `WeightedFamily.averagedLoss_bot`,
+    `WeightedFamily.variationalObjective`, `WeightedFamily.variationalObjective_bot`,
+    `WeightedFamily.variational_sparsification_proof` (`EntropyLean/Variational.lean`, dd5dc59);
+    the `sorry` in `variational_sparsification` (`EntropyLean/Statements.lean`) is replaced by it.
+    When CI is green, mark L91 proved in docs/DEPENDENCIES.md.
 - [ ] C2. Conditional Theorem 1.1: `exponential_entropy_quotient_of_rigidity`, proving the
       statement of Theorem 1.1 from Lemma 9.1, B5, `entropy_le_increment_of_defect_le` and
       Theorem 8.2 taken as an explicit hypothesis. Also the singleton family
