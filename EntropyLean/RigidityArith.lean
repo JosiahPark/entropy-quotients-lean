@@ -40,10 +40,7 @@ theorem inv_ratio_step {d d' : ℝ} (hd0 : 0 < d) (hd1 : d ≤ 1) (hstep : d + d
 /-- `−d log d ≤ 1 − d` for `d > 0`. -/
 theorem neg_mul_log_le_one_sub {d : ℝ} (hd0 : 0 < d) : d * (-Real.log d) ≤ 1 - d := by
   have hinv : 0 < 1 / d := one_div_pos.mpr hd0
-  have h1 : Real.log (1 / d) ≤ 1 / d - 1 := by
-    first
-    | exact Real.log_le_sub_one_of_pos hinv
-    | exact Real.log_le_sub_one_of_nonneg hinv.le
+  have h1 : Real.log (1 / d) ≤ 1 / d - 1 := Real.log_le_sub_one_of_pos hinv
   have h2 : Real.log (1 / d) = -Real.log d := by rw [one_div, Real.log_inv]
   rw [h2] at h1
   have h3 : d * (-Real.log d) ≤ d * (1 / d - 1) := mul_le_mul_of_nonneg_left h1 hd0.le
@@ -53,10 +50,7 @@ theorem neg_mul_log_le_one_sub {d : ℝ} (hd0 : 0 < d) : d * (-Real.log d) ≤ 1
 
 /-- `1/2 ≤ log 2`, from `log x ≤ x − 1` at `x = 1/2`. -/
 theorem half_le_log_two : (1 : ℝ) / 2 ≤ Real.log 2 := by
-  have h1 : Real.log (1 / 2 : ℝ) ≤ 1 / 2 - 1 := by
-    first
-    | exact Real.log_le_sub_one_of_pos (by norm_num)
-    | exact Real.log_le_sub_one_of_nonneg (by norm_num)
+  have h1 : Real.log (1 / 2 : ℝ) ≤ 1 / 2 - 1 := Real.log_le_sub_one_of_pos (by norm_num)
   have h2 : Real.log (1 / 2 : ℝ) = -Real.log 2 := by rw [one_div, Real.log_inv]
   linarith
 
