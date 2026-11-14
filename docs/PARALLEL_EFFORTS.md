@@ -129,3 +129,31 @@ deferred).
 
 The project builds cleanly in its present form. The full mathematical claims of the paper are
 recorded and ready for proof development as soon as the analytic library becomes accessible.
+
+## Files supplied later (2026-11-14): `ParkEntropyQuotients.lean`, `README 3 1.md`
+
+Josiah supplied one Lean file and one README from these efforts. They were reviewed against this
+repository and **not added** to it: every statement in them already appears in
+`EntropyLean/Statements.lean`, and nothing in them is proved. The file name suggests run 1's
+`ParkEntropyQuotients/` directory, but its theorem names (`sparse_rigidity`,
+`exponential_scale_necessary`) differ from run 1's report. The README describes a different file
+(`EntropyQuotients.lean`).
+
+`ParkEntropyQuotients.lean` (namespace `Park.EntropyQuotients`, its own `Law` structure with a
+real-valued mass function):
+
+- It would not compile: it uses `λ` as a variable name (a reserved keyword in Lean 4) and
+  `Real.log2`, which is not a Mathlib name; its imports omit the logarithm.
+- `conv` has `sorry` in its `sum_one` field and `quotientLaw` is defined as `sorry`, so Theorems 1.1,
+  1.2, Lemma 9.1 and Proposition 9.3 there are statements about a placeholder quotient. Here,
+  `conv` and the quotient (`PMF.map` by `G.mkQ`) are actual definitions.
+- It states Lemma 9.1 for a single law; the paper (44) and this repository state it for a weighted
+  family (the single-law case comes from `WeightedFamily.singleton`, roadmap item C2).
+- It states Proposition 9.3 with `liminf` (see the note above on why this repository does not).
+
+`README 3 1.md`: says entropy and measure operations were abstracted as `opaque`s, which this
+project's rules forbid, and calls Lemma 4.1 "variational quotient control" (in the paper that is
+Lemma 9.1; Lemma 4.1 is ratio-preserving sparsification). Its blockers (no Shannon entropy on
+`F₂^m` in Mathlib) no longer apply here: entropy, the chain rule, subadditivity, `I(A;B|C) ≥ 0`,
+equation (9) and `0 ≤ e(𝒫) ≤ h(𝒫)` of (14) are proved in `EntropyLean/`. Its next steps are
+roadmap items B6 (Lemma 2.1), C4 (Lemma 4.1) and E1–E3 (Proposition 9.3).
