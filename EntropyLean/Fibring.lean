@@ -25,8 +25,13 @@ subspace versions `0 ≤ s_W(P, Q) ≤ min(F_P(W), F_Q(W))` (`subspaceInteractio
 `subspaceInteraction_le_left`, `subspaceInteraction_le_right`, `subspaceInteraction_le_min`).
 The upper bounds come from `I(A + B ; A | f A, f B) ≥ 0` (resp. with `B`).
 
-What this file does NOT prove: the nested inequality (22), or any statement about weighted
-families (later item D4c).
+Roadmap item D4c adds the nested inequality (22) via (23): for additive maps `f : V →+ T`,
+`g : T →+ T₂` and `k = g ∘ f`, `s_k(P, Q) ≤ s_f(P, Q) + H(f A) − H(k A)` (`fibreInteraction_nested`,
+from `I(A + B ; f A | k A, k B) ≥ 0`), hence `s_k(P, Q) − (H(f A) − H(k A)) ≤ H(B | f B)`
+(`fibreInteraction_nested_loss`); for subspaces `U ≤ W` this is
+`F_Q(U) ≥ s_W(P, Q) − (H(q_U P) − H(q_W P))` (`subspaceInteraction_nested`).
+
+What this file does NOT prove: any statement about weighted families (Lemma 5.1 onward).
 -/
 
 namespace EntropyLean
@@ -236,6 +241,82 @@ theorem fibreInteraction_le_right [Fintype V] [Fintype T] (f : V →+ T) (P Q : 
   rw [fibreInteraction_eq]
   linarith [e1, e2, e3, e4]
 
+/-- Equation (23) along a factorisation `k = g ∘ f`:
+`s_k(P, Q) ≤ s_f(P, Q) + (H(f A) − H(k A))`, from `I(A + B ; f A | k A, k B) ≥ 0`. -/
+theorem fibreInteraction_nested {T₂ : Type*} [AddCommGroup T₂] [Fintype V] [Fintype T]
+    [Fintype T₂] (f : V →+ T) (g : T →+ T₂) (k : V →+ T₂) (hk : ∀ v, g (f v) = k v)
+    (P Q : PMF V) :
+    fibreInteraction k P Q ≤
+      fibreInteraction f P Q + (entropyBits (P.map f) - entropyBits (P.map k)) := by
+  obtain ⟨R, hR⟩ : ∃ R : PMF (V × T × (T₂ × T₂)),
+      R = (prodLaw P Q).map (fun x : V × V => (x.1 + x.2, f x.1, (g (f x.1), g (f x.2)))) :=
+    ⟨_, rfl⟩
+  have hI : 0 ≤ condMutualInfo R := condMutualInfo_nonneg R
+  have e1 : entropyBits (R.map tripleAC) = entropyBits (fibreJoint k P Q) := by
+    have h1 : R.map tripleAC = fibreJoint k P Q := by
+      rw [hR, PMF.map_comp]
+      unfold fibreJoint
+      congr 1
+      funext x
+      show (x.1 + x.2, (g (f x.1), g (f x.2))) = (x.1 + x.2, (k x.1, k x.2))
+      rw [hk, hk]
+    rw [h1]
+  have hinj2 : Function.Injective (fun y : T × T₂ => (y.1, (g y.1, y.2))) := by
+    intro y z h
+    have h' : (y.1, (g y.1, y.2)) = (z.1, (g z.1, z.2)) := h
+    obtain ⟨h1, h2⟩ := Prod.mk.inj h'
+    obtain ⟨-, h3⟩ := Prod.mk.inj h2
+    exact Prod.ext h1 h3
+  have h2 : R.map Prod.snd =
+      (prodLaw (P.map f) (Q.map k)).map (fun y : T × T₂ => (y.1, (g y.1, y.2))) := by
+    rw [hR, ← prodLaw_map_both P Q (⇑f) (⇑k), PMF.map_comp, PMF.map_comp]
+    congr 1
+    funext x
+    show (f x.1, (g (f x.1), g (f x.2))) = (f x.1, (g (f x.1), k x.2))
+    rw [hk x.2]
+  have e2 : entropyBits (R.map Prod.snd) = entropyBits (P.map f) + entropyBits (Q.map k) := by
+    rw [h2, entropyBits_map_of_injective _ hinj2, entropyBits_prodLaw]
+  have hRf : R = (fibreJoint f P Q).map
+      (fun y : V × (T × T) => (y.1, y.2.1, (g y.2.1, g y.2.2))) := by
+    rw [hR]
+    unfold fibreJoint
+    rw [PMF.map_comp]
+    try rfl
+  have hfR : fibreJoint f P Q =
+      R.map (fun z : V × T × (T₂ × T₂) => (z.1, (z.2.1, f z.1 - z.2.1))) := by
+    rw [hR, PMF.map_comp]
+    unfold fibreJoint
+    congr 1
+    funext x
+    simp [map_add]
+  have a1 : entropyBits R ≤ entropyBits (fibreJoint f P Q) := by
+    rw [hRf]
+    exact entropyBits_map_le _ _
+  have a2 : entropyBits (fibreJoint f P Q) ≤ entropyBits R := by
+    rw [hfR]
+    exact entropyBits_map_le _ _
+  have h4 : R.map tripleC = prodLaw (P.map k) (Q.map k) := by
+    rw [hR, ← prodLaw_map_both P Q (⇑k) (⇑k), PMF.map_comp]
+    congr 1
+    funext x
+    show (g (f x.1), g (f x.2)) = (k x.1, k x.2)
+    rw [hk, hk]
+  have e4 : entropyBits (R.map tripleC) = entropyBits (P.map k) + entropyBits (Q.map k) := by
+    rw [h4, entropyBits_prodLaw]
+  unfold condMutualInfo at hI
+  rw [fibreInteraction_eq, fibreInteraction_eq]
+  linarith [e1, e2, e4, a1, a2]
+
+/-- Nested inequality (22) along `k = g ∘ f`: `s_k(P, Q) − (H(f A) − H(k A)) ≤ H(B | f B)`. -/
+theorem fibreInteraction_nested_loss {T₂ : Type*} [AddCommGroup T₂] [Fintype V] [Fintype T]
+    [Fintype T₂] (f : V →+ T) (g : T →+ T₂) (k : V →+ T₂) (hk : ∀ v, g (f v) = k v)
+    (P Q : PMF V) :
+    fibreInteraction k P Q - (entropyBits (P.map f) - entropyBits (P.map k)) ≤
+      entropyBits Q - entropyBits (Q.map f) := by
+  have h1 := fibreInteraction_nested f g k hk P Q
+  have h2 := fibreInteraction_le_right f P Q
+  linarith
+
 end Fibring
 
 section Subspace
@@ -282,6 +363,23 @@ theorem subspaceInteraction_le_right [Fintype V] (P Q : PMF V) (W : Submodule (Z
   haveI : Finite (V ⧸ W) := Finite.of_surjective _ (Submodule.mkQ_surjective W)
   letI : Fintype (V ⧸ W) := Fintype.ofFinite _
   exact fibreInteraction_le_right W.mkQ.toAddMonoidHom P Q
+
+/-- Lemma 3.1, nested inequality (22): for `U ≤ W`,
+`F_Q(U) ≥ s_W(P, Q) − (H(q_U P) − H(q_W P))`. -/
+theorem subspaceInteraction_nested [Fintype V] (P Q : PMF V) {U W : Submodule (ZMod 2) V}
+    (hUW : U ≤ W) :
+    subspaceInteraction P Q W -
+      (entropyBits (P.map fun v => U.mkQ v) - entropyBits (P.map fun v => W.mkQ v)) ≤
+      quotientLoss Q U := by
+  haveI : Finite (V ⧸ U) := Finite.of_surjective _ (Submodule.mkQ_surjective U)
+  letI : Fintype (V ⧸ U) := Fintype.ofFinite _
+  haveI : Finite (V ⧸ W) := Finite.of_surjective _ (Submodule.mkQ_surjective W)
+  letI : Fintype (V ⧸ W) := Fintype.ofFinite _
+  have h' : U ≤ LinearMap.ker W.mkQ := by
+    rw [Submodule.ker_mkQ]
+    exact hUW
+  exact fibreInteraction_nested_loss U.mkQ.toAddMonoidHom (U.liftQ W.mkQ h').toAddMonoidHom
+    W.mkQ.toAddMonoidHom (fun v => rfl) P Q
 
 /-- Equation (19): `s_W(P, Q) ≤ min(F_P(W), F_Q(W))`. -/
 theorem subspaceInteraction_le_min [Fintype V] (P Q : PMF V) (W : Submodule (ZMod 2) V) :
