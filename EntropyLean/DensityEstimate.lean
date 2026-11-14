@@ -1,6 +1,7 @@
 import Mathlib
 import EntropyLean.Fibring
 import EntropyLean.Supermodular
+import EntropyLean.Variational
 
 /-!
 # Averaged density estimate, first step (roadmap item D5a, Lemma 5.1)
@@ -32,10 +33,10 @@ variable {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
 /-- Monotonicity of the subspace defect: `F_P(U) ≤ F_P(W)` for `U ≤ W`. -/
 theorem quotientLoss_mono [Fintype V] (P : PMF V) {U W : Submodule (ZMod 2) V} (hUW : U ≤ W) :
     quotientLoss P U ≤ quotientLoss P W := by
-  haveI : Finite (V ⧸ U) := Finite.of_surjective _ (Submodule.mkQ_surjective U)
-  letI : Fintype (V ⧸ U) := Fintype.ofFinite _
-  haveI : Finite (V ⧸ W) := Finite.of_surjective _ (Submodule.mkQ_surjective W)
-  letI : Fintype (V ⧸ W) := Fintype.ofFinite _
+  have : Finite (V ⧸ U) := Finite.of_surjective _ (Submodule.mkQ_surjective U)
+  let : Fintype (V ⧸ U) := Fintype.ofFinite _
+  have : Finite (V ⧸ W) := Finite.of_surjective _ (Submodule.mkQ_surjective W)
+  let : Fintype (V ⧸ W) := Fintype.ofFinite _
   have h' : U ≤ LinearMap.ker W.mkQ := by
     rw [Submodule.ker_mkQ]
     exact hUW
@@ -91,9 +92,7 @@ theorem finrank_sup_le_add [Fintype V] (S W : Submodule (ZMod 2) V) :
       (Module.finrank (ZMod 2) S : ℝ) + (Module.finrank (ZMod 2) W : ℝ) := by
   have h : Module.finrank (ZMod 2) ↥(S ⊔ W) ≤
       Module.finrank (ZMod 2) S + Module.finrank (ZMod 2) W := by
-    first
-    | exact Submodule.finrank_add_le_finrank_add_finrank S W
-    | (have h' := Submodule.finrank_sup_add_finrank_inf_eq S W; omega)
+    exact Submodule.finrank_add_le_finrank_add_finrank S W
   exact_mod_cast h
 
 /-- `(∑_{k<N} k) · 2 = N (N − 1)` in `ℝ`. -/
@@ -127,31 +126,23 @@ noncomputable def densDim (Q : WeightedFamily V) (u : Q.index)
 
 theorem densPhi_zero (Q : WeightedFamily V) (u : Q.index) (Vf : Q.index → Submodule (ZMod 2) V)
     (S : Submodule (ZMod 2) V) :
-    Q.densPhi u Vf 0 S = entropyBits ((Q.laws u).map fun v => S.mkQ v) := by
-  first
-  | rfl
-  | simp only [densPhi]
+    Q.densPhi u Vf 0 S = entropyBits ((Q.laws u).map fun v => S.mkQ v) :=
+  rfl
 
 theorem densPhi_succ (Q : WeightedFamily V) (u : Q.index) (Vf : Q.index → Submodule (ZMod 2) V)
     (k : ℕ) (S : Submodule (ZMod 2) V) :
-    Q.densPhi u Vf (k + 1) S = ∑ w, Q.weights w * Q.densPhi u Vf k (S ⊔ Vf w) := by
-  first
-  | rfl
-  | simp only [densPhi]
+    Q.densPhi u Vf (k + 1) S = ∑ w, Q.weights w * Q.densPhi u Vf k (S ⊔ Vf w) :=
+  rfl
 
 theorem densDim_zero (Q : WeightedFamily V) (u : Q.index) (Vf : Q.index → Submodule (ZMod 2) V)
     (S : Submodule (ZMod 2) V) :
-    Q.densDim u Vf 0 S = (Module.finrank (ZMod 2) S : ℝ) := by
-  first
-  | rfl
-  | simp only [densDim]
+    Q.densDim u Vf 0 S = (Module.finrank (ZMod 2) S : ℝ) :=
+  rfl
 
 theorem densDim_succ (Q : WeightedFamily V) (u : Q.index) (Vf : Q.index → Submodule (ZMod 2) V)
     (k : ℕ) (S : Submodule (ZMod 2) V) :
-    Q.densDim u Vf (k + 1) S = ∑ w, Q.weights w * Q.densDim u Vf k (S ⊔ Vf w) := by
-  first
-  | rfl
-  | simp only [densDim]
+    Q.densDim u Vf (k + 1) S = ∑ w, Q.weights w * Q.densDim u Vf k (S ⊔ Vf w) :=
+  rfl
 
 theorem densPhi_nonneg (Q : WeightedFamily V) (u : Q.index)
     (Vf : Q.index → Submodule (ZMod 2) V) (k : ℕ) : ∀ S, 0 ≤ Q.densPhi u Vf k S := by
