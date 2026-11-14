@@ -15,8 +15,12 @@ indexed by the triples with `(P_i * P_j)(t) ≠ 0` (`postMass`, `postMass_sum`,
 `WeightedFamily.posterior`). The index type of a `WeightedFamily` lives in `Type`, so the
 posterior family is built for `V : Type`.
 
-What this file does NOT prove: Lemma 2.2 itself, i.e. `h(Post 𝒫) = e(𝒫)` and
-`F_{Post 𝒫}(W) ≤ F_𝒫(W)` (roadmap items D3b, D3c).
+Roadmap item D3b proves the first half of Lemma 2.2 (equation (17)):
+`∑ₜ (P * Q)(t) H(Law(A | A + B = t)) = s(P, Q)` (`sum_conv_mul_entropy_posterior`), hence
+`h(Post 𝒫) = e(𝒫)` (`WeightedFamily.meanEntropy_posterior`).
+
+What this file does NOT prove: the second half of Lemma 2.2, `F_{Post 𝒫}(W) ≤ F_𝒫(W)`, nor
+`posterior_closure` (roadmap item D3c).
 -/
 
 namespace EntropyLean
@@ -108,6 +112,151 @@ noncomputable def posterior {V : Type} [Fintype V] [AddCommGroup V] (P : Weighte
         ¬ conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0}, P.postMass x.1 = 0 :=
       Finset.sum_eq_zero fun x _ => by simp [postMass, not_not.mp x.2]
     rw [hz, add_zero]
+
+end WeightedFamily
+
+/-! ## First half of Lemma 2.2: `h(Post 𝒫) = e(𝒫)` (roadmap item D3b) -/
+
+/-- Pointwise identity behind the chain rule: for `x, y ≥ 0` and `C > 0`,
+`C · (-(xy/C) log(xy/C)) = -xy log x - xy log y + xy log C`. -/
+theorem posterior_term_eq {x y C : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hC : 0 < C) :
+    C * (-(x * y / C) * Real.logb 2 (x * y / C)) =
+      -(x * y) * Real.logb 2 x - x * y * Real.logb 2 y + x * y * Real.logb 2 C := by
+  rcases hx.eq_or_lt with h | h
+  · rw [← h]
+    ring
+  rcases hy.eq_or_lt with h' | h'
+  · rw [← h']
+    ring
+  have hC' : C ≠ 0 := hC.ne'
+  rw [Real.logb_div (mul_pos h h').ne' hC', Real.logb_mul h.ne' h'.ne']
+  have e : C * (x * y / C) = x * y := by
+    first
+    | (field_simp; done)
+    | (field_simp; ring)
+    | (rw [mul_comm]; exact div_mul_cancel₀ _ hC')
+  calc C * (-(x * y / C) * (Real.logb 2 x + Real.logb 2 y - Real.logb 2 C))
+      = -(C * (x * y / C)) * (Real.logb 2 x + Real.logb 2 y - Real.logb 2 C) := by ring
+    _ = _ := by
+        rw [e]
+        ring
+
+/-- Masses of `P * Q` as real numbers. -/
+theorem conv_toReal_eq_sum {V : Type*} [Fintype V] [AddCommGroup V] (P Q : PMF V) (t : V) :
+    (conv P Q t).toReal = ∑ a, (P a).toReal * (Q (t - a)).toReal := by
+  rw [conv_apply, ENNReal.toReal_sum fun a _ =>
+    ENNReal.mul_ne_top (PMF.apply_ne_top _ _) (PMF.apply_ne_top _ _)]
+  simp only [ENNReal.toReal_mul]
+
+/-- Shifting the summation variable of a finite sum over a group. -/
+theorem fintype_sum_shift {V : Type*} [Fintype V] [AddCommGroup V] (f : V → ℝ) (a : V) :
+    ∑ t, f (t - a) = ∑ s, f s :=
+  Fintype.sum_equiv (Equiv.subRight a) _ _ fun _ => rfl
+
+/-- `(P * Q)(t) · H(Law(A | A + B = t))`, written as a sum over `a`. -/
+theorem conv_mul_entropy_posterior {V : Type*} [Fintype V] [AddCommGroup V] (P Q : PMF V)
+    (t : V) :
+    (conv P Q t).toReal * entropyBits (posteriorLaw P Q t) =
+      ∑ a, (-((P a).toReal * (Q (t - a)).toReal) * Real.logb 2 (P a).toReal -
+        (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal +
+        (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (conv P Q t).toReal) := by
+  by_cases h : conv P Q t = 0
+  · have hs : (0 : ℝ) = ∑ a, (P a).toReal * (Q (t - a)).toReal := by
+      rw [← conv_toReal_eq_sum, h]
+      simp
+    have h0 : ∀ a, (P a).toReal * (Q (t - a)).toReal = 0 := fun a =>
+      (Finset.sum_eq_zero_iff_of_nonneg fun b _ =>
+        mul_nonneg ENNReal.toReal_nonneg ENNReal.toReal_nonneg).mp hs.symm a (Finset.mem_univ a)
+    rw [h]
+    first
+    | (simp [h0]; done)
+    | (simp only [h0, neg_zero, zero_mul, sub_self, sub_zero, add_zero, Finset.sum_const_zero];
+       simp)
+  · have hC : 0 < (conv P Q t).toReal := ENNReal.toReal_pos h (PMF.apply_ne_top _ _)
+    rw [entropyBits_eq_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [posteriorLaw_toReal P Q h]
+    exact posterior_term_eq ENNReal.toReal_nonneg ENNReal.toReal_nonneg hC
+
+/-- Chain rule for the posterior: `∑ₜ (P * Q)(t) H(Law(A | A + B = t)) = s(P, Q)`, i.e.
+`H(A | A + B) = H(A) + H(B) - H(A + B)`. -/
+theorem sum_conv_mul_entropy_posterior {V : Type*} [Fintype V] [AddCommGroup V]
+    (P Q : PMF V) :
+    ∑ t, (conv P Q t).toReal * entropyBits (posteriorLaw P Q t) = interaction P Q := by
+  have hsplit : ∑ t, (conv P Q t).toReal * entropyBits (posteriorLaw P Q t) =
+      ∑ t, ∑ a, -((P a).toReal * (Q (t - a)).toReal) * Real.logb 2 (P a).toReal -
+      ∑ t, ∑ a, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal +
+      ∑ t, ∑ a, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (conv P Q t).toReal := by
+    simp only [conv_mul_entropy_posterior, Finset.sum_add_distrib, Finset.sum_sub_distrib]
+  have T1 : ∑ t, ∑ a, -((P a).toReal * (Q (t - a)).toReal) * Real.logb 2 (P a).toReal =
+      entropyBits P := by
+    rw [Finset.sum_comm, entropyBits_eq_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    have h1 : ∑ t, (Q (t - a)).toReal = 1 :=
+      (fintype_sum_shift (fun s => (Q s).toReal) a).trans (pmf_sum_toReal Q)
+    calc ∑ t, -((P a).toReal * (Q (t - a)).toReal) * Real.logb 2 (P a).toReal
+        = (-(P a).toReal * Real.logb 2 (P a).toReal) * ∑ t, (Q (t - a)).toReal := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun t _ => ?_
+          ring
+      _ = -(P a).toReal * Real.logb 2 (P a).toReal := by rw [h1, mul_one]
+  have hQ : ∑ s, (Q s).toReal * Real.logb 2 (Q s).toReal = -entropyBits Q := by
+    rw [entropyBits_eq_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun s _ => ?_
+    ring
+  have T2 : ∑ t, ∑ a, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal =
+      -entropyBits Q := by
+    rw [Finset.sum_comm]
+    have hin : ∀ a, ∑ t, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal =
+        (P a).toReal * (-entropyBits Q) := by
+      intro a
+      calc ∑ t, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal
+          = ∑ t, (P a).toReal * ((Q (t - a)).toReal * Real.logb 2 (Q (t - a)).toReal) :=
+            Finset.sum_congr rfl fun t _ => by ring
+        _ = (P a).toReal * ∑ s, (Q s).toReal * Real.logb 2 (Q s).toReal := by
+            rw [← Finset.mul_sum]
+            congr 1
+            exact fintype_sum_shift (fun s => (Q s).toReal * Real.logb 2 (Q s).toReal) a
+        _ = (P a).toReal * (-entropyBits Q) := by rw [hQ]
+    rw [Finset.sum_congr rfl fun a _ => hin a, ← Finset.sum_mul, pmf_sum_toReal, one_mul]
+  have T3 : ∑ t, ∑ a, (P a).toReal * (Q (t - a)).toReal * Real.logb 2 (conv P Q t).toReal =
+      -entropyBits (conv P Q) := by
+    rw [entropyBits_eq_sum, ← Finset.sum_neg_distrib]
+    refine Finset.sum_congr rfl fun t _ => ?_
+    rw [← Finset.sum_mul, ← conv_toReal_eq_sum]
+    ring
+  rw [hsplit, T1, T2, T3]
+  unfold interaction
+  ring
+
+namespace WeightedFamily
+
+open Classical in
+/-- First half of Lemma 2.2 (equation (17)): `h(Post 𝒫) = e(𝒫)`. -/
+theorem meanEntropy_posterior {V : Type} [Fintype V] [AddCommGroup V] (P : WeightedFamily V) :
+    P.posterior.meanEntropy = P.meanInteraction := by
+  have hall : ∑ x : P.index × P.index × V,
+      P.postMass x * entropyBits (posteriorLaw (P.laws x.1) (P.laws x.2.1) x.2.2) =
+        P.meanInteraction := by
+    unfold postMass meanInteraction
+    simp only [Fintype.sum_prod_type]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    rw [← sum_conv_mul_entropy_posterior, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun t _ => ?_
+    ring
+  have hz : ∑ x : {x : P.index × P.index × V //
+      ¬ conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0},
+        P.postMass x.1 * entropyBits (posteriorLaw (P.laws x.1.1) (P.laws x.1.2.1) x.1.2.2) =
+          0 :=
+    Finset.sum_eq_zero fun x _ => by simp [postMass, not_not.mp x.2]
+  have key : ∑ x : {x : P.index × P.index × V // conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0},
+      P.postMass x.1 * entropyBits (posteriorLaw (P.laws x.1.1) (P.laws x.1.2.1) x.1.2.2) =
+        P.meanInteraction := by
+    rw [← hall, ← Fintype.sum_subtype_add_sum_subtype
+      (fun x : P.index × P.index × V => conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0)
+      (fun x => P.postMass x * entropyBits (posteriorLaw (P.laws x.1) (P.laws x.2.1) x.2.2)),
+      hz, add_zero]
+  exact key
 
 end WeightedFamily
 end EntropyLean
