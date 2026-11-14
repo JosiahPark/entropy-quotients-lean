@@ -138,18 +138,25 @@ and no hypotheses beyond the paper's.
       family (Theorem 8.2 as an explicit hypothesis).
   - Written by the hourly task 2026-11-14 (uncompiled at push): `sparse_rigidity_of_family_rigidity`
     (`EntropyLean/Conditional.lean`, 6af3de7). Theorem 1.2 itself stays open. CI green.
-- [ ] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,
+- [x] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,
       B3, B4). Split by the hourly task 2026-11-14 (`EntropyLean/RatioSparsification.lean`):
-  - [ ] C4a. Objective `WeightedFamily.ratioObjective` (24); equation (26) at a minimizer
+  - [x] C4a. Objective `WeightedFamily.ratioObjective` (24); equation (26) at a minimizer
         (`ratioObjective_min_loss`); items 2–3 of Lemma 4.1 (`ratioObjective_min_sparse`).
     - Written by the hourly task 2026-11-14 (uncompiled at push): `quotientLoss_nonneg`,
       `WeightedFamily.averagedLoss_nonneg`, `WeightedFamily.quotient_convFamily_averagedLoss`,
       `WeightedFamily.quotient_convFamily_meanEntropy`, `WeightedFamily.ratioObjective`,
       `WeightedFamily.ratioObjective_bot`, `WeightedFamily.ratioObjective_min_loss`,
-      `WeightedFamily.ratioObjective_min_sparse` (2704606).
-  - [ ] C4b. Equation (25) (ratio does not decrease, via (15) on `q_G 𝒫` and
+      `WeightedFamily.ratioObjective_min_sparse` (2704606). CI green at 69d8db3.
+  - [x] C4b. Equation (25) (ratio does not decrease, via (15) on `q_G 𝒫` and
         `h(q_G ℛ) ≤ 2h(q_G 𝒫)`), positivity `h(q_G 𝒫) > 0` at a least-dimension minimizer, and
         the proof of `ratio_preserving_sparsification` replacing its `sorry`.
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `WeightedFamily.ratioObjective_eq`,
+      `WeightedFamily.ratioObjective_bot_of`, `WeightedFamily.ratioObjective_min_ratio`,
+      `WeightedFamily.ratioObjective_min_pos`, `WeightedFamily.ratio_preserving_sparsification_proof`
+      (459e514); the `sorry` in `ratio_preserving_sparsification` (`EntropyLean/Statements.lean`)
+      is replaced by it. Proof: with `d = e/h`, `Φ(G) = (4+d)h(q_G 𝒫) − e(q_G 𝒫) + 4λ dim G` and
+      `Φ(0) = 4h(𝒫)`; `λ`-sparsity of `𝒫` at `G` gives (25). CI green at 459e514 (checked in the
+      same run); L41 marked proved in docs/DEPENDENCIES.md (b74c0ea).
 - [ ] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a
       hypothesis.
 
