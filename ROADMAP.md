@@ -251,7 +251,7 @@ and no hypotheses beyond the paper's.
       `fibreInteraction_nested_loss`, `subspaceInteraction_nested` (with `g = U.liftQ W.mkQ`)
       (f1600fa). CI green at f1600fa (checked in the same run; job log not readable, so linter
       warnings unchecked). L31 marked proved in docs/DEPENDENCIES.md.
-- [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
+- [x] D5. Lemma 5.1: averaged density estimate (28)–(29).
       Split by Claude 2026-11-14 (`EntropyLean/DensityEstimate.lean`):
   - [x] D5a. One-step inequality (30) `subspaceInteraction_step` (from (22) with `U = S ⊓ W`,
         monotonicity `quotientLoss_mono` and (11)), and its average over a fresh index for a
@@ -271,14 +271,31 @@ and no hypotheses beyond the paper's.
       `averaged_density_estimate` (e45ffe9). Hypothesis `0 ≤ λ` added (the paper takes `λ ≥ 0`).
       First push failed CI (`quotientLoss_bot` needs `import EntropyLean.Variational`); fixed with
       linter clean-up in ca39b0e, CI green.
-  - [ ] D5c. Inequality (29): `B ≤ 26h ⇒ A ≤ 14√λ h`, with `N = ⌈λ^{-1/2}⌉` for `0 < λ ≤ 1`,
+  - [x] D5c. Inequality (29): `B ≤ 26h ⇒ A ≤ 14√λ h`, with `N = ⌈λ^{-1/2}⌉` for `0 < λ ≤ 1`,
         `A ≤ h` from (19) for `λ > 1`, and `h = 0` for `λ = 0` (`WeightedFamily.averaged_density_sqrt`).
     - Written by the hourly task 2026-11-14 (uncompiled at push): `density_sqrt_arith`,
       `WeightedFamily.averaged_density_sqrt`, `WeightedFamily.averaged_density_lemma` (Lemma 5.1,
       (28) and (29)) (`EntropyLean/DensitySqrt.lean`, 066a13a). With `N = ⌈λ^{-1/2}⌉` for `λ > 0`
       (no separate case `λ > 1` needed) and `N → ∞` for `λ = 0`. Do not re-implement in
-      `DensityEstimate.lean` (the names would clash).
+      `DensityEstimate.lean` (the names would clash). CI green at 066a13a; L51 marked proved in
+      docs/DEPENDENCIES.md (eb44992).
 - [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
+      Split by the hourly task 2026-11-14:
+  - [ ] D6a. Entropic Ruzsa distance (8) `ruzsaDist` with `ruzsaDist_self` (`d(P, P) = D(P)`),
+        `ruzsaDist_comm`, `ruzsaDist_nonneg`, translation invariance `ruzsaDist_map_add_const`,
+        `ruzsaDist_translate_self`; entropy submodularity `entropyBits_submodular`
+        (`EntropyLean/RuzsaDistance.lean`).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `ruzsaDist`, `ruzsaDist_self`,
+      `ruzsaDist_eq_sub_interaction`, `ruzsaDist_comm`, `ruzsaDist_nonneg`, `conv_map_add_const`,
+      `ruzsaDist_map_add_const`, `ruzsaDist_translate_self`, `entropyBits_submodular` (0dc2f93).
+  - [ ] D6b. Lemma 6.2 (33) for a joint law `R` of `(U, V)` on a finite F₂-space: conditional laws
+        `Law(U | Z = z)`, `Law(V | Z = z)` of `Z = U + V`, the conditionally independent double
+        trial given `Z`, and `∑_z R_Z(z) d(Law(U | z), Law(V | z)) ≤ 3I(U ; V) + 2H(Z) − H(U) − H(V)`
+        (`EntropyLean/ConditionalBSG.lean`, `conditional_bsg`). May split further.
+  - [ ] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
+        Lemma 6.1 (32) `e(𝒫 * 𝒫) + e(Post 𝒫) = 2δH + J` (`EntropyLean/FourSample.lean`,
+        `four_sample_splitting`).
+  - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
       matches.
