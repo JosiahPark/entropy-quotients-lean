@@ -134,12 +134,22 @@ and no hypotheses beyond the paper's.
     `meanInteraction_singleton_quotient`, `WeightedFamilyRigidity` (Theorem 8.2 as a `Prop`),
     `entropy_le_of_defect_le_aux`, `exponential_entropy_quotient_of_rigidity`
     (`EntropyLean/Conditional.lean`, eb65786). Theorem 1.1 itself stays open. CI green.
-- [ ] C3. Theorem 1.2 from Theorem 8.2: `sparse_rigidity_of_family_rigidity` via the singleton
+- [x] C3. Theorem 1.2 from Theorem 8.2: `sparse_rigidity_of_family_rigidity` via the singleton
       family (Theorem 8.2 as an explicit hypothesis).
   - Written by the hourly task 2026-11-14 (uncompiled at push): `sparse_rigidity_of_family_rigidity`
-    (`EntropyLean/Conditional.lean`, 6af3de7). Theorem 1.2 itself stays open.
+    (`EntropyLean/Conditional.lean`, 6af3de7). Theorem 1.2 itself stays open. CI green.
 - [ ] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,
-      B3, B4).
+      B3, B4). Split by the hourly task 2026-11-14 (`EntropyLean/RatioSparsification.lean`):
+  - [ ] C4a. Objective `WeightedFamily.ratioObjective` (24); equation (26) at a minimizer
+        (`ratioObjective_min_loss`); items 2–3 of Lemma 4.1 (`ratioObjective_min_sparse`).
+    - Written by the hourly task 2026-11-14 (uncompiled at push): `quotientLoss_nonneg`,
+      `WeightedFamily.averagedLoss_nonneg`, `WeightedFamily.quotient_convFamily_averagedLoss`,
+      `WeightedFamily.quotient_convFamily_meanEntropy`, `WeightedFamily.ratioObjective`,
+      `WeightedFamily.ratioObjective_bot`, `WeightedFamily.ratioObjective_min_loss`,
+      `WeightedFamily.ratioObjective_min_sparse` (2704606).
+  - [ ] C4b. Equation (25) (ratio does not decrease, via (15) on `q_G 𝒫` and
+        `h(q_G ℛ) ≤ 2h(q_G 𝒫)`), positivity `h(q_G 𝒫) > 0` at a least-dimension minimizer, and
+        the proof of `ratio_preserving_sparsification` replacing its `sorry`.
 - [ ] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a
       hypothesis.
 
