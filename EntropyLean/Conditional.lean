@@ -21,8 +21,12 @@ Also: the singleton family `WeightedFamily.singleton` with `meanEntropy_singleto
 `meanInteraction_singleton`, `averagedLoss_singleton`, `isSparse_singleton_iff` and the
 quotient versions `meanEntropy_singleton_quotient`, `meanInteraction_singleton_quotient`.
 
-What this file does NOT prove: Theorem 8.2, and hence NOT Theorem 1.1 itself; the open proof
-obligation in `exponential_entropy_quotient` remains.
+`sparse_rigidity_of_family_rigidity` (item C3) proves the statement of Theorem 1.2
+(`sparse_rigidity`) from the same hypothesis, applied to the singleton family `{Z}`.
+
+What this file does NOT prove: Theorem 8.2, and hence NOT Theorem 1.1 or Theorem 1.2
+themselves; the open proof obligations in `exponential_entropy_quotient` and `sparse_rigidity`
+remain.
 -/
 
 universe u
@@ -158,5 +162,17 @@ theorem exponential_entropy_quotient_of_rigidity {V : Type u} [AddCommGroup V]
         exact sub_nonneg.mpr hc
       rw [← hzero]
       exact mul_nonneg h1ε.le hD
+
+/-- **Theorem 1.2 from Theorem 8.2**: the statement of `sparse_rigidity`, with Theorem 8.2 as
+the explicit hypothesis `hrig`, applied to the singleton family `{Z}`. -/
+theorem sparse_rigidity_of_family_rigidity {V : Type u} [AddCommGroup V]
+    [Module (ZMod 2) V] [Fintype V] (hrig : WeightedFamilyRigidity.{u})
+    (lam : ℝ) (hlam : 0 < lam ∧ lam < 1) (Z : PMF V)
+    (hsparse : IsSparse lam Z) (hpos : 0 < entropyBits Z) :
+    entropyDefect Z / entropyBits Z ≤ min 1 (320 / Real.logb 2 (1 / lam)) := by
+  have h := hrig V lam hlam (WeightedFamily.singleton Z)
+    ((WeightedFamily.isSparse_singleton_iff lam Z).mpr hsparse)
+    (by rw [WeightedFamily.meanEntropy_singleton]; exact hpos)
+  rwa [WeightedFamily.meanInteraction_singleton, WeightedFamily.meanEntropy_singleton] at h
 
 end EntropyLean
