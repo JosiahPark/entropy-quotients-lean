@@ -72,7 +72,7 @@ theorem meanInteraction_pair [AddCommMonoid V] (U Y : PMF V) :
     (pair U Y).meanInteraction =
       (entropyDefect U + entropyDefect Y) / 4 + interaction U Y / 2 := by
   show ∑ a : Bool, ∑ b : Bool, (1 / 2 : ℝ) * (1 / 2) * interaction (cond a U Y) (cond b U Y) = _
-  simp only [Fintype.sum_bool, cond_true, cond_false]
+  simp only [Fintype.sum_bool, Bool.cond_true, Bool.cond_false]
   rw [interaction_comm Y U, interaction_self, interaction_self]
   ring
 
@@ -93,7 +93,7 @@ theorem meanInteraction_pair_quotient [AddCommGroup V] [Module (ZMod 2) V] (U Y 
         interaction (U.map fun v => G.mkQ v) (Y.map fun v => G.mkQ v) / 2 := by
   show ∑ a : Bool, ∑ b : Bool, (1 / 2 : ℝ) * (1 / 2) *
       interaction ((cond a U Y).map fun v => G.mkQ v) ((cond b U Y).map fun v => G.mkQ v) = _
-  simp only [Fintype.sum_bool, cond_true, cond_false]
+  simp only [Fintype.sum_bool, Bool.cond_true, Bool.cond_false]
   rw [interaction_comm (Y.map fun v => G.mkQ v) (U.map fun v => G.mkQ v), interaction_self,
     interaction_self]
   ring
@@ -135,9 +135,7 @@ theorem two_input_almost_additivity_of_rigidity {V : Type u} [AddCommGroup V]
     rw [one_div, hinv, Real.logb_rpow (by norm_num) (by norm_num)]
   have hratio : 320 / Real.logb 2 (1 / lam) = α := by
     rw [hlog, hKdef]
-    first
-    | (field_simp; done)
-    | (field_simp; ring)
+    field_simp
   obtain ⟨G, hdim, hsp⟩ :=
     WeightedFamily.variational_sparsification_proof lam hlam_pos (WeightedFamily.pair U Y)
   rw [WeightedFamily.meanEntropy_pair] at hdim
