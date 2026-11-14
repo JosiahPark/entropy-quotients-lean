@@ -1,4 +1,5 @@
 import EntropyLean.Families
+import EntropyLean.Variational
 
 /-!
 # Main results of arXiv:2610.38525: statements (open) and the elementary steps (proved)
@@ -6,8 +7,9 @@ import EntropyLean.Families
 Every `sorry` below is an open proof obligation, **not** a certified theorem. The statements are
 checked against the paper (v1, 28 Oct 2026) but have not been independently reviewed.
 
-Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1,
-Proposition 9.3.
+Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1,
+Proposition 9.3. Lemma 9.1 (`variational_sparsification`) is proved from
+`WeightedFamily.variational_sparsification_proof` in `EntropyLean/Variational.lean`.
 
 Proved here: `entropy_le_of_defect_le` and `entropy_le_increment_of_defect_le`, the algebraic step
 in the proof of Theorem 1.1 turning `E(Z) ≤ θ H(Z)` with `θ = ε/(1+ε)` into
@@ -72,8 +74,8 @@ theorem variational_sparsification
     (lam : ℝ) (hlam : 0 < lam) (P : WeightedFamily V) :
     ∃ G : Submodule (ZMod 2) V,
       (Module.finrank (ZMod 2) G : ℝ) ≤ P.meanEntropy / lam ∧
-      (P.quotient G).IsSparse lam := by
-  sorry
+      (P.quotient G).IsSparse lam :=
+  WeightedFamily.variational_sparsification_proof lam hlam P
 
 /-- **Proposition 9.3** (exponential scale is necessary). If `C ε` is valid for every law on
 every `F₂^m` in the original-input form `dim G ≤ C(ε) H(X)`, `H(q_G X) ≤ (1+ε) D(X)`, then
