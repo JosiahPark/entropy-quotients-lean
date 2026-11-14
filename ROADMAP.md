@@ -203,12 +203,18 @@ and no hypotheses beyond the paper's.
   - [ ] D3c. Second half of (17): `averagedLoss_posterior_le : F_{Post 𝒫}(W) ≤ F_𝒫(W)`, and
         `posterior_closure` (posterior formation preserves averaged λ-sparsity).
         Split by the hourly task 2026-11-14:
-    - [ ] D3c1. Disintegration along `A + B`: `entropyBits_of_kernel` (`H(R) = H(c) + ∑ₜ c(t) H(K_t)`
+    - [x] D3c1. Disintegration along `A + B`: `entropyBits_of_kernel` (`H(R) = H(c) + ∑ₜ c(t) H(K_t)`
           when `R(a, t) = c(t) K_t(a)`), `kernel_masses_map`, `entropyBits_pair_sum`,
           `entropyBits_map_pair_sum`.
       - Written by the hourly task 2026-11-14 (uncompiled at push): `entropyBits_of_kernel`,
         `kernel_masses_map`, `conv_mul_posteriorLaw_toReal`, `pair_sum_masses`,
-        `entropyBits_pair_sum`, `entropyBits_map_pair_sum` (c54874b).
+        `entropyBits_pair_sum`, `entropyBits_map_pair_sum` (c54874b). CI green.
+      - Parallel version from an overlapping hourly run 2026-11-14 (`EntropyLean/PosteriorLoss.lean`,
+        7bbc47d, CI green): for any map `f`, the joint law `jointLaw P Q f` of `(f A, A + B)` and the
+        chain rule `sum_conv_mul_entropy_posterior_map :
+        ∑ₜ (P * Q)(t) H(f_* Q_t) = H(f A, A + B) − H(A + B)` (also `jointLaw_toReal`,
+        `jointLaw_map_snd`, `sum_jointLaw_toReal`, `posteriorLaw_map_toReal`, `mul_neg_div_logb_eq`,
+        `conv_mul_entropy_posterior_map`). D3c2 may use either version.
     - [ ] D3c2. `H(A, A + B) − H(q_W A, A + B) ≤ H(A) − H(q_W A)` from `condMutualInfo_nonneg`
           on `(A, A + B, q_W A)`, hence `∑ₜ (P * Q)(t) F_{Q_t}(W) ≤ F_P(W)`; averaging gives
           `averagedLoss_posterior_le` and `posterior_closure`.
