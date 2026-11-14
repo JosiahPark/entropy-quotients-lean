@@ -53,7 +53,7 @@ flowchart TD
   %% Section 9
   L91["Lemma 9.1: variational sparsification<br/>variational_sparsification"]:::proved
   T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient"]:::stated
-  C92["Corollary 9.2: two-input almost-additivity"]:::missing
+  C92["Corollary 9.2: two-input almost-additivity<br/>two_input_almost_additivity_of_rigidity (Theorem 8.2 as hypothesis)"]:::stated
   BEXP["Bernoulli expansions of h₂(p), 2h₂(p) − h₂(2p(1−p))"]:::missing
   P93["Proposition 9.3: exponential scale is necessary<br/>exponential_scale_necessary"]:::stated
   C94["Corollary 9.4: subspace-coset concentration"]:::missing
