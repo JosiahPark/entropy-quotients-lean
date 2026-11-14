@@ -13,10 +13,10 @@ processing (`entropyBits_map_le`) and subadditivity (`entropyBits_subadditive`) 
 Roadmap item B3b adds the upper bounds of (9): `H(P ⊗ Q) = H(P) + H(Q)` (`entropyBits_prodLaw`),
 hence `H(A + B) ≥ H(B)` and `H(A + B) ≥ H(A)` for independent `A`, `B` in a finite group
 (`entropyBits_le_conv_right`, `entropyBits_le_conv_left`), and `interaction_le_left`,
-`interaction_le_right`.
+`interaction_le_right`. Roadmap item B3c averages these: `meanInteraction_le : e(𝒫) ≤ h(𝒫)`, the
+upper half of (14).
 
-What this file does NOT prove: the averaged bound `e(𝒫) ≤ h(𝒫)` of (14) (roadmap item B3c),
-equation (15), or anything about quotients.
+What this file does NOT prove: equation (15), or anything about quotients.
 -/
 
 namespace EntropyLean
@@ -202,5 +202,27 @@ theorem interaction_le_right {V : Type*} [Fintype V] [AddGroup V] (P Q : PMF V) 
   have h := entropyBits_le_conv_left P Q
   unfold interaction
   linarith
+
+/-! ## Averaged upper bound `e(𝒫) ≤ h(𝒫)` (roadmap item B3c) -/
+
+/-- Upper half of equation (14): `e(𝒫) ≤ h(𝒫)`, by averaging `s(P_i, P_j) ≤ H(P_i)`. -/
+theorem WeightedFamily.meanInteraction_le {V : Type*} [Fintype V] [AddGroup V]
+    (P : WeightedFamily V) : P.meanInteraction ≤ P.meanEntropy := by
+  have hrow : ∀ i, ∑ j, P.weights i * P.weights j * interaction (P.laws i) (P.laws j) ≤
+      P.weights i * entropyBits (P.laws i) := by
+    intro i
+    calc ∑ j, P.weights i * P.weights j * interaction (P.laws i) (P.laws j)
+        ≤ ∑ j, P.weights i * P.weights j * entropyBits (P.laws i) := by
+          refine Finset.sum_le_sum fun j _ => ?_
+          exact mul_le_mul_of_nonneg_left (interaction_le_left _ _)
+            (mul_nonneg (P.weights_pos i).le (P.weights_pos j).le)
+      _ = P.weights i * entropyBits (P.laws i) * ∑ j, P.weights j := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun j _ => ?_
+          ring
+      _ = P.weights i * entropyBits (P.laws i) := by
+          rw [P.weights_sum, mul_one]
+  unfold WeightedFamily.meanInteraction WeightedFamily.meanEntropy
+  exact Finset.sum_le_sum fun i _ => hrow i
 
 end EntropyLean
