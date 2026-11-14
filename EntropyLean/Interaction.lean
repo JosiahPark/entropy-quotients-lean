@@ -98,12 +98,12 @@ theorem prodLaw_apply {α β : Type*} [Fintype α] [Fintype β] (P : PMF α) (Q 
   · rw [PMF.map_apply, tsum_fintype, Finset.sum_eq_single b]
     · simp
     · intro b' _ hb'
-      simp [hb', Ne.symm hb']
+      simp [Ne.symm hb']
     · intro hb
       exact absurd (Finset.mem_univ b) hb
   · intro a' _ ha'
     rw [PMF.map_apply, tsum_fintype]
-    simp [ha', Ne.symm ha']
+    simp [Ne.symm ha']
   · intro ha
     exact absurd (Finset.mem_univ a) ha
 
@@ -139,8 +139,8 @@ theorem entropyBits_prodLaw {α β : Type*} [Fintype α] [Fintype β] (P : PMF �
 theorem fst_add_injective {V : Type*} [AddGroup V] :
     Function.Injective (fun x : V × V => (x.1, x.1 + x.2)) := by
   intro x y h
-  have h1 : x.1 = y.1 := congrArg Prod.fst h
-  have h2 : x.1 + x.2 = y.1 + y.2 := congrArg Prod.snd h
+  have h' : (x.1, x.1 + x.2) = (y.1, y.1 + y.2) := h
+  obtain ⟨h1, h2⟩ := Prod.mk.inj h'
   rw [h1] at h2
   exact Prod.ext h1 (add_left_cancel h2)
 
