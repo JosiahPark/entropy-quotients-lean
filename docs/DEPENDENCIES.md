@@ -30,7 +30,7 @@ flowchart TD
   DP["Data processing: D(q_G X) ≤ D(X)<br/>entropyIncrement_quotient_le"]:::proved
   E15["(15): h(𝒫 * 𝒫) = 2h(𝒫) − e(𝒫)<br/>meanEntropy_convFamily"]:::proved
   QC["Quotient commutes with convolution<br/>conv_map_mkQ"]:::proved
-  L21["Lemma 2.1: F_P supermodular"]:::missing
+  L21["Lemma 2.1: F_P supermodular<br/>quotient_entropy_supermodular"]:::proved
   L22["Lemma 2.2: posterior closure"]:::missing
 
   %% Sections 3-7
