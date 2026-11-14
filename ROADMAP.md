@@ -178,8 +178,14 @@ and no hypotheses beyond the paper's.
     `−d log d ≤ 1 − d` in place of `d log₂(1/d) ≤ 1/(e ln 2)` and still gives `< 311 + 2/ln 2`.
     CI green at 2869a24 (checked in the same run); linter clean-up in 1a94cc0; ARITH marked
     proved in docs/DEPENDENCIES.md (e12507d).
-- [ ] D2. Theorem 8.2 from Lemma 8.1: `weighted_family_rigidity_of_growth`, with Lemma 8.1 as an
+- [x] D2. Theorem 8.2 from Lemma 8.1: `weighted_family_rigidity_of_growth`, with Lemma 8.1 as an
       explicit hypothesis, using D1.
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `FiniteF2Family`, `RatioGrowth`
+    (Lemma 8.1 as a `Prop`, with `d ≥ 40√λ` written `1600 λ ≤ d²`), `ratio_le_one_aux`,
+    `ratio_iteration`, `weighted_family_rigidity_of_growth`, `exponential_entropy_quotient_of_growth`,
+    `sparse_rigidity_of_growth` (`EntropyLean/RatioGrowth.lean`, c74880f). Theorem 8.2 itself stays
+    open. CI green at c74880f (checked in the same run; job log not readable this run, so linter
+    warnings unchecked); L81 marked stated in docs/DEPENDENCIES.md (6aed3f7).
 - [ ] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
 - [ ] D5. Lemma 5.1: averaged density estimate (28)–(29).
