@@ -36,7 +36,7 @@ flowchart TD
   %% Sections 3-7
   L31["Lemma 3.1: fibring, nested interaction (20)–(22)"]:::proved
   L41["Lemma 4.1: ratio-preserving sparsification<br/>ratio_preserving_sparsification"]:::proved
-  L51["Lemma 5.1: averaged density estimate"]:::missing
+  L51["Lemma 5.1: averaged density estimate"]:::proved
   L61["Lemma 6.1: four-sample splitting"]:::missing
   L62["Lemma 6.2: conditional BSG inequality"]:::missing
   L63["Lemma 6.3: posterior doubling estimate"]:::missing
