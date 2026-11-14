@@ -34,7 +34,7 @@ flowchart TD
   L22["Lemma 2.2: posterior closure"]:::proved
 
   %% Sections 3-7
-  L31["Lemma 3.1: fibring, nested interaction (20)–(22)"]:::missing
+  L31["Lemma 3.1: fibring, nested interaction (20)–(22)"]:::proved
   L41["Lemma 4.1: ratio-preserving sparsification<br/>ratio_preserving_sparsification"]:::proved
   L51["Lemma 5.1: averaged density estimate"]:::missing
   L61["Lemma 6.1: four-sample splitting"]:::missing
