@@ -227,12 +227,15 @@ and no hypotheses beyond the paper's.
         lives in `Type`).
 - [ ] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
       Split by the hourly task 2026-11-14 (`EntropyLean/Fibring.lean`):
-  - [ ] D4a. Fibre interaction `s_W` (18) along an additive map, the fibring identity (20) and (21).
+  - [x] D4a. Fibre interaction `s_W` (18) along an additive map, the fibring identity (20) and (21).
     - Written by the hourly task 2026-11-14 (uncompiled at push): `prodLaw_map_right`,
       `prodLaw_map_both`, `fibreJoint`, `fibreInteraction`, `fibreTriple`, `fibreMutualInfo`,
       `fibreMutualInfo_nonneg`, `fibreInteraction_eq`, `fibreMutualInfo_eq`, `interaction_fibring`,
       `interaction_sub_le_fibre`, `subspaceInteraction`, `interaction_fibring_quot`,
       `interaction_sub_le_subspace` (57d684c). Proof: `I(A + B ; (q A, q B) | q (A + B)) ≥ 0`.
+      First push failed CI (`congrArg Prod.fst` in the injectivity step of `fibreMutualInfo_eq`);
+      fixed with `Prod.mk.inj` in 118d4a3, CI green. An overlapping hourly run wrote a different
+      `Fibring.lean` in 6683d9c (`fiberInteraction`, `fibringDefect`), which 57d684c replaced.
   - [ ] D4b. Equation (19): `0 ≤ s_W(P, Q) ≤ min(F_P(W), F_Q(W))` (`subspaceInteraction_nonneg`,
         `subspaceInteraction_le_left`, `subspaceInteraction_le_right`).
   - [ ] D4c. Nested inequality (22) via (23): for `U ≤ W`,
