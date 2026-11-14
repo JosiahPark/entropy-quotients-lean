@@ -124,7 +124,7 @@ and no hypotheses beyond the paper's.
     `WeightedFamily.variational_sparsification_proof` (`EntropyLean/Variational.lean`, dd5dc59);
     the `sorry` in `variational_sparsification` (`EntropyLean/Statements.lean`) is replaced by it.
     CI green at 39edb78; L91 marked proved in docs/DEPENDENCIES.md (8f50e25).
-- [ ] C2. Conditional Theorem 1.1: `exponential_entropy_quotient_of_rigidity`, proving the
+- [x] C2. Conditional Theorem 1.1: `exponential_entropy_quotient_of_rigidity`, proving the
       statement of Theorem 1.1 from Lemma 9.1, B5, `entropy_le_increment_of_defect_le` and
       Theorem 8.2 taken as an explicit hypothesis. Also the singleton family
       `WeightedFamily.singleton` and `meanEntropy_singleton`.
@@ -133,9 +133,11 @@ and no hypotheses beyond the paper's.
     `isSparse_singleton_iff`, `meanEntropy_singleton_quotient`,
     `meanInteraction_singleton_quotient`, `WeightedFamilyRigidity` (Theorem 8.2 as a `Prop`),
     `entropy_le_of_defect_le_aux`, `exponential_entropy_quotient_of_rigidity`
-    (`EntropyLean/Conditional.lean`, eb65786). Theorem 1.1 itself stays open.
+    (`EntropyLean/Conditional.lean`, eb65786). Theorem 1.1 itself stays open. CI green.
 - [ ] C3. Theorem 1.2 from Theorem 8.2: `sparse_rigidity_of_family_rigidity` via the singleton
       family (Theorem 8.2 as an explicit hypothesis).
+  - Written by the hourly task 2026-11-14 (uncompiled at push): `sparse_rigidity_of_family_rigidity`
+    (`EntropyLean/Conditional.lean`, 6af3de7). Theorem 1.2 itself stays open.
 - [ ] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,
       B3, B4).
 - [ ] C5. Corollary 9.2: statement, and its proof from Lemma 9.1, B5 and Theorem 8.2 as a
