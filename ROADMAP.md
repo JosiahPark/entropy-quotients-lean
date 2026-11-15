@@ -485,6 +485,9 @@ and no hypotheses beyond the paper's.
         then with `posterior_doubling` (34) get `e(𝒬) ≤ ∑ m(x) m(y) s_{W(x,y)}(Q_x, Q_y) + 36 J` and
         (38) `∑ m(x) m(y) dim W(x, y) ≤ 26 h(𝒬)` (`EntropyLean/SparsePosterior.lean`,
         `posterior_interaction_le_subspace`, `posterior_mean_dim_le`).
+    - Written by the formalize task 2026-11-15 16:55 UTC (uncompiled at push): `postMass_nonneg`,
+      `postSubspace`, `postSubspace_spec`, `posterior_interaction_le_subspace`,
+      `posterior_mean_dim_le` (2861748). `W(x, y)` is `postSubspace P hM x y`.
   - [ ] D8c. Lemma 5.1 (`averaged_density_lemma`, (29)) for the `ρ`-sparse family `𝒬` with the
         subspace choice of D8b bounds the first term by `14 √ρ h(𝒬)`; with `meanEntropy_posterior`
         (`h(𝒬) = e(𝒫) = δH`) conclude `sparse_posterior_estimate` (37)
