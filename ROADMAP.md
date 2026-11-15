@@ -480,14 +480,15 @@ and no hypotheses beyond the paper's.
     - Written by the formalize task 2026-11-15 16:47 UTC (uncompiled at push):
       `interaction_quot_le_entropyBits_conv`, `interaction_le_subspace_add_increment` (a1b87ac).
       CI green at a1b87ac (checked in the same run).
-  - [ ] D8b. Average D8a over posterior pairs `(x, y)` with weights `m(x) m(y)` (`m = postMass`,
+  - [x] D8b. Average D8a over posterior pairs `(x, y)` with weights `m(x) m(y)` (`m = postMass`,
         all triples as in `meanInteraction_posterior_full`): choose `W(x, y)` by `Classical.choose`,
         then with `posterior_doubling` (34) get `e(𝒬) ≤ ∑ m(x) m(y) s_{W(x,y)}(Q_x, Q_y) + 36 J` and
         (38) `∑ m(x) m(y) dim W(x, y) ≤ 26 h(𝒬)` (`EntropyLean/SparsePosterior.lean`,
         `posterior_interaction_le_subspace`, `posterior_mean_dim_le`).
     - Written by the formalize task 2026-11-15 16:55 UTC (uncompiled at push): `postMass_nonneg`,
       `postSubspace`, `postSubspace_spec`, `posterior_interaction_le_subspace`,
-      `posterior_mean_dim_le` (2861748). `W(x, y)` is `postSubspace P hM x y`.
+      `posterior_mean_dim_le` (2861748). `W(x, y)` is `postSubspace P hM x y`. CI green at 2861748
+      (checked in the same run; job log not readable, so linter warnings unchecked).
   - [ ] D8c. Lemma 5.1 (`averaged_density_lemma`, (29)) for the `ρ`-sparse family `𝒬` with the
         subspace choice of D8b bounds the first term by `14 √ρ h(𝒬)`; with `meanEntropy_posterior`
         (`h(𝒬) = e(𝒫) = δH`) conclude `sparse_posterior_estimate` (37)
