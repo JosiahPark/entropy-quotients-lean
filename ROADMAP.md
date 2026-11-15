@@ -331,21 +331,35 @@ and no hypotheses beyond the paper's.
         Lemma 6.1 (32) `e(𝒫 * 𝒫) + e(Post 𝒫) = 2δH + J` (`EntropyLean/FourSample.lean`,
         `four_sample_splitting`). Split by the hourly task 2026-11-15 (conditioning on `T` is a
         weighted sum over index tuples, so each step is first proved for four fixed laws):
-    - [ ] D6c1. Fixed laws `P₁, …, P₄`: `fourProd`, the law `fourLaw` of `(A, B, S)`,
+    - [x] D6c1. Fixed laws `P₁, …, P₄`: `fourProd`, the law `fourLaw` of `(A, B, S)`,
           `fourJ = I(A ; B | S)`, `H(A | S) = s(P₁ * P₂, P₃ * P₄)`, `H(B | S) = s(P₁ * P₃, P₂ * P₄)`,
           and `fourJ = H(B | S) − (H(A, B, S) − H(A, S))` (`EntropyLean/FourSample.lean`).
       - Written by the hourly task 2026-11-15 (uncompiled at push): `fourProd`, `fourABS`, `fourLaw`,
         `fourJ`, `fourJ_nonneg`, `fourSwap`, `fourSwap_injective`, `fourProd_swap`, `fourPairSums`,
         `fourAS`, `fourS`, `fourProd_map_pairSums`, `entropyBits_fourAS_sub`, `fourLaw_map_AC`,
         `fourLaw_map_C`, `fourLaw_map_BC`, `fourLaw_map_C_swap`, `fourLaw_condEntropy_A`,
-        `fourLaw_condEntropy_B`, `fourJ_eq` (82be130).
-    - [ ] D6c2. Posterior formula at fixed laws: `H(A, B, S) − H(A, S) =
+        `fourLaw_condEntropy_B`, `fourJ_eq` (82be130). First push failed CI (`fourLaw_map_BC`,
+        `fourLaw_map_C_swap` omitted `[Fintype V]`, needed by `fourProd_swap`); fixed in 80a5299, CI green.
+    - [x] D6c2. Posterior formula at fixed laws: `H(A, B, S) − H(A, S) =
           ∑_{a,c} (P₁ * P₂)(a) (P₃ * P₄)(c) H(Q_{12,a} * Q_{34,c})` with `Q_{12,a} = posteriorLaw P₁ P₂ a`,
-          via `entropyBits_of_kernel` on `(B, (A, S))` (`EntropyLean/FourSamplePosterior.lean`).
+          via `entropyBits_of_kernel` on `(B, (A, C))`, `C = X₃ + X₄` (`EntropyLean/FourSamplePosterior.lean`).
+      - Written by the hourly task 2026-11-15 (uncompiled at push): `fourPostJoint`,
+        `fourPostJoint_kernel`, `fourPost_masses`, `entropyBits_fourPost`, `fourPhi_injective`,
+        `fourLaw_eq_map_post`, `entropyBits_fourLaw_AC`, `fourLaw_condEntropy_B_given_AS` (dfed001).
+        First push failed CI (`isDefEq` timeout in the term-mode `entropyBits_fourPost`); fixed with
+        explicit kernel arguments in 274edd4, CI green.
     - [ ] D6c3. Averaging over `T` with weights `a_{i₁} a_{i₂} a_{i₃} a_{i₄}`: define
           `WeightedFamily.fourSampleJ`, reindex `∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄}) = e(𝒫 * 𝒫)` and
           the posterior sum as `2h(Post 𝒫) − e(Post 𝒫)`, and with `meanEntropy_posterior` prove
-          `four_sample_splitting : e(𝒫 * 𝒫) + e(Post 𝒫) = 2e(𝒫) + J`.
+          `four_sample_splitting : e(𝒫 * 𝒫) + e(Post 𝒫) = 2e(𝒫) + J`. Split by the hourly task 2026-11-15:
+      - [ ] D6c3a. `e(Post 𝒫) = 2e(𝒫) − ∑_{x,y} m(x) m(y) H(Q_x * Q_y)` over all triples
+            `x = (i, j, t)` with `m = postMass` (`EntropyLean/PosteriorInteraction.lean`).
+        - Written by the hourly task 2026-11-15 (uncompiled at push): `postLawAt`, `postMass_eq_zero`,
+          `sum_posterior_index`, `sum_postMass_mul_entropy`, `postPairTerm`,
+          `meanInteraction_posterior_full`, `meanInteraction_posterior_eq` (2cac57b).
+      - [ ] D6c3b. `WeightedFamily.fourSampleJ`, `e(𝒫 * 𝒫) = ∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄})`,
+            reordering the posterior double sum into `∑_T ∑_{a,c}` (from D6c2), and
+            `four_sample_splitting` (`EntropyLean/FourSampleSplitting.lean`).
   - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
