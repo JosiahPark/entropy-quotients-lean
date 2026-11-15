@@ -53,7 +53,7 @@ theorem four_posterior_doubling_fixed (P₁ P₂ P₃ P₄ : PMF V) :
   rw [h1]
   refine Finset.sum_comm.trans ?_
   refine Finset.sum_congr rfl fun b _ => ?_
-  refine ((Equiv.addLeft b).sum_comp (fun s =>
+  refine (Equiv.sum_comp (Equiv.addLeft b) (fun s =>
     (((acsLaw P₁ P₂ P₃ P₄).map Prod.snd) s).toReal *
       (sumLaw (condKernel (acsLaw P₁ P₂ P₃ P₄) s) b).toReal *
       entropyIncrement (fibreLaw (condKernel (acsLaw P₁ P₂ P₃ P₄) s) b))).symm.trans ?_
