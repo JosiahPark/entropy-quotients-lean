@@ -41,7 +41,7 @@ flowchart TD
   L62["Lemma 6.2: conditional BSG inequality"]:::proved
   L63["Lemma 6.3: posterior doubling estimate"]:::proved
   MAR["Entropic Marton theorem (35)<br/>Gowers–Green–Manners–Tao"]:::external
-  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)"]:::missing
+  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)"]:::stated
   L71["Lemma 7.1: sparse posterior estimate"]:::missing
 
   %% Section 8
