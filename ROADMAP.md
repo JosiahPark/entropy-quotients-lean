@@ -440,7 +440,16 @@ and no hypotheses beyond the paper's.
         `uniformSub_apply` (`U_W(v) = 2^(−dim W)` on `W`, `0` off `W`), `entropyBits_uniformSub :
         H(U_W) = dim W`, and `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (given
         `q_W(A + U)`, the law of `A + U` is uniform on that coset), hence
-        `ruzsaDist_uniformSub : d(K, U_W) = H(q_W K) + (dim W − H(K)) / 2`. Split if too large.
+        `ruzsaDist_uniformSub : d(K, U_W) = H(q_W K) + (dim W − H(K)) / 2`. Split by the formalize task
+        2026-11-15:
+    - [ ] D7b1. Masses of `U_W` (`uniformSub_toReal`: `1 / |W|` on `W`, `0` off `W`), `|W| = 2 ^ dim W`
+          (`subCard_eq`), and `entropyBits_uniformSub : H(U_W) = dim W`.
+      - Written by the formalize task 2026-11-15 13:50 UTC (uncompiled at push): `subCard`,
+        `tsum_subIndicator`, `subCard_pos`, `uniformSub_toReal`, `entropyBits_uniformSub_card`,
+        `subCard_eq`, `entropyBits_uniformSub` (579fad9).
+    - [ ] D7b2. `(K * U_W)(v) = (q_W K)(q_W v) / |W|` (`conv_uniformSub_toReal`), hence
+          `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` and `ruzsaDist_uniformSub`
+          (in a new file importing `EntropyLean.MartonSmoothing` if needed).
   - [ ] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
         `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
         hypotheses) (`EntropyLean/MartonSmoothing.lean`).
