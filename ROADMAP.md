@@ -383,7 +383,7 @@ and no hypotheses beyond the paper's.
         `acs_map_A`, `acs_map_C`, `acs_map_S`, `acs_map_B`, `entropyBits_acsLaw`, `four_conditional_bsg`
         (1a364e5). CI green at 1a364e5. The bound is stated with `H(C | S)`; the identity
         `H(C | S) = s(P₂ * P₃, P₁ * P₄)` is left to D6d3.
-    - [ ] D6d3. Identify `Law(A | B = b, S = s) = Q_{13,b} * Q_{24,s+b}` (posterior laws of `(P₁, P₃)`
+    - [x] D6d3. Identify `Law(A | B = b, S = s) = Q_{13,b} * Q_{24,s+b}` (posterior laws of `(P₁, P₃)`
           and `(P₂, P₄)`) with joint weight `(P₁ * P₃)(b) (P₂ * P₄)(s + b)`, and over F₂ the Ruzsa
           term as `D(Q_{13,b} * Q_{24,s+b})` (`four_posterior_doubling_fixed`).
           Split by the formalize task 2026-11-15:
@@ -404,13 +404,13 @@ and no hypotheses beyond the paper's.
           (`EntropyLean/PosteriorDoublingFixed.lean`, 5ee3558). First push failed CI
           (`(Equiv.addLeft b).sum_comp` resolved to `Equiv.Perm.sum_comp`); fixed with
           `Equiv.sum_comp` in d652178, CI green.
-      - [ ] D6d3c. `H(C | S) = s(P₂ * P₃, P₁ * P₄)` over F₂ (`C = X₂ + X₃`; exchange coordinates as in
+      - [x] D6d3c. `H(C | S) = s(P₂ * P₃, P₁ * P₄)` over F₂ (`C = X₂ + X₃`; exchange coordinates as in
             `fourLaw_condEntropy_B`) (`fourLaw_condEntropy_C`).
         - Written by the formalize task 2026-11-15 04:10 UTC (uncompiled at push): `fourRot`,
           `fourRot_injective`, `fourProd_rot`, `fourLaw_map_CS`, `fourLaw_map_C_rot`,
           `fourLaw_condEntropy_C`, `four_posterior_doubling_interaction` (the fixed-law bound with
           `3 J + 2 s(P₂ * P₃, P₁ * P₄) − s(P₁ * P₃, P₂ * P₄) − s(P₁ * P₂, P₃ * P₄)` on the right)
-          (`EntropyLean/PosteriorDoublingC.lean`, 1abdff1).
+          (`EntropyLean/PosteriorDoublingC.lean`, 1abdff1). CI green at 1abdff1.
     - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
           `m = postMass`, show the averaged `H(A | S, T)`, `H(B | S, T)`, `H(C | S, T)` all equal
           `e(𝒫 * 𝒫)`, and conclude `posterior_doubling` (34).
