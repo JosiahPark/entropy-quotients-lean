@@ -327,7 +327,7 @@ and no hypotheses beyond the paper's.
         `conditional_bsg` (`EntropyLean/ConditionalBSGLemma.lean`, caefe56; a separate file because
         `DoubleTrial.lean` imports `ConditionalBSG.lean`). CI green at caefe56; L62 marked proved in
         docs/DEPENDENCIES.md (d37b9f2).
-  - [ ] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
+  - [x] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
         Lemma 6.1 (32) `e(𝒫 * 𝒫) + e(Post 𝒫) = 2δH + J` (`EntropyLean/FourSample.lean`,
         `four_sample_splitting`). Split by the hourly task 2026-11-15 (conditioning on `T` is a
         weighted sum over index tuples, so each step is first proved for four fixed laws):
@@ -348,18 +348,23 @@ and no hypotheses beyond the paper's.
         `fourLaw_eq_map_post`, `entropyBits_fourLaw_AC`, `fourLaw_condEntropy_B_given_AS` (dfed001).
         First push failed CI (`isDefEq` timeout in the term-mode `entropyBits_fourPost`); fixed with
         explicit kernel arguments in 274edd4, CI green.
-    - [ ] D6c3. Averaging over `T` with weights `a_{i₁} a_{i₂} a_{i₃} a_{i₄}`: define
+    - [x] D6c3. Averaging over `T` with weights `a_{i₁} a_{i₂} a_{i₃} a_{i₄}`: define
           `WeightedFamily.fourSampleJ`, reindex `∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄}) = e(𝒫 * 𝒫)` and
           the posterior sum as `2h(Post 𝒫) − e(Post 𝒫)`, and with `meanEntropy_posterior` prove
           `four_sample_splitting : e(𝒫 * 𝒫) + e(Post 𝒫) = 2e(𝒫) + J`. Split by the hourly task 2026-11-15:
-      - [ ] D6c3a. `e(Post 𝒫) = 2e(𝒫) − ∑_{x,y} m(x) m(y) H(Q_x * Q_y)` over all triples
+      - [x] D6c3a. `e(Post 𝒫) = 2e(𝒫) − ∑_{x,y} m(x) m(y) H(Q_x * Q_y)` over all triples
             `x = (i, j, t)` with `m = postMass` (`EntropyLean/PosteriorInteraction.lean`).
         - Written by the hourly task 2026-11-15 (uncompiled at push): `postLawAt`, `postMass_eq_zero`,
           `sum_posterior_index`, `sum_postMass_mul_entropy`, `postPairTerm`,
-          `meanInteraction_posterior_full`, `meanInteraction_posterior_eq` (2cac57b).
-      - [ ] D6c3b. `WeightedFamily.fourSampleJ`, `e(𝒫 * 𝒫) = ∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄})`,
+          `meanInteraction_posterior_full`, `meanInteraction_posterior_eq` (2cac57b). CI green.
+      - [x] D6c3b. `WeightedFamily.fourSampleJ`, `e(𝒫 * 𝒫) = ∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄})`,
             reordering the posterior double sum into `∑_T ∑_{a,c}` (from D6c2), and
             `four_sample_splitting` (`EntropyLean/FourSampleSplitting.lean`).
+        - Written by the hourly task 2026-11-15 (uncompiled at push): `sum_reorder3`, `fourSampleJ`,
+          `fourSampleJ_nonneg`, `fourPostTerm`, `fourSampleJ_eq`, `meanInteraction_convFamily_four`,
+          `sum_postMass_conv_eq`, `four_sample_splitting` (Lemma 6.1, (32), with `2δH = 2e(𝒫)`)
+          (71dc6e3). CI green at 71dc6e3 (checked in the same run); L61 marked proved in
+          docs/DEPENDENCIES.md (04c1579).
   - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
