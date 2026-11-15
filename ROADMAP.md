@@ -406,6 +406,11 @@ and no hypotheses beyond the paper's.
           `Equiv.sum_comp` in d652178, CI green.
       - [ ] D6d3c. `H(C | S) = s(P₂ * P₃, P₁ * P₄)` over F₂ (`C = X₂ + X₃`; exchange coordinates as in
             `fourLaw_condEntropy_B`) (`fourLaw_condEntropy_C`).
+        - Written by the formalize task 2026-11-15 04:10 UTC (uncompiled at push): `fourRot`,
+          `fourRot_injective`, `fourProd_rot`, `fourLaw_map_CS`, `fourLaw_map_C_rot`,
+          `fourLaw_condEntropy_C`, `four_posterior_doubling_interaction` (the fixed-law bound with
+          `3 J + 2 s(P₂ * P₃, P₁ * P₄) − s(P₁ * P₃, P₂ * P₄) − s(P₁ * P₂, P₃ * P₄)` on the right)
+          (`EntropyLean/PosteriorDoublingC.lean`, 1abdff1).
     - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
           `m = postMass`, show the averaged `H(A | S, T)`, `H(B | S, T)`, `H(C | S, T)` all equal
           `e(𝒫 * 𝒫)`, and conclude `posterior_doubling` (34).
