@@ -436,7 +436,7 @@ and no hypotheses beyond the paper's.
       CI (`PMF.uniformOfFinset` no longer exists in Mathlib; `uniformSub` is now `PMF.normalize` of
       the indicator of `W`); fixed in bee7b79, CI green; linter clean-up in 0ad4f28. E36 marked
       stated in docs/DEPENDENCIES.md.
-  - [ ] D7b. Entropy of the uniform law and uniform smoothing (`EntropyLean/MartonSmoothing.lean`):
+  - [x] D7b. Entropy of the uniform law and uniform smoothing (`EntropyLean/MartonSmoothing.lean`):
         `uniformSub_apply` (`U_W(v) = 2^(−dim W)` on `W`, `0` off `W`), `entropyBits_uniformSub :
         H(U_W) = dim W`, and `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (given
         `q_W(A + U)`, the law of `A + U` is uniform on that coset), hence
@@ -449,7 +449,7 @@ and no hypotheses beyond the paper's.
         `subCard_eq`, `entropyBits_uniformSub` (579fad9). First push failed CI (`DecidablePred` for
         `Finset.sum_ite` in `tsum_subIndicator`, fixed with `open Classical in`); fixed with linter
         clean-up in eedc194, CI green (checked in the same run).
-    - [ ] D7b2. `(K * U_W)(v) = (q_W K)(q_W v) / |W|` (`conv_uniformSub_toReal`), hence
+    - [x] D7b2. `(K * U_W)(v) = (q_W K)(q_W v) / |W|` (`conv_uniformSub_toReal`), hence
           `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` and `ruzsaDist_uniformSub`
           (in a new file importing `EntropyLean.MartonSmoothing` if needed). Split by the formalize task
           2026-11-15:
@@ -457,14 +457,17 @@ and no hypotheses beyond the paper's.
             `sum_comp_mkQ : ∑_v g(q_W v) = |W| ∑_x g(x)` (`EntropyLean/MartonConv.lean`).
         - Written by the formalize task 2026-11-15 15:55 UTC (uncompiled at push): `sub_mem_iff_mkQ_eq`,
           `conv_uniformSub_toReal`, `card_mkQ_fibre`, `sum_comp_mkQ` (0606f43). CI green at 0606f43.
-      - [ ] D7b2b. `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (split `−c log c` with
+      - [x] D7b2b. `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (split `−c log c` with
             `c(v) = (q_W K)(q_W v) / |W|`, then `sum_comp_mkQ` and `∑_v c(v) = 1`) and
             `ruzsaDist_uniformSub` (`EntropyLean/MartonConvEntropy.lean`).
         - Written by the formalize task 2026-11-15 16:26 UTC (uncompiled at push): `uniformSmooth_term_eq`,
           `sum_smooth_comp_mkQ`, `entropyBits_conv_uniformSub`, `ruzsaDist_uniformSub` (df6bb0c).
+          CI green at df6bb0c (checked in the same run; job log not readable, so linter warnings
+          unchecked).
   - [ ] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
         `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
-        hypotheses) (`EntropyLean/MartonSmoothing.lean`).
+        hypotheses) (`EntropyLean/MartonConsequence.lean`, importing `EntropyLean.MartonConvEntropy`:
+        `ruzsaDist_uniformSub` is not available in `MartonSmoothing.lean`, which that file imports).
 - [ ] D8. Lemma 7.1 from D4–D7.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
