@@ -288,7 +288,7 @@ and no hypotheses beyond the paper's.
     - Written by the hourly task 2026-11-14 (uncompiled at push): `ruzsaDist`, `ruzsaDist_self`,
       `ruzsaDist_eq_sub_interaction`, `ruzsaDist_comm`, `ruzsaDist_nonneg`, `conv_map_add_const`,
       `ruzsaDist_map_add_const`, `ruzsaDist_translate_self`, `entropyBits_submodular` (0dc2f93). CI green at 0dc2f93.
-  - [ ] D6b. Lemma 6.2 (33) for a joint law `R` of `(U, V)` on a finite F₂-space: conditional laws
+  - [x] D6b. Lemma 6.2 (33) for a joint law `R` of `(U, V)` on a finite F₂-space: conditional laws
         `Law(U | Z = z)`, `Law(V | Z = z)` of `Z = U + V`, the conditionally independent double
         trial given `Z`, and `∑_z R_Z(z) d(Law(U | z), Law(V | z)) ≤ 3I(U ; V) + 2H(Z) − H(U) − H(V)`
         (`EntropyLean/ConditionalBSG.lean`, `conditional_bsg`). Split by the hourly task 2026-11-14:
@@ -300,7 +300,7 @@ and no hypotheses beyond the paper's.
         `sumLaw_toReal`, `fibreLaw`, `fibreLawSnd`, `fibreLaw_toReal`, `sumLaw_mul_fibreLaw_toReal`,
         `fibrePair_masses`, `entropyBits_fibre_chain`, `sub_eq_add_of_zmod2`, `ruzsaDist_fibreLaw`,
         `sum_ruzsaDist_fibreLaw` (a43f76d). CI green at a43f76d.
-    - [ ] D6b2. Conditionally independent double trial: the law `T` of `(U₁, U₂, Z)` with masses
+    - [x] D6b2. Conditionally independent double trial: the law `T` of `(U₁, U₂, Z)` with masses
           `R_Z(z) K_z(a) K_z(b)`, `H(T) = 2H(U, V) − H(Z)`, marginals of `(U₁, V₂ = U₂ + Z)` and
           `(V₁ = U₁ + Z, U₂)` with entropy `≤ H(U) + H(V)`, and via `entropyBits_submodular` (both
           pairs determine `W = U₁ + V₂`) `H(W) ≤ 2I(U ; V) + H(Z)` (`double_trial_sum_le`).
@@ -320,15 +320,32 @@ and no hypotheses beyond the paper's.
             H(W) ≤ 2 * mutualInfo R + H(Z)` (`EntropyLean/DoubleTrial.lean`).
         - Written by the hourly task 2026-11-15 (uncompiled at push): `dtSum`, `dtTriple`, `withSum`,
           `withSum_injective`, `dtTriple_injective`, `double_trial_sum_le` (09f86df). CI green at 09f86df.
-    - [ ] D6b3. `∑_z R_Z(z) H(K_z * K_z) ≤ H(W)` (kernel formula for `(W, Z)` and `H(W | Z) ≤ H(W)`),
+    - [x] D6b3. `∑_z R_Z(z) H(K_z * K_z) ≤ H(W)` (kernel formula for `(W, Z)` and `H(W | Z) ≤ H(W)`),
           then `conditional_bsg` (33) from `sum_ruzsaDist_fibreLaw` and D6b2.
       - Written by the hourly task 2026-11-15 (uncompiled at push): `dtSumPair`, `shiftPair`,
         `shiftPair_injective`, `entropyBits_dtSumPair`, `doubleTrial_map_Z`, `sum_conv_fibreLaw_le`,
         `conditional_bsg` (`EntropyLean/ConditionalBSGLemma.lean`, caefe56; a separate file because
-        `DoubleTrial.lean` imports `ConditionalBSG.lean`).
+        `DoubleTrial.lean` imports `ConditionalBSG.lean`). CI green at caefe56; L62 marked proved in
+        docs/DEPENDENCIES.md (d37b9f2).
   - [ ] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
         Lemma 6.1 (32) `e(𝒫 * 𝒫) + e(Post 𝒫) = 2δH + J` (`EntropyLean/FourSample.lean`,
-        `four_sample_splitting`).
+        `four_sample_splitting`). Split by the hourly task 2026-11-15 (conditioning on `T` is a
+        weighted sum over index tuples, so each step is first proved for four fixed laws):
+    - [ ] D6c1. Fixed laws `P₁, …, P₄`: `fourProd`, the law `fourLaw` of `(A, B, S)`,
+          `fourJ = I(A ; B | S)`, `H(A | S) = s(P₁ * P₂, P₃ * P₄)`, `H(B | S) = s(P₁ * P₃, P₂ * P₄)`,
+          and `fourJ = H(B | S) − (H(A, B, S) − H(A, S))` (`EntropyLean/FourSample.lean`).
+      - Written by the hourly task 2026-11-15 (uncompiled at push): `fourProd`, `fourABS`, `fourLaw`,
+        `fourJ`, `fourJ_nonneg`, `fourSwap`, `fourSwap_injective`, `fourProd_swap`, `fourPairSums`,
+        `fourAS`, `fourS`, `fourProd_map_pairSums`, `entropyBits_fourAS_sub`, `fourLaw_map_AC`,
+        `fourLaw_map_C`, `fourLaw_map_BC`, `fourLaw_map_C_swap`, `fourLaw_condEntropy_A`,
+        `fourLaw_condEntropy_B`, `fourJ_eq` (82be130).
+    - [ ] D6c2. Posterior formula at fixed laws: `H(A, B, S) − H(A, S) =
+          ∑_{a,c} (P₁ * P₂)(a) (P₃ * P₄)(c) H(Q_{12,a} * Q_{34,c})` with `Q_{12,a} = posteriorLaw P₁ P₂ a`,
+          via `entropyBits_of_kernel` on `(B, (A, S))` (`EntropyLean/FourSamplePosterior.lean`).
+    - [ ] D6c3. Averaging over `T` with weights `a_{i₁} a_{i₂} a_{i₃} a_{i₄}`: define
+          `WeightedFamily.fourSampleJ`, reindex `∑_T s(P_{i₁} * P_{i₃}, P_{i₂} * P_{i₄}) = e(𝒫 * 𝒫)` and
+          the posterior sum as `2h(Post 𝒫) − e(Post 𝒫)`, and with `meanEntropy_posterior` prove
+          `four_sample_splitting : e(𝒫 * 𝒫) + e(Post 𝒫) = 2e(𝒫) + J`.
   - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
