@@ -422,7 +422,7 @@ and no hypotheses beyond the paper's.
         (`EntropyLean/PosteriorDoublingAvg.lean`, b008317). The three averaged interaction terms are
         shown equal by relabelling indices, so `e(𝒫 * 𝒫)` itself is not needed. CI green at b008317;
         L63 marked proved in docs/DEPENDENCIES.md (30bd968).
-- [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
+- [x] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
       matches. Split by the formalize task 2026-11-15:
   - [x] D7a. `uniformSub W` (uniform law on a subspace), `structure MartonInput` with (35) as the field
@@ -464,12 +464,13 @@ and no hypotheses beyond the paper's.
           `sum_smooth_comp_mkQ`, `entropyBits_conv_uniformSub`, `ruzsaDist_uniformSub` (df6bb0c).
           CI green at df6bb0c (checked in the same run; job log not readable, so linter warnings
           unchecked).
-  - [ ] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
+  - [x] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
         `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
         hypotheses) (`EntropyLean/MartonConsequence.lean`, importing `EntropyLean.MartonConvEntropy`:
         `ruzsaDist_uniformSub` is not available in `MartonSmoothing.lean`, which that file imports).
     - Written by the formalize task 2026-11-15 16:37 UTC (uncompiled at push): `ruzsaDist_uniformSub_ge`,
       `MartonInput.consequence` (795cb8f). (36) now follows from the hypothesis `MartonInput V` alone.
+      CI green at 795cb8f. D7 ticked: (35) itself stays the hypothesis `MartonInput V`.
 - [ ] D8. Lemma 7.1 from D4–D7.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
