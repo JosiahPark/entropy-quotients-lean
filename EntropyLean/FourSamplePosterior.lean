@@ -77,9 +77,13 @@ theorem entropyBits_fourPost (P₁ P₂ P₃ P₄ : PMF V) :
     entropyBits ((fourPostJoint P₁ P₂ P₃ P₄).map fun x => (x.1.1 + x.1.2, x.2)) =
       entropyBits (prodLaw (conv P₁ P₂) (conv P₃ P₄)) +
         ∑ v, (prodLaw (conv P₁ P₂) (conv P₃ P₄) v).toReal *
-          entropyBits (conv (posteriorLaw P₁ P₂ v.1) (posteriorLaw P₃ P₄ v.2)) :=
-  entropyBits_of_kernel _ _ (fun v => conv (posteriorLaw P₁ P₂ v.1) (posteriorLaw P₃ P₄ v.2))
-    (fourPost_masses P₁ P₂ P₃ P₄)
+          entropyBits (conv (posteriorLaw P₁ P₂ v.1) (posteriorLaw P₃ P₄ v.2)) := by
+  have h := entropyBits_of_kernel (α := V) (T := V × V)
+    ((fourPostJoint P₁ P₂ P₃ P₄).map fun x => (x.1.1 + x.1.2, x.2))
+    (prodLaw (conv P₁ P₂) (conv P₃ P₄))
+    (fun v : V × V => conv (posteriorLaw P₁ P₂ v.1) (posteriorLaw P₃ P₄ v.2))
+    (fun b v => fourPost_masses P₁ P₂ P₃ P₄ b v)
+  exact h
 
 omit [Fintype V] in
 /-- `(b, (a, c)) ↦ (a, b, a + c)` is injective. -/
@@ -102,6 +106,7 @@ theorem fourLaw_eq_map_post (P₁ P₂ P₃ P₄ : PMF V) :
   rw [← prodLaw_map_both, PMF.map_comp, PMF.map_comp, PMF.map_comp]
   try rfl
 
+omit [Fintype V] in
 /-- `H(A, S) = H((P₁ * P₂) ⊗ (P₃ * P₄))`. -/
 theorem entropyBits_fourLaw_AC (P₁ P₂ P₃ P₄ : PMF V) :
     entropyBits ((fourLaw P₁ P₂ P₃ P₄).map tripleAC) =
