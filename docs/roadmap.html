@@ -405,7 +405,7 @@ async function live() {
     const [roadmap, deps] = await Promise.all([raw("ROADMAP.md"), raw("docs/DEPENDENCIES.md")]);
     const next = {...src, roadmap, deps, live: true, at: new Date().toLocaleString([], {dateStyle: "medium", timeStyle: "short"})};
     try {
-      const runs = await fetch(`https://api.github.com/repos/${REPO}/actions/runs?per_page=1&branch=main`).then(r => r.json());
+      const runs = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/lean.yml/runs?per_page=1&branch=main`).then(r => r.json());
       const r0 = runs.workflow_runs[0]; next.ci = {status: r0.status, conclusion: r0.conclusion, sha: r0.head_sha, title: r0.display_title};
       const tree = await fetch(`https://api.github.com/repos/${REPO}/git/trees/${r0.head_sha}?recursive=1`).then(r => r.json());
       const files = tree.tree.map(x => x.path).filter(p => /^EntropyLean\/[^/]+\.lean$/.test(p));
