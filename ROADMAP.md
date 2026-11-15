@@ -503,10 +503,17 @@ and no hypotheses beyond the paper's.
       via `posterior_closure`) (73b4d5b). CI green at 73b4d5b (checked in the same run). D8 ticked:
       the Marton bound (35) stays the hypothesis `MartonInput V`; L71 marked stated in
       docs/DEPENDENCIES.md.
-- [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
+- [x] D9. Lemma 8.1 from C4, D3, D6, D8.
   - Note from Grok's report of 2026-11-15 (L6): `WeightedFamily.posterior` exists only for
     `V : Type` (the index type of a `WeightedFamily` lives in `Type`), so D9 proves Lemma 8.1 only as
     `RatioGrowth.{0}` (`ratio_growth_of_marton`, 0440122); D10 lifts it to every universe.
+  - Written 2026-11-15 18:26 UTC in 0440122 ("formalize: D9 ratio_growth_of_marton"; no note was
+    added then): `ratio_growth_arith`, `WeightedFamily.isSparse_of_le`,
+    `WeightedFamily.ratio_growth_of_marton` (Lemma 8.1 as `RatioGrowth.{0}` from
+    `MartonBound.{0}`), `weighted_family_rigidity_of_marton` (`EntropyLean/RatioGrowthProof.lean`).
+    CI green at 0440122 and at 9914c7d. Note and tick added by the formalize task 2026-11-15
+    19:36 UTC (job log not readable, so linter warnings unchecked). D9 ticked: (35) stays the
+    hypothesis `MartonBound.{0}`.
 - [ ] D10. Universe transport (Grok's report, L6; [numerics/](numerics/README.md)): the statements in
       `EntropyLean/Statements.lean` quantify over `V : Type*`, and
       `exponential_entropy_quotient_of_growth.{u}` needs `RatioGrowth.{u}`. Prove
@@ -515,6 +522,16 @@ and no hypotheses beyond the paper's.
       family, and `ULift` carries the family returned by `RatioGrowth.{0}` into universe `u`
       (`EntropyLean/UniverseTransport.lean`, `ratioGrowth_lift`). Alternative: generalize
       `WeightedFamily.index` to `Type*`, which touches every file that uses families.
+  - Written by the formalize task 2026-11-15 19:36 UTC (uncompiled at push):
+    `entropyBits_map_linearEquiv`, `interaction_map_linearEquiv`, `finrank_comap_linearEquiv`,
+    `quotientLoss_map_linearEquiv`, `WeightedFamily.mapLinearEquiv`,
+    `WeightedFamily.meanEntropy_mapLinearEquiv`, `WeightedFamily.meanInteraction_mapLinearEquiv`,
+    `WeightedFamily.averagedLoss_mapLinearEquiv`, `WeightedFamily.isSparse_mapLinearEquiv`,
+    `ratioGrowth_lift` (via a basis `W ≃ₗ (Fin (dim W) → ZMod 2)` and `ULift`), and the corollaries
+    `ratio_growth_of_marton_univ`, `weighted_family_rigidity_of_marton_univ`,
+    `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` (Lemma 8.1, Theorem 8.2
+    and the statements of Theorems 1.1, 1.2 in every universe, with `MartonBound.{0}` as the only
+    hypothesis) (`EntropyLean/UniverseTransport.lean`, 289e966; imported in `EntropyLean.lean`).
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
 

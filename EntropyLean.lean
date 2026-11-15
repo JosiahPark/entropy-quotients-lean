@@ -42,5 +42,6 @@ import EntropyLean.SparsePosterior
 import EntropyLean.Statements
 import EntropyLean.Supermodular
 import EntropyLean.TwoInput
+import EntropyLean.UniverseTransport
 import EntropyLean.Variational
 -- FeatureMap is an independent optional module; run `lake env lean EntropyLean/FeatureMap.lean`.
