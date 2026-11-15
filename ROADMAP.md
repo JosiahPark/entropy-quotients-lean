@@ -386,6 +386,20 @@ and no hypotheses beyond the paper's.
     - [ ] D6d3. Identify `Law(A | B = b, S = s) = Q_{13,b} * Q_{24,s+b}` (posterior laws of `(P₁, P₃)`
           and `(P₂, P₄)`) with joint weight `(P₁ * P₃)(b) (P₂ * P₄)(s + b)`, and over F₂ the Ruzsa
           term as `D(Q_{13,b} * Q_{24,s+b})` (`four_posterior_doubling_fixed`).
+          Split by the formalize task 2026-11-15:
+      - [x] D6d3a. Masses: kernel descriptions with the same masses give the same averages
+            (`sum_kernel_congr`); `P(A = a, B = b, S = b + d) = (P₁ * P₃)(b) (P₂ * P₄)(d) (Q_{13,b} * Q_{24,d})(a)`
+            (`fourLaw_post_toReal`); the weights of `four_conditional_bsg` times `Law(A | B = z, S = s)(a)`
+            equal `P(A = a, B = z, S = s)` (`acsLaw_fibre_toReal`) (`EntropyLean/PosteriorDoublingMasses.lean`).
+        - Written by the formalize task 2026-11-15 03:45 UTC (uncompiled at push): `sum_kernel_congr`,
+          `tripleSwap12`, `tripleSwap12_injective`, `fourLaw_eq_swap`, `fourLaw_post_toReal`,
+          `acsLaw_fibre_toReal` (68237b0). CI green at 68237b0.
+      - [ ] D6d3b. Rewrite the left side of `four_conditional_bsg` with `ruzsaDist_fibreLaw`, the
+            reindexing `(s, z) ↦ (z, s + z)` of `V × V`, and `sum_kernel_congr` with `acsLaw_fibre_toReal`
+            and `fourLaw_post_toReal`, as `∑_{b,d} (P₁ * P₃)(b) (P₂ * P₄)(d) D(Q_{13,b} * Q_{24,d})`
+            (`four_posterior_doubling_fixed`).
+      - [ ] D6d3c. `H(C | S) = s(P₂ * P₃, P₁ * P₄)` over F₂ (`C = X₂ + X₃`; exchange coordinates as in
+            `fourLaw_condEntropy_B`) (`fourLaw_condEntropy_C`).
     - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
           `m = postMass`, show the averaged `H(A | S, T)`, `H(B | S, T)`, `H(C | S, T)` all equal
           `e(𝒫 * 𝒫)`, and conclude `posterior_doubling` (34).
