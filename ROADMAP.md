@@ -568,7 +568,7 @@ and no hypotheses beyond the paper's.
       `bernoulliDefect_sub_abs_le` (323be41; `BernoulliExpansion` and `BernoulliDefect` now imported
       in `EntropyLean.lean`). CI green at 323be41 (checked in the same run, no new warnings); BEXP
       marked proved in docs/DEPENDENCIES.md (46b5eae).
-- [ ] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.
+- [x] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.
   - Suggested route (formalize task 2026-11-15; not yet checked in Lean): only E1 and E2a are
     needed. Take `m = 1` and `X` the image of `bernoulliBit p` under the injective additive map
     `b ↦ fun _ => b`, so `H(X) = h₂(p)` and `E(X) = bernoulliDefect p`. For `G = ⊥`,
@@ -585,7 +585,7 @@ and no hypotheses beyond the paper's.
       `dim_pos_of_defect_gt`, `one_le_C_mul_binaryEntropy` (d3bc836). CI green at d3bc836 (job log
       not readable, so linter warnings from the `first` blocks unchecked); ticked by the formalize
       task 2026-11-15 22:34 UTC.
-  - [ ] E3b. Real analysis (`EntropyLean/ScaleNecessaryLimit.lean`): for `0 < c < c' < 2` and
+  - [x] E3b. Real analysis (`EntropyLean/ScaleNecessaryLimit.lean`): for `0 < c < c' < 2` and
         `p = 2^(−c'/ε)`, eventually as `ε ↓ 0`: `ε h₂(p) < (1+ε) bernoulliDefect p`
         (`scale_gap_eventually`, from `binaryEntropy_le` and `bernoulliDefect_ge`) and
         `c ≤ −ε logb 2 (h₂(p))` (`scale_log_eventually`, from `binaryEntropy_le` and
@@ -600,7 +600,7 @@ and no hypotheses beyond the paper's.
         (5b0cb69). CI green at 5b0cb69 and e8a86b9. Linter (seen in the job log of the `formalize-efg`
         run at 38f8074, which builds the same file): unused `first` alternatives at lines 57, 71, 84,
         104 and deprecated `push_neg` at 44, 141. Ticked by the formalize task 2026-11-15 23:25 UTC.
-    - [ ] E3b2. `scale_log_eventually`: for `0 < a` and `c < a`, eventually
+    - [x] E3b2. `scale_log_eventually`: for `0 < a` and `c < a`, eventually
           `c ≤ −(ε logb 2 (h₂(scaleParam a ε)))` (`EntropyLean/ScaleNecessaryLog.lean`, importing
           `EntropyLean.ScaleNecessaryLimit`). Suggested route: for `ε ≤ 1/2`,
           `h₂(p) ≤ p (a + 1)/ε` (`binaryEntropy_le`, `half_le_log_two`); `x²/4 ≤ eˣ` (from
@@ -612,15 +612,38 @@ and no hypotheses beyond the paper's.
         (38f8074; that file compiled in the branch's CI run, which failed only in
         `CosetConcentration.lean`), with renamed declarations so that a later merge does not clash.
         They use `log x ≤ x − 1` instead of the `x²/4 ≤ eˣ` route above.
-  - [ ] E3c. `exponential_scale_necessary` from E3a and E3b: `C(ε) ≥ 1/h₂(p) > 0`, so
+        CI green at 0f7ea55 (main) and at a3d1d61 (branch `formalize-efg-v2`, which builds this file
+        and uses `scale_log_eventually` in E3c). Ticked by Claude 2026-11-15 23:35 UTC.
+  - [x] E3c. `exponential_scale_necessary` from E3a and E3b: `C(ε) ≥ 1/h₂(p) > 0`, so
         `ε logb 2 (C ε) ≥ −ε logb 2 (h₂(p)) ≥ c` (for `c ≤ 0` use `c < c' := 1`). The proof goes in a
         new file (`exponential_scale_necessary_proof`) and `Statements.lean` then uses it, as for
         Lemma 9.1.
+    - Written by Claude (desktop session) 2026-11-15 23:10 UTC: `exponential_scale_necessary_proof` (`EntropyLean/ScaleNecessaryProof.lean`, cfd43a4),
+      with `a = (max(c, 1) + 2)/2`, from `scale_gap_eventually` (E3b1), `scale_log_eventually`
+      (E3b2) and `one_le_C_mul_binaryEntropy` (E3a). `exponential_scale_necessary` in
+      `EntropyLean/Statements.lean` is now this theorem, so Proposition 9.3 has no `sorry`; the
+      open statements are Theorems 1.1, 1.2 and 8.2. `EntropyLean.lean` imports `ScaleNecessary`,
+      `ScaleNecessaryLimit`, `ScaleNecessaryLog` and `ScaleNecessaryProof`. P93 marked proved in docs/DEPENDENCIES.md.
+      CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
 
 ## F. Corollary 9.4
 
-- [ ] F1. Statement of Corollary 9.4 and its proof from Theorem 1.1 (as a hypothesis until
+- [x] F1. Statement of Corollary 9.4 and its proof from Theorem 1.1 (as a hypothesis until
       Theorem 1.1 is proved).
+  - Written by Claude (desktop session) 2026-11-15 23:10 UTC: `uniformFinset` (uniform law on a nonempty finset, `entropyBits_uniformFinset :
+    H = log₂ |A|`), `entropyBits_le_logb_card_of_support`, `conv_uniformFinset_eq_zero`,
+    `entropyIncrement_uniformFinset_le` (`D(X) ≤ (1 − η) log₂ |A|` when `|A + A| ≤ |A|^(2−η)`),
+    `fibreCount`, `entropyBits_uniformFinset_quotient`
+    (`H(q_G X) = log₂ |A| − (1/|A|) ∑_{a ∈ A} log₂ |A ∩ (a + G)|`),
+    `coset_concentration_of_quotient` (Corollary 9.4 with the conclusion of Theorem 1.1 for a
+    constant `K` as hypothesis `hT`; dimension bound `2^(K/α) log₂ |A|`),
+    `exists_large_coset_of_quotient` (some coset meets `A` in at least `|A|^(η−α)` points), and
+    `coset_concentration_of_marton`, `exists_large_coset_of_marton` (constant 320, hypothesis
+    `MartonBound.{0}` only), `coset_concentration_311_of_marton`
+    (`EntropyLean/CosetConcentration.lean`, cfd43a4). `|A ∩ (a + G)|` is written
+    `(A.filter fun b => b - a ∈ G).card`. Corollary 9.4 is NOT proved unconditionally: Theorem 1.1
+    enters as `hT` or through (35). C94 marked stated in docs/DEPENDENCIES.md.
+    CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
 
 ## G. Tracking and improving the constant 320
 
@@ -630,21 +653,77 @@ The exponent `2^(320(1+ε)/ε)` in Theorem 1.1 comes from the iteration arithmet
 come after A–F on purpose: none of them blocks Theorem 1.1. No item may claim a constant below
 what its proof actually gives.
 
-- [ ] G1. Parametric iteration arithmetic (`EntropyLean/RigidityArith.lean`): redo D1 with the
+- [x] G1. Parametric iteration arithmetic (`EntropyLean/RigidityArith.lean`): redo D1 with the
       Marton constant `C` and the constants of (36) as real parameters, deriving
       `d * logb 2 (1/λ) < K` for an explicit expression `K` in them
       (`rigidity_arith_param`), and recover D1 by `K ≤ 320` at `C = 6`
       (`rigidity_arith_param_six`).
-- [ ] G2. Constant as a field: give D7's `MartonInput` its constant as a field `C` (with (36)
+  - Written by Claude (desktop session) 2026-11-15 23:10 UTC: the parameters are the two constants of Lemma 8.1, `a` (growth `d + d²/a`) and `b`
+    (hypothesis `b λ ≤ d²`); the paper has `a = 148`, `b = 1600`. `rigidityConst a b =
+    2(a + 1) + 2 + log₂ b`, `inv_ratio_step_param` (42), `rigidity_arith_param_aux`,
+    `rigidity_arith_param` (if `0 < d ≤ 1`, `b ≥ 4` and `λ > d²/(b · 4^⌈(a+1)/d⌉)` then
+    `d · logb 2 (1/λ) < rigidityConst a b`), `rigidityConst_paper_lt : rigidityConst 148 1600 <
+    311`, `rigidity_arith_param_six` (D1's hypothesis gives `< 311`), `RatioGrowthConst a b`
+    (Lemma 8.1 with constants; `RatioGrowth` is `RatioGrowthConst 148 1600`),
+    `ratio_iteration_param`, `weighted_family_rigidity_of_growth_param` (Theorem 8.2 with constant
+    `rigidityConst a b` from `RatioGrowthConst a b`), `exponential_entropy_quotient_of_growth_param`,
+    `sparse_rigidity_of_growth_param` (`EntropyLean/RigidityArithParam.lean`, a new file,
+    cfd43a4). How `a`, `b` depend on the Marton constant `C` is item G2
+    (`a = 24C + 4`, `b = 32 (1 + C)²`).
+    CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
+- [x] G2. Constant as a field: give D7's `MartonInput` its constant as a field `C` (with (36)
       in terms of `C`), and restate the conditional Theorem 1.1 of C2 with exponent
       `K(C) * (1+ε)/ε` (`exponential_entropy_quotient_of_rigidity_const`), so that any
       better Marton constant gives a better exponent with no further work.
-- [ ] G3. Slack in the paper's argument: find the smallest constant `c₀` that the arithmetic of
+  - Written by Claude (desktop session) 2026-11-15 23:10 UTC, in three new files (cfd43a4); `MartonInput` itself is unchanged.
+    `EntropyLean/RigidityConst.lean`: `WeightedFamilyRigidityConst K` (Theorem 8.2 with constant
+    `K`; `WeightedFamilyRigidity` is the case 320), its monotonicity in `K`,
+    `exponential_entropy_quotient_of_rigidity_const` (Theorem 1.1 with exponent `K(1+ε)/ε`) and
+    `sparse_rigidity_of_family_rigidity_const`.
+    `EntropyLean/MartonConst.lean`: `MartonInputConst C V`, `MartonBoundConst C` ((35) with
+    constant `C`; `C = 6` is `MartonInput`, `MartonBound`), monotonicity in `C`, and
+    `MartonInputConst.consequence`: (36) as `H(q_W K) ≤ 2C · D(K)`,
+    `dim W ≤ H(K) + 2C · D(K) ≤ (1 + 2C) H(K)`.
+    `EntropyLean/MartonChainConst.lean`: Sections 7–8 with `C ≥ 0`:
+    `interaction_le_subspace_add_increment_const` (D8a), `density_sqrt_arith_param` and
+    `averaged_density_sqrt_param` (Lemma 5.1 (29) as `B ≤ β h ⇒ A ≤ (1 + β/2) √λ h`),
+    `sparse_posterior_estimate_const` (Lemma 7.1: `e(𝒬) ≤ 6C · J + (2 + 2C) √ρ · e(𝒫)`),
+    `ratio_growth_arith_const`, `ratio_growth_of_marton_const` (Lemma 8.1 as
+    `RatioGrowthConst.{0} (24C + 4) (32 (1 + C)²)`), `ratioGrowthConst_lift` (D10 for
+    `RatioGrowthConst`), `martonRigidityConst C = 48C + 17 + 2 log₂(1 + C)`
+    (`martonRigidityConst_eq`), `weighted_family_rigidity_of_marton_const` (Theorem 8.2 with that
+    constant), `exponential_entropy_quotient_of_marton_const` and
+    `sparse_rigidity_of_marton_const` (Theorems 1.1 and 1.2 with exponent
+    `martonRigidityConst C · (1+ε)/ε`, in every universe, from `MartonBoundConst.{0} C`), and
+    `martonRigidityConst_six_lt : martonRigidityConst 6 < 311`. At `C = 6` the hypothesis of
+    Lemma 8.1 is `1568 λ ≤ d²` (the paper rounds `14√2` up to 20, giving 1600). No `C < 6` is
+    claimed to be available.
+    CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
+- [x] G3. Slack in the paper's argument: find the smallest constant `c₀` that the arithmetic of
       (42)–(43) gives at `C = 6` (prove `K(6) ≤ c₀`), and if `c₀ < 320` state Theorem 1.1
       with `c₀`. Record in this file where the slack came from, so Josiah can check it against
       the paper.
+  - Written by Claude (desktop session) 2026-11-15 23:10 UTC: `c₀ = rigidityConst 148 1600 = 300 + log₂ 1600`, with `310 < c₀ < 311`
+    (`rigidityConst_paper_eq`, `rigidityConst_paper_gt`, `rigidityConst_paper_lt`).
+    `weighted_family_rigidity_slack_of_growth` (Theorem 8.2 with `c₀` from `RatioGrowth`),
+    `weighted_family_rigidity_311_of_growth`, `weighted_family_rigidity_311_of_marton`,
+    `exponential_entropy_quotient_311_of_marton` (Theorem 1.1 with `dim G ≤ 2^(311(1+ε)/ε) H(X)`),
+    `sparse_rigidity_311_of_marton`, and the same from `MartonBoundConst C` with `C ≤ 6`
+    (`EntropyLean/ConstantSlack.lean`, cfd43a4). The open statements in `Statements.lean` keep 320.
+    Where the slack comes from, for Josiah to check against the paper: (i) the paper bounds
+    `d log₂(1/λ) < 298 + (log₂ 1600 + 2) d + 2 d log₂(1/d)` and estimates the last two terms
+    separately (`d ≤ 1`, `d log₂(1/d) ≤ 1/(e ln 2)`), getting `< 312`; for `d ≤ 1` their sum is at
+    most `log₂ 1600 + 2`, its value at `d = 1` (from `−d log d ≤ 1 − d` and
+    `log 1600 + 2 log 2 ≥ 2`), which gives `300 + log₂ 1600 ≈ 310.64`; (ii) the paper then rounds
+    312 up to 320. Not formalized: that `c₀` is the supremum of `d log₂(1/λ)` under the
+    hypothesis of (43) (approached as `d ↑ 1`). With the parametric chain of G2 the hypothesis
+    `1568 λ ≤ d²` gives `305 + 2 log₂ 7 ≈ 310.61`, still 311 as an integer.
+    CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
 - [ ] G4. Constant from the PFR backend: only if B1 chooses PFR, check which Marton constant
       that project proves and instantiate G2 with it.
+  - Not attempted (Claude, 2026-11-15): B1 is undecided. Once a constant `C` is available as
+    `MartonBoundConst.{0} C`, `exponential_entropy_quotient_of_marton_const` (G2) gives Theorem 1.1
+    with exponent `(48C + 17 + 2 log₂(1 + C))(1+ε)/ε`; for `C = 11/2` that constant is about 286.4.
 
 ## Not attempted here
 
