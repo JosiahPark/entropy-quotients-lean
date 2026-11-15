@@ -279,7 +279,7 @@ and no hypotheses beyond the paper's.
       (no separate case `λ > 1` needed) and `N → ∞` for `λ = 0`. Do not re-implement in
       `DensityEstimate.lean` (the names would clash). CI green at 066a13a; L51 marked proved in
       docs/DEPENDENCIES.md (eb44992).
-- [ ] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
+- [x] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
       Split by the hourly task 2026-11-14:
   - [x] D6a. Entropic Ruzsa distance (8) `ruzsaDist` with `ruzsaDist_self` (`d(P, P) = D(P)`),
         `ruzsaDist_comm`, `ruzsaDist_nonneg`, translation invariance `ruzsaDist_map_add_const`,
@@ -365,7 +365,7 @@ and no hypotheses beyond the paper's.
           `sum_postMass_conv_eq`, `four_sample_splitting` (Lemma 6.1, (32), with `2δH = 2e(𝒫)`)
           (71dc6e3). CI green at 71dc6e3 (checked in the same run); L61 marked proved in
           docs/DEPENDENCIES.md (04c1579).
-  - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
+  - [x] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
         Split by the formalize task 2026-11-15:
     - [x] D6d1. Lemma 6.2 conditioned on a third variable: for `R((u, v), y) = c(y) K_y(u, v)`,
           `∑_y c(y) ∑_z K_{y,Z}(z) d(Law(U | z, y), Law(V | z, y)) ≤ 3I(U ; V | Y) + 2H(Z | Y) −
@@ -411,9 +411,17 @@ and no hypotheses beyond the paper's.
           `fourLaw_condEntropy_C`, `four_posterior_doubling_interaction` (the fixed-law bound with
           `3 J + 2 s(P₂ * P₃, P₁ * P₄) − s(P₁ * P₃, P₂ * P₄) − s(P₁ * P₂, P₃ * P₄)` on the right)
           (`EntropyLean/PosteriorDoublingC.lean`, 1abdff1). CI green at 1abdff1.
-    - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
+    - [x] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
           `m = postMass`, show the averaged `H(A | S, T)`, `H(B | S, T)`, `H(C | S, T)` all equal
           `e(𝒫 * 𝒫)`, and conclude `posterior_doubling` (34).
+      - Written by the formalize task 2026-11-15 09:50 UTC (uncompiled at push): `sum4_swap23`,
+        `sum4_swap34`, `WeightedFamily.sum_postMass_conv_inc`, `WeightedFamily.fourSampleJ_swap`,
+        `WeightedFamily.sum_interaction_swap23`, `WeightedFamily.sum_interaction_rot`,
+        `WeightedFamily.posterior_doubling` (Lemma 6.3, (34): `∑_{x,y} m(x) m(y) D(Q_x * Q_y) ≤ 3 J`,
+        summed over all posterior triples as in `meanInteraction_posterior_full`)
+        (`EntropyLean/PosteriorDoublingAvg.lean`, b008317). The three averaged interaction terms are
+        shown equal by relabelling indices, so `e(𝒫 * 𝒫)` itself is not needed. CI green at b008317;
+        L63 marked proved in docs/DEPENDENCIES.md (30bd968).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
       matches.
