@@ -474,11 +474,12 @@ and no hypotheses beyond the paper's.
 - [ ] D8. Lemma 7.1 (sparse posterior estimate, (37)): `e(𝒬) ≤ 36 J + 14 √ρ δH` for a `ρ`-sparse
       posterior family `𝒬 = Post 𝒫`, with the Marton bound as the hypothesis `MartonInput V`.
       Split by the formalize task 2026-11-15:
-  - [ ] D8a. Two laws `P`, `Q`: apply (36) to `K = P * Q`, then (21) and `s(q_W P, q_W Q) ≤
+  - [x] D8a. Two laws `P`, `Q`: apply (36) to `K = P * Q`, then (21) and `s(q_W P, q_W Q) ≤
         H(q_W (P * Q))` give `s(P, Q) ≤ s_W(P, Q) + 12 D(P * Q)` with `dim W ≤ 13 (H(P) + H(Q))`
         (`EntropyLean/MartonStep.lean`, `interaction_le_subspace_add_increment`).
     - Written by the formalize task 2026-11-15 16:47 UTC (uncompiled at push):
       `interaction_quot_le_entropyBits_conv`, `interaction_le_subspace_add_increment` (a1b87ac).
+      CI green at a1b87ac (checked in the same run).
   - [ ] D8b. Average D8a over posterior pairs `(x, y)` with weights `m(x) m(y)` (`m = postMass`,
         all triples as in `meanInteraction_posterior_full`): choose `W(x, y)` by `Classical.choose`,
         then with `posterior_doubling` (34) get `e(𝒬) ≤ ∑ m(x) m(y) s_{W(x,y)}(Q_x, Q_y) + 36 J` and
