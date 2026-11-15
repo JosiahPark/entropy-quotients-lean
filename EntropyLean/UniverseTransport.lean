@@ -41,10 +41,8 @@ variable {V : Type u} {V' : Type v} [AddCommGroup V] [Module (ZMod 2) V]
 
 /-- Entropy is invariant under a linear equivalence. -/
 theorem entropyBits_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (P : PMF V) :
-    entropyBits (P.map e) = entropyBits P := by
-  first
-    | exact entropyBits_map_of_injective P e.injective
-    | exact entropyBits_map_of_injective P (EquivLike.injective e)
+    entropyBits (P.map e) = entropyBits P :=
+  entropyBits_map_of_injective P e.injective
 
 /-- Interaction is invariant under a linear equivalence. -/
 theorem interaction_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (P Q : PMF V) :
@@ -55,11 +53,8 @@ theorem interaction_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (P Q : PMF V) :
 
 /-- The inverse image of a subspace under a linear equivalence has the same dimension. -/
 theorem finrank_comap_linearEquiv (e : V ≃ₗ[ZMod 2] V') (U : Submodule (ZMod 2) V') :
-    Module.finrank (ZMod 2) (U.comap (e : V →ₗ[ZMod 2] V')) = Module.finrank (ZMod 2) U := by
-  first
-    | exact (e.ofSubmodule' U).finrank_eq
-    | (rw [Submodule.comap_equiv_eq_map_symm]; exact e.symm.finrank_map_eq U)
-    | (rw [Submodule.comap_equiv_eq_map_symm]; exact (e.symm.submoduleMap U).finrank_eq.symm)
+    Module.finrank (ZMod 2) (U.comap (e : V →ₗ[ZMod 2] V')) = Module.finrank (ZMod 2) U :=
+  (e.ofSubmodule' U).finrank_eq
 
 /-- The subspace defect is invariant under a linear equivalence: `F_{e P}(U) = F_P(e⁻¹ U)`. -/
 theorem quotientLoss_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (P : PMF V)
@@ -71,12 +66,9 @@ theorem quotientLoss_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (P : PMF V)
   refine entropyBits_map_eq_of_fibres P (Submodule.mkQ_surjective _) fun a a' => ?_
   show (U.comap (e : V →ₗ[ZMod 2] V')).mkQ a = (U.comap (e : V →ₗ[ZMod 2] V')).mkQ a' ↔
     U.mkQ (e a) = U.mkQ (e a')
-  first
-    | (rw [Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.mkQ_apply,
-        Submodule.Quotient.eq, Submodule.Quotient.eq, Submodule.mem_comap, ← map_sub] <;>
-       exact Iff.rfl)
-    | simp only [Submodule.mkQ_apply, Submodule.Quotient.eq, Submodule.mem_comap,
-        LinearEquiv.coe_coe, map_sub, iff_self]
+  rw [Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.mkQ_apply,
+    Submodule.Quotient.eq, Submodule.Quotient.eq, Submodule.mem_comap, ← map_sub]
+  exact Iff.rfl
 
 end Transport
 
@@ -149,7 +141,8 @@ theorem ratioGrowth_lift (h0 : RatioGrowth.{0}) : RatioGrowth.{u} := by
     first
       | exact ⟨ULift.moduleEquiv.symm⟩
       | exact ⟨{ toFun := ULift.up, invFun := ULift.down, map_add' := fun _ _ => rfl,
-          map_smul' := fun _ _ => rfl, left_inv := fun _ => rfl, right_inv := fun _ => rfl }⟩
+                 map_smul' := fun _ _ => rfl, left_inv := fun _ => rfl,
+                 right_inv := fun _ => rfl }⟩
   obtain ⟨E⟩ := hne'
   refine ⟨{ carrier := ULift.{u} F.carrier, fam := F.fam.mapLinearEquiv E }, ?_, ?_, ?_⟩
   · exact F.fam.isSparse_mapLinearEquiv E hFsp
