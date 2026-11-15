@@ -453,13 +453,15 @@ and no hypotheses beyond the paper's.
           `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` and `ruzsaDist_uniformSub`
           (in a new file importing `EntropyLean.MartonSmoothing` if needed). Split by the formalize task
           2026-11-15:
-      - [ ] D7b2a. Masses `conv_uniformSub_toReal`, fibre count `card_mkQ_fibre` and
+      - [x] D7b2a. Masses `conv_uniformSub_toReal`, fibre count `card_mkQ_fibre` and
             `sum_comp_mkQ : ∑_v g(q_W v) = |W| ∑_x g(x)` (`EntropyLean/MartonConv.lean`).
         - Written by the formalize task 2026-11-15 15:55 UTC (uncompiled at push): `sub_mem_iff_mkQ_eq`,
-          `conv_uniformSub_toReal`, `card_mkQ_fibre`, `sum_comp_mkQ` (0606f43).
+          `conv_uniformSub_toReal`, `card_mkQ_fibre`, `sum_comp_mkQ` (0606f43). CI green at 0606f43.
       - [ ] D7b2b. `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (split `−c log c` with
             `c(v) = (q_W K)(q_W v) / |W|`, then `sum_comp_mkQ` and `∑_v c(v) = 1`) and
             `ruzsaDist_uniformSub` (`EntropyLean/MartonConvEntropy.lean`).
+        - Written by the formalize task 2026-11-15 16:26 UTC (uncompiled at push): `uniformSmooth_term_eq`,
+          `sum_smooth_comp_mkQ`, `entropyBits_conv_uniformSub`, `ruzsaDist_uniformSub` (df6bb0c).
   - [ ] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
         `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
         hypotheses) (`EntropyLean/MartonSmoothing.lean`).
