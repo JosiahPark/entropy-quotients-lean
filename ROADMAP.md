@@ -725,6 +725,40 @@ what its proof actually gives.
     `MartonBoundConst.{0} C`, `exponential_entropy_quotient_of_marton_const` (G2) gives Theorem 1.1
     with exponent `(48C + 17 + 2 log₂(1 + C))(1+ε)/ε`; for `C = 11/2` that constant is about 286.4.
 
+## H. Toward green: the Marton frontier
+
+Added by the formalize task 2026-11-15 (no unchecked item was actionable: B1 is Josiah's
+decision and G4 waits for it). Every amber node of docs/DEPENDENCIES.md (E36, L71, L81, T82, T12,
+T11, C92, C94) is already proved in Lean from the single hypothesis `MartonBound.{0}` (35), so the
+remaining distance to green is the external node MAR. These items make that visible and prove
+the cases of (35) that need no new ideas. None of them proves the entropic Marton theorem, and
+none may add a `sorry` to `Statements.lean`.
+
+- [ ] H1. Chart: add a class `conditional` ("proved in Lean from (35) as a hypothesis") to
+      docs/DEPENDENCIES.md, move E36, L71, L81, T82, T12, T11, C92, C94 to it, and put the Lean
+      names in their labels (`MartonInput.consequence`, `sparse_posterior_estimate`,
+      `ratio_growth_of_marton`, `weighted_family_rigidity_of_marton_univ`,
+      `sparse_rigidity_of_marton`, `exponential_entropy_quotient_of_marton`,
+      `coset_concentration_of_marton`). Docs only; no Lean change.
+- [ ] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
+      d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
+      `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
+      6 D(K)` and `marton_of_codim_le : dim V − H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤ 6 D(K)`.
+- [ ] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
+      `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split if
+      needed: H3a `support (K * K)` contains `support K + support K`, so `D(K) = 0` forces
+      `|S + S| = |S|` for `S = support K` (`card_add_support_of_increment_zero`); H3b `S` is a coset
+      of the subspace `S + S` and `K` is uniform on it.
+- [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
+      finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
+      (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
+      not close in one run, prove it for `p ≤ 1/8` first (H4a) and record the gap.
+- [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
+      `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
+      martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
+      (Theorem 1.1 with exponent `287(1+ε)/ε` from `MartonBoundConst.{0} (11/2)`). This does not
+      depend on B1: it only says what a proof of (35) with constant 11/2 would give.
+
 ## Not attempted here
 
 - Improving the constant beyond what the paper's argument gives (a new proof of Theorem 8.2 with
