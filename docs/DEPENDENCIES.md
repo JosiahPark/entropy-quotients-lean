@@ -38,7 +38,7 @@ flowchart TD
   L41["Lemma 4.1: ratio-preserving sparsification<br/>ratio_preserving_sparsification"]:::proved
   L51["Lemma 5.1: averaged density estimate"]:::proved
   L61["Lemma 6.1: four-sample splitting"]:::missing
-  L62["Lemma 6.2: conditional BSG inequality"]:::missing
+  L62["Lemma 6.2: conditional BSG inequality"]:::proved
   L63["Lemma 6.3: posterior doubling estimate"]:::missing
   MAR["Entropic Marton theorem (35)<br/>Gowers–Green–Manners–Tao"]:::external
   E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)"]:::missing
