@@ -42,7 +42,7 @@ flowchart TD
   L63["Lemma 6.3: posterior doubling estimate"]:::proved
   MAR["Entropic Marton theorem (35)<br/>Gowers–Green–Manners–Tao"]:::external
   E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)"]:::stated
-  L71["Lemma 7.1: sparse posterior estimate"]:::missing
+  L71["Lemma 7.1: sparse posterior estimate"]:::stated
 
   %% Section 8
   L81["Lemma 8.1: ratio growth<br/>RatioGrowth (Prop, hypothesis of weighted_family_rigidity_of_growth)"]:::stated
