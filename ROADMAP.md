@@ -471,7 +471,7 @@ and no hypotheses beyond the paper's.
     - Written by the formalize task 2026-11-15 16:37 UTC (uncompiled at push): `ruzsaDist_uniformSub_ge`,
       `MartonInput.consequence` (795cb8f). (36) now follows from the hypothesis `MartonInput V` alone.
       CI green at 795cb8f. D7 ticked: (35) itself stays the hypothesis `MartonInput V`.
-- [ ] D8. Lemma 7.1 (sparse posterior estimate, (37)): `e(𝒬) ≤ 36 J + 14 √ρ δH` for a `ρ`-sparse
+- [x] D8. Lemma 7.1 (sparse posterior estimate, (37)): `e(𝒬) ≤ 36 J + 14 √ρ δH` for a `ρ`-sparse
       posterior family `𝒬 = Post 𝒫`, with the Marton bound as the hypothesis `MartonInput V`.
       Split by the formalize task 2026-11-15:
   - [x] D8a. Two laws `P`, `Q`: apply (36) to `K = P * Q`, then (21) and `s(q_W P, q_W Q) ≤
@@ -489,10 +489,16 @@ and no hypotheses beyond the paper's.
       `postSubspace`, `postSubspace_spec`, `posterior_interaction_le_subspace`,
       `posterior_mean_dim_le` (2861748). `W(x, y)` is `postSubspace P hM x y`. CI green at 2861748
       (checked in the same run; job log not readable, so linter warnings unchecked).
-  - [ ] D8c. Lemma 5.1 (`averaged_density_lemma`, (29)) for the `ρ`-sparse family `𝒬` with the
+  - [x] D8c. Lemma 5.1 (`averaged_density_lemma`, (29)) for the `ρ`-sparse family `𝒬` with the
         subspace choice of D8b bounds the first term by `14 √ρ h(𝒬)`; with `meanEntropy_posterior`
         (`h(𝒬) = e(𝒫) = δH`) conclude `sparse_posterior_estimate` (37)
         (`EntropyLean/SparsePosterior.lean`).
+    - Written by Claude 2026-11-15 17:25 UTC (uncompiled at push): `posterior_double_sum`,
+      `sparse_posterior_estimate` (Lemma 7.1, (37): `e(Post 𝒫) ≤ 36 J + 14 √ρ e(𝒫)` for a `ρ`-sparse
+      posterior family, `ρ ≥ 0`), `sparse_posterior_estimate_of_sparse` (the same for a `ρ`-sparse `𝒫`,
+      via `posterior_closure`) (73b4d5b). CI green at 73b4d5b (checked in the same run). D8 ticked:
+      the Marton bound (35) stays the hypothesis `MartonInput V`; L71 marked stated in
+      docs/DEPENDENCIES.md.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
