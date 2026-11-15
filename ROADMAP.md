@@ -424,7 +424,26 @@ and no hypotheses beyond the paper's.
         L63 marked proved in docs/DEPENDENCIES.md (30bd968).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
-      matches.
+      matches. Split by the formalize task 2026-11-15:
+  - [x] D7a. `uniformSub W` (uniform law on a subspace), `structure MartonInput` with (35) as the field
+        `marton`, `MartonBound`, `0 ≤ D(K) ≤ H(K)`, and (36) from (35) with the two uniform-smoothing
+        facts as explicit hypotheses (`MartonInput.consequence_of_smoothing`)
+        (`EntropyLean/MartonInput.lean`).
+    - Written by the formalize task 2026-11-15 10:50 UTC (uncompiled at push): `subIndicator`,
+      `subIndicator_le_one`, `tsum_subIndicator_ne_zero`, `tsum_subIndicator_ne_top`, `uniformSub`,
+      `MartonInput`, `MartonBound`, `entropyIncrement_nonneg`, `entropyIncrement_le_entropyBits`,
+      `marton_consequence_arith`, `MartonInput.consequence_of_smoothing` (95a5dc7). First push failed
+      CI (`PMF.uniformOfFinset` no longer exists in Mathlib; `uniformSub` is now `PMF.normalize` of
+      the indicator of `W`); fixed in bee7b79, CI green; linter clean-up in 0ad4f28. E36 marked
+      stated in docs/DEPENDENCIES.md.
+  - [ ] D7b. Entropy of the uniform law and uniform smoothing (`EntropyLean/MartonSmoothing.lean`):
+        `uniformSub_apply` (`U_W(v) = 2^(−dim W)` on `W`, `0` off `W`), `entropyBits_uniformSub :
+        H(U_W) = dim W`, and `entropyBits_conv_uniformSub : H(K * U_W) = H(q_W K) + dim W` (given
+        `q_W(A + U)`, the law of `A + U` is uniform on that coset), hence
+        `ruzsaDist_uniformSub : d(K, U_W) = H(q_W K) + (dim W − H(K)) / 2`. Split if too large.
+  - [ ] D7c. `ruzsaDist_uniformSub_ge : |dim W − H(K)| / 2 ≤ d(K, U_W)` (from
+        `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
+        hypotheses) (`EntropyLean/MartonSmoothing.lean`).
 - [ ] D8. Lemma 7.1 from D4–D7.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
