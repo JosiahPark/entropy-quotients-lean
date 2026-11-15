@@ -314,14 +314,18 @@ and no hypotheses beyond the paper's.
           `doubleTrial_map_snd_pair`, `zmod2_add_add_self`, `add_comp_fst_add`, `doubleTrial_map_U1`,
           `doubleTrial_map_U2`, `doubleTrial_map_V1`, `doubleTrial_map_V2`, `dtPair1`, `dtPair2`,
           `entropyBits_dtPair1_le`, `entropyBits_dtPair2_le` (9c60ff4). CI green at 9c60ff4.
-      - [ ] D6b2b. Submodularity step: with `W = U₁ + V₂ = V₁ + U₂`, apply `entropyBits_submodular`
+      - [x] D6b2b. Submodularity step: with `W = U₁ + V₂ = V₁ + U₂`, apply `entropyBits_submodular`
             to the law of `((U₁, V₂), (V₁, U₂), W)` (injective image of `T`; each pair determines `W`)
             to get `H(T) + H(W) ≤ H(U₁, V₂) + H(V₁, U₂)`, hence `double_trial_sum_le :
             H(W) ≤ 2 * mutualInfo R + H(Z)` (`EntropyLean/DoubleTrial.lean`).
         - Written by the hourly task 2026-11-15 (uncompiled at push): `dtSum`, `dtTriple`, `withSum`,
-          `withSum_injective`, `dtTriple_injective`, `double_trial_sum_le` (09f86df).
+          `withSum_injective`, `dtTriple_injective`, `double_trial_sum_le` (09f86df). CI green at 09f86df.
     - [ ] D6b3. `∑_z R_Z(z) H(K_z * K_z) ≤ H(W)` (kernel formula for `(W, Z)` and `H(W | Z) ≤ H(W)`),
           then `conditional_bsg` (33) from `sum_ruzsaDist_fibreLaw` and D6b2.
+      - Written by the hourly task 2026-11-15 (uncompiled at push): `dtSumPair`, `shiftPair`,
+        `shiftPair_injective`, `entropyBits_dtSumPair`, `doubleTrial_map_Z`, `sum_conv_fibreLaw_le`,
+        `conditional_bsg` (`EntropyLean/ConditionalBSGLemma.lean`, caefe56; a separate file because
+        `DoubleTrial.lean` imports `ConditionalBSG.lean`).
   - [ ] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
         Lemma 6.1 (32) `e(𝒫 * 𝒫) + e(Post 𝒫) = 2δH + J` (`EntropyLean/FourSample.lean`,
         `four_sample_splitting`).
