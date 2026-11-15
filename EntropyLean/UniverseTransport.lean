@@ -126,10 +126,8 @@ end WeightedFamily
 theorem ratioGrowth_lift (h0 : RatioGrowth.{0}) : RatioGrowth.{u} := by
   unfold RatioGrowth
   intro W _ _ _ lam P hlam hsp hpos hd hsmall
-  have hne : Nonempty (W ≃ₗ[ZMod 2] F2Vec (Module.finrank (ZMod 2) W)) := by
-    first
-      | exact ⟨(Module.finBasis (ZMod 2) W).equivFun⟩
-      | exact ⟨LinearEquiv.ofFinrankEq _ _ (by simp)⟩
+  have hne : Nonempty (W ≃ₗ[ZMod 2] F2Vec (Module.finrank (ZMod 2) W)) :=
+    ⟨(Module.finBasis (ZMod 2) W).equivFun⟩
   obtain ⟨e⟩ := hne
   obtain ⟨F, hFsp, hFpos, hFr⟩ := h0 (F2Vec (Module.finrank (ZMod 2) W)) lam
     (P.mapLinearEquiv e) hlam (P.isSparse_mapLinearEquiv e hsp)
@@ -137,12 +135,7 @@ theorem ratioGrowth_lift (h0 : RatioGrowth.{0}) : RatioGrowth.{u} := by
     (by rw [P.meanInteraction_mapLinearEquiv e, P.meanEntropy_mapLinearEquiv e]; exact hd)
     (by rw [P.meanInteraction_mapLinearEquiv e, P.meanEntropy_mapLinearEquiv e]; exact hsmall)
   rw [P.meanInteraction_mapLinearEquiv e, P.meanEntropy_mapLinearEquiv e] at hFr
-  have hne' : Nonempty (F.carrier ≃ₗ[ZMod 2] ULift.{u} F.carrier) := by
-    first
-      | exact ⟨ULift.moduleEquiv.symm⟩
-      | exact ⟨{ toFun := ULift.up, invFun := ULift.down, map_add' := fun _ _ => rfl,
-                 map_smul' := fun _ _ => rfl, left_inv := fun _ => rfl,
-                 right_inv := fun _ => rfl }⟩
+  have hne' : Nonempty (F.carrier ≃ₗ[ZMod 2] ULift.{u} F.carrier) := ⟨ULift.moduleEquiv.symm⟩
   obtain ⟨E⟩ := hne'
   refine ⟨{ carrier := ULift.{u} F.carrier, fam := F.fam.mapLinearEquiv E }, ?_, ?_, ?_⟩
   · exact F.fam.isSparse_mapLinearEquiv E hFsp
