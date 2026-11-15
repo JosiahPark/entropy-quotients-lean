@@ -538,17 +538,43 @@ and no hypotheses beyond the paper's.
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
 
-- [ ] E1. `entropyBits` of a Bernoulli law on `ZMod 2` equals `binaryEntropy p`; the sum of two
+- [x] E1. `entropyBits` of a Bernoulli law on `ZMod 2` equals `binaryEntropy p`; the sum of two
       independent Bernoulli(p) bits is Bernoulli(2p(1−p)).
   - Written by the formalize task 2026-11-15 19:56 UTC (uncompiled at push): `zmod2_eq_zero_or_one`,
     `sum_zmod2_eq`, `bernoulliBit` (the law on `ZMod 2` with masses `1 − p`, `p`),
     `bernoulliBit_toReal_zero`, `bernoulliBit_toReal_one`, `entropyBits_bernoulliBit`,
     `bernoulliBit_param_nonneg`, `bernoulliBit_param_le_one`, `conv_bernoulliBit`,
     `entropyIncrement_bernoulliBit`, `entropyDefect_bernoulliBit`
-    (`EntropyLean/BernoulliLaw.lean`, 8c02055; imported in `EntropyLean.lean`).
-- [ ] E2. Bernoulli expansions: `binaryEntropy p = p logb 2 (1/p) + p logb 2 e + O(p²)` and
+    (`EntropyLean/BernoulliLaw.lean`, 8c02055; imported in `EntropyLean.lean`). CI green at 8c02055
+    and 9f23ac6; ticked by the formalize task 2026-11-15 21:43 UTC.
+- [x] E2. Bernoulli expansions: `binaryEntropy p = p logb 2 (1/p) + p logb 2 e + O(p²)` and
       `bernoulliDefect p = 2p + O(p² log(1/p))` as explicit inequalities for small `p`.
+      Split by the formalize task 2026-11-15:
+  - [x] E2a. `p logb 2 (1/p) + (p − p²)/log 2 ≤ h₂(p) ≤ p logb 2 (1/p) + p/log 2` and
+        `2p − 2p² − 2p²/log 2 ≤ bernoulliDefect p` for `0 < p < 1`
+        (`EntropyLean/BernoulliExpansion.lean`).
+    - Written 2026-11-15 20:59 UTC in 7c68f07 (formalize: E2a; no note was added then):
+      `bern_log_le_sub_one`, `one_sub_mul_log_one_sub_ge`, `one_sub_mul_log_one_sub_le`,
+      `div_log2_le_div_log2`, `binaryEntropy_eq_nats`, `binaryEntropy_ge`, `binaryEntropy_le`,
+      `bernoulli_q_pos`, `bernoulli_q_lt_one`, `bernoulliDefect_eq_nats`, `bernoulliDefect_ge`.
+      CI green at 7c68f07 (linter: the `first` block in `bernoulliDefect_ge` can be `field_simp`
+      alone; `if_pos` in `binaryEntropy_eq_nats` is deprecated). Note and tick added by the formalize
+      task 2026-11-15 21:43 UTC.
+  - [x] E2b. Upper bound `bernoulliDefect_le : bernoulliDefect p ≤ 2p + 2p² logb 2 (1/p) + 4p²/log 2`
+        and the two-sided form `bernoulliDefect_sub_abs_le :
+        |bernoulliDefect p − 2p| ≤ 2p² logb 2 (1/p) + 4p²/log 2` (`EntropyLean/BernoulliDefect.lean`).
+    - Written by the formalize task 2026-11-15 21:35 UTC (uncompiled at push): `bern_div_le_add_div`,
+      `bernoulliDefect_le`, `bern_logb_inv_nonneg`, `bern_sq_le_div_log_two`,
+      `bernoulliDefect_sub_abs_le` (323be41; `BernoulliExpansion` and `BernoulliDefect` now imported
+      in `EntropyLean.lean`). CI green at 323be41 (checked in the same run, no new warnings); BEXP
+      marked proved in docs/DEPENDENCIES.md (46b5eae).
 - [ ] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.
+  - Suggested route (formalize task 2026-11-15; not yet checked in Lean): only E1 and E2a are
+    needed. Take `m = 1` and `X` the image of `bernoulliBit p` under the injective additive map
+    `b ↦ fun _ => b`, so `H(X) = h₂(p)` and `E(X) = bernoulliDefect p`. For `G = ⊥`,
+    `H(q_G X) = H(X)` and the hypothesis gives `(1 + ε) E(X) ≤ ε H(X)`, which fails for
+    `p = 2^(−c/ε)`, `c < 2` and small `ε` (E2a: `E ≥ 2p − O(p²)`, `h₂(p) ≤ p (c/ε + 1/log 2)`). So
+    `dim G ≥ 1`, `C(ε) ≥ 1/h₂(p)` and `ε log₂ C(ε) ≥ c − ε log₂(c/ε + 1/log 2)`, which tends to `c`.
 
 ## F. Corollary 9.4
 

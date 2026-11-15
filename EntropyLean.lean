@@ -1,5 +1,7 @@
 import EntropyLean.Basic
 import EntropyLean.Bernoulli
+import EntropyLean.BernoulliDefect
+import EntropyLean.BernoulliExpansion
 import EntropyLean.BernoulliLaw
 import EntropyLean.CondInformation
 import EntropyLean.Conditional
