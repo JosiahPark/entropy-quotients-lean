@@ -305,7 +305,7 @@ and no hypotheses beyond the paper's.
           `(V₁ = U₁ + Z, U₂)` with entropy `≤ H(U) + H(V)`, and via `entropyBits_submodular` (both
           pairs determine `W = U₁ + V₂`) `H(W) ≤ 2I(U ; V) + H(Z)` (`double_trial_sum_le`).
           Split by the hourly task 2026-11-14 (`EntropyLean/DoubleTrial.lean`):
-      - [ ] D6b2a. Kernel joint law `kernelJoint c K`, the double trial `doubleTrial R` (law of
+      - [x] D6b2a. Kernel joint law `kernelJoint c K`, the double trial `doubleTrial R` (law of
             `((U₁, U₂), Z)`), `H(T) = 2H(U, V) − H(Z)`, the laws of `(U₁, Z)`, `(U₂, Z)`, `U₁`, `U₂`,
             `V₁ = U₁ + Z`, `V₂ = U₂ + Z`, and `H(U₁, V₂), H(V₁, U₂) ≤ H(U) + H(V)`.
         - Written by the hourly task 2026-11-14 (uncompiled at push): `kernelJoint`,
@@ -313,11 +313,13 @@ and no hypotheses beyond the paper's.
           `doubleTrial`, `entropyBits_doubleTrial`, `doubleTrial_map_fst_pair`,
           `doubleTrial_map_snd_pair`, `zmod2_add_add_self`, `add_comp_fst_add`, `doubleTrial_map_U1`,
           `doubleTrial_map_U2`, `doubleTrial_map_V1`, `doubleTrial_map_V2`, `dtPair1`, `dtPair2`,
-          `entropyBits_dtPair1_le`, `entropyBits_dtPair2_le` (9c60ff4).
+          `entropyBits_dtPair1_le`, `entropyBits_dtPair2_le` (9c60ff4). CI green at 9c60ff4.
       - [ ] D6b2b. Submodularity step: with `W = U₁ + V₂ = V₁ + U₂`, apply `entropyBits_submodular`
             to the law of `((U₁, V₂), (V₁, U₂), W)` (injective image of `T`; each pair determines `W`)
             to get `H(T) + H(W) ≤ H(U₁, V₂) + H(V₁, U₂)`, hence `double_trial_sum_le :
             H(W) ≤ 2 * mutualInfo R + H(Z)` (`EntropyLean/DoubleTrial.lean`).
+        - Written by the hourly task 2026-11-15 (uncompiled at push): `dtSum`, `dtTriple`, `withSum`,
+          `withSum_injective`, `dtTriple_injective`, `double_trial_sum_le` (09f86df).
     - [ ] D6b3. `∑_z R_Z(z) H(K_z * K_z) ≤ H(W)` (kernel formula for `(W, Z)` and `H(W | Z) ≤ H(W)`),
           then `conditional_bsg` (33) from `sum_ruzsaDist_fibreLaw` and D6b2.
   - [ ] D6c. Four-sample setup of Section 6 (`T`, `S`, `A`, `B`, `C`, `J = I(A ; B | S, T)`) and
