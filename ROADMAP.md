@@ -514,7 +514,7 @@ and no hypotheses beyond the paper's.
     CI green at 0440122 and at 9914c7d. Note and tick added by the formalize task 2026-11-15
     19:36 UTC (job log not readable, so linter warnings unchecked). D9 ticked: (35) stays the
     hypothesis `MartonBound.{0}`.
-- [ ] D10. Universe transport (Grok's report, L6; [numerics/](numerics/README.md)): the statements in
+- [x] D10. Universe transport (Grok's report, L6; [numerics/](numerics/README.md)): the statements in
       `EntropyLean/Statements.lean` quantify over `V : Type*`, and
       `exponential_entropy_quotient_of_growth.{u}` needs `RatioGrowth.{u}`. Prove
       `RatioGrowth.{0} → RatioGrowth.{u}` by transport along linear equivalences
@@ -532,11 +532,20 @@ and no hypotheses beyond the paper's.
     `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` (Lemma 8.1, Theorem 8.2
     and the statements of Theorems 1.1, 1.2 in every universe, with `MartonBound.{0}` as the only
     hypothesis) (`EntropyLean/UniverseTransport.lean`, 289e966; imported in `EntropyLean.lean`).
+    First push failed CI (structure-instance indentation in `ratioGrowth_lift`); fixed in 1cb0c86,
+    linter clean-up in b34f32d, CI green at both. D10 ticked: (35) stays the hypothesis
+    `MartonBound.{0}`.
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
 
 - [ ] E1. `entropyBits` of a Bernoulli law on `ZMod 2` equals `binaryEntropy p`; the sum of two
       independent Bernoulli(p) bits is Bernoulli(2p(1−p)).
+  - Written by the formalize task 2026-11-15 19:56 UTC (uncompiled at push): `zmod2_eq_zero_or_one`,
+    `sum_zmod2_eq`, `bernoulliBit` (the law on `ZMod 2` with masses `1 − p`, `p`),
+    `bernoulliBit_toReal_zero`, `bernoulliBit_toReal_one`, `entropyBits_bernoulliBit`,
+    `bernoulliBit_param_nonneg`, `bernoulliBit_param_le_one`, `conv_bernoulliBit`,
+    `entropyIncrement_bernoulliBit`, `entropyDefect_bernoulliBit`
+    (`EntropyLean/BernoulliLaw.lean`, 8c02055; imported in `EntropyLean.lean`).
 - [ ] E2. Bernoulli expansions: `binaryEntropy p = p logb 2 (1/p) + p logb 2 e + O(p²)` and
       `bernoulliDefect p = 2p + O(p² log(1/p))` as explicit inequalities for small `p`.
 - [ ] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.
