@@ -367,17 +367,22 @@ and no hypotheses beyond the paper's.
           docs/DEPENDENCIES.md (04c1579).
   - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
         Split by the formalize task 2026-11-15:
-    - [ ] D6d1. Lemma 6.2 conditioned on a third variable: for `R((u, v), y) = c(y) K_y(u, v)`,
+    - [x] D6d1. Lemma 6.2 conditioned on a third variable: for `R((u, v), y) = c(y) K_y(u, v)`,
           `∑_y c(y) ∑_z K_{y,Z}(z) d(Law(U | z, y), Law(V | z, y)) ≤ 3I(U ; V | Y) + 2H(Z | Y) −
           H(U | Y) − H(V | Y)` (`EntropyLean/KernelBSG.lean`, `kernel_conditional_bsg`).
       - Written by the formalize task 2026-11-15 02:52 UTC (uncompiled at push):
-        `sum_kernel_entropy_map`, `kernel_conditional_bsg`, `kernelJoint_conditional_bsg` (dc28847).
-    - [ ] D6d2. Fixed laws `P₁, …, P₄`: a conditional law `condKernel R t` of `A` given `T = t` for
+        `sum_kernel_entropy_map`, `kernel_conditional_bsg`, `kernelJoint_conditional_bsg` (dc28847). CI green at dc28847.
+    - [x] D6d2. Fixed laws `P₁, …, P₄`: a conditional law `condKernel R t` of `A` given `T = t` for
           `R : PMF (α × T)` with `R(a, t) = R_T(t) condKernel R t a`; apply D6d1 to the law of
           `((A, C), S)`; `I(A ; C | S) = fourJ` (`(A, C) ↔ (A, B)` is a bijection) and
           `H(C | S) = s(P₂ * P₃, P₁ * P₄)`, giving the fixed-law bound
           `≤ 3 fourJ + 2H(B | S) − H(A | S) − H(C | S)` (`EntropyLean/PosteriorDoubling.lean`,
           `four_conditional_bsg`).
+      - Written by the formalize task 2026-11-15 03:05 UTC (uncompiled at push): `sum_fst_apply`,
+        `condKernel`, `condKernel_toReal_mul`, `acsMap`, `acsMap_injective`, `fourCS`, `acsLaw`,
+        `acs_map_A`, `acs_map_C`, `acs_map_S`, `acs_map_B`, `entropyBits_acsLaw`, `four_conditional_bsg`
+        (1a364e5). CI green at 1a364e5. The bound is stated with `H(C | S)`; the identity
+        `H(C | S) = s(P₂ * P₃, P₁ * P₄)` is left to D6d3.
     - [ ] D6d3. Identify `Law(A | B = b, S = s) = Q_{13,b} * Q_{24,s+b}` (posterior laws of `(P₁, P₃)`
           and `(P₂, P₄)`) with joint weight `(P₁ * P₃)(b) (P₂ * P₄)(s + b)`, and over F₂ the Ruzsa
           term as `D(Q_{13,b} * Q_{24,s+b})` (`four_posterior_doubling_fixed`).
