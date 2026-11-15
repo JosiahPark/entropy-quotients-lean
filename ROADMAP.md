@@ -64,6 +64,10 @@ and no hypotheses beyond the paper's.
       formalizes Shannon entropy, Ruzsa distance and an entropic PFR theorem. Check its
       toolchain against Lean 4.35.0 and whether its constant matches the 6 in (35). If (ii),
       prove `entropyBits` agrees with PFR's entropy divided by `log 2`.
+  - Note from Grok's report of 2026-11-15 ([numerics/](numerics/README.md)): the report states that
+    PFR's entropic theorem has constant at most 6 (11/2 from GGMT's bound with `X₁ = X₂`), so
+    (ii) would turn the hypothesis `MartonInput V` into a theorem. Not checked here; the toolchain
+    check is still open.
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - [x] B2a. `condEntropy`, `mutualInfo`, chain rule `entropyBits_chain`, `condEntropy_nonneg`,
@@ -500,6 +504,17 @@ and no hypotheses beyond the paper's.
       the Marton bound (35) stays the hypothesis `MartonInput V`; L71 marked stated in
       docs/DEPENDENCIES.md.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
+  - Note from Grok's report of 2026-11-15 (L6): `WeightedFamily.posterior` exists only for
+    `V : Type` (the index type of a `WeightedFamily` lives in `Type`), so D9 proves Lemma 8.1 only as
+    `RatioGrowth.{0}` (`ratio_growth_of_marton`, 0440122); D10 lifts it to every universe.
+- [ ] D10. Universe transport (Grok's report, L6; [numerics/](numerics/README.md)): the statements in
+      `EntropyLean/Statements.lean` quantify over `V : Type*`, and
+      `exponential_entropy_quotient_of_growth.{u}` needs `RatioGrowth.{u}`. Prove
+      `RatioGrowth.{0} → RatioGrowth.{u}` by transport along linear equivalences
+      `W ≃ₗ[ZMod 2] W'`: `h`, `e` and `F_𝒫(W)`, hence sparsity, are invariant for the pushed-forward
+      family, and `ULift` carries the family returned by `RatioGrowth.{0}` into universe `u`
+      (`EntropyLean/UniverseTransport.lean`, `ratioGrowth_lift`). Alternative: generalize
+      `WeightedFamily.index` to `Type*`, which touches every file that uses families.
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
 
