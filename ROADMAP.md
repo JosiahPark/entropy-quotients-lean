@@ -366,6 +366,24 @@ and no hypotheses beyond the paper's.
           (71dc6e3). CI green at 71dc6e3 (checked in the same run); L61 marked proved in
           docs/DEPENDENCIES.md (04c1579).
   - [ ] D6d. Lemma 6.3 (34) `E_{u,w} D(Q_u * Q_w) ≤ 3J` from D6a–D6c (`posterior_doubling`).
+        Split by the formalize task 2026-11-15:
+    - [ ] D6d1. Lemma 6.2 conditioned on a third variable: for `R((u, v), y) = c(y) K_y(u, v)`,
+          `∑_y c(y) ∑_z K_{y,Z}(z) d(Law(U | z, y), Law(V | z, y)) ≤ 3I(U ; V | Y) + 2H(Z | Y) −
+          H(U | Y) − H(V | Y)` (`EntropyLean/KernelBSG.lean`, `kernel_conditional_bsg`).
+      - Written by the formalize task 2026-11-15 02:52 UTC (uncompiled at push):
+        `sum_kernel_entropy_map`, `kernel_conditional_bsg`, `kernelJoint_conditional_bsg` (dc28847).
+    - [ ] D6d2. Fixed laws `P₁, …, P₄`: a conditional law `condKernel R t` of `A` given `T = t` for
+          `R : PMF (α × T)` with `R(a, t) = R_T(t) condKernel R t a`; apply D6d1 to the law of
+          `((A, C), S)`; `I(A ; C | S) = fourJ` (`(A, C) ↔ (A, B)` is a bijection) and
+          `H(C | S) = s(P₂ * P₃, P₁ * P₄)`, giving the fixed-law bound
+          `≤ 3 fourJ + 2H(B | S) − H(A | S) − H(C | S)` (`EntropyLean/PosteriorDoubling.lean`,
+          `four_conditional_bsg`).
+    - [ ] D6d3. Identify `Law(A | B = b, S = s) = Q_{13,b} * Q_{24,s+b}` (posterior laws of `(P₁, P₃)`
+          and `(P₂, P₄)`) with joint weight `(P₁ * P₃)(b) (P₂ * P₄)(s + b)`, and over F₂ the Ruzsa
+          term as `D(Q_{13,b} * Q_{24,s+b})` (`four_posterior_doubling_fixed`).
+    - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
+          `m = postMass`, show the averaged `H(A | S, T)`, `H(B | S, T)`, `H(C | S, T)` all equal
+          `e(𝒫 * 𝒫)`, and conclude `posterior_doubling` (34).
 - [ ] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
       matches.
