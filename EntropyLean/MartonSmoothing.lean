@@ -31,6 +31,7 @@ open Classical in
 noncomputable def subCard (W : Submodule (ZMod 2) V) : ℕ :=
   (Finset.univ.filter fun v : V => v ∈ W).card
 
+open Classical in
 theorem tsum_subIndicator (W : Submodule (ZMod 2) V) :
     ∑' v, subIndicator W v = (subCard W : ℝ≥0∞) := by
   rw [tsum_fintype]
@@ -63,9 +64,7 @@ theorem entropyBits_uniformSub_card (W : Submodule (ZMod 2) V) :
     intro v
     rw [uniformSub_toReal]
     split_ifs
-    · first
-        | rw [Real.logb_inv]
-        | simp only [Real.logb, Real.log_inv, neg_div]
+    · rw [Real.logb_inv]
       ring
     · simp
   rw [Finset.sum_congr rfl fun v _ => hterm v]
@@ -80,11 +79,8 @@ theorem subCard_eq (W : Submodule (ZMod 2) V) :
   have h1 : subCard W = Fintype.card W := by
     unfold subCard
     convert (Fintype.card_subtype (fun v : V => v ∈ W)).symm
-  have h2 : Fintype.card W = Fintype.card (ZMod 2) ^ Module.finrank (ZMod 2) W := by
-    first
-      | exact Module.card_eq_pow_finrank
-      | exact card_eq_pow_finrank
-      | exact FiniteDimensional.card_eq_pow_finrank
+  have h2 : Fintype.card W = Fintype.card (ZMod 2) ^ Module.finrank (ZMod 2) W :=
+    Module.card_eq_pow_finrank
   rw [h1, h2, ZMod.card]
 
 /-- `H(U_W) = dim W`. -/
