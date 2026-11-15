@@ -576,18 +576,34 @@ and no hypotheses beyond the paper's.
     `p = 2^(−c/ε)`, `c < 2` and small `ε` (E2a: `E ≥ 2p − O(p²)`, `h₂(p) ≤ p (c/ε + 1/log 2)`). So
     `dim G ≥ 1`, `C(ε) ≥ 1/h₂(p)` and `ε log₂ C(ε) ≥ c − ε log₂(c/ε + 1/log 2)`, which tends to `c`.
       Split by the formalize task 2026-11-15:
-  - [ ] E3a. The one-bit example forces `dim G ≥ 1` (`EntropyLean/ScaleNecessary.lean`): `bitEmbed`,
+  - [x] E3a. The one-bit example forces `dim G ≥ 1` (`EntropyLean/ScaleNecessary.lean`): `bitEmbed`,
         `bernoulliVec p` (law of `bernoulliBit p` on `F2Vec 1`) with `H = h₂(p)`, `E = bernoulliDefect p`;
         if `ε h₂(p) < (1+ε) bernoulliDefect p` then the hypothesis of Proposition 9.3 gives
         `1 ≤ C(ε) h₂(p)` (`one_le_C_mul_binaryEntropy`).
     - Written by the formalize task 2026-11-15 21:52 UTC (uncompiled at push): `bitEmbed`,
       `bitEmbed_injective`, `bernoulliVec`, `entropyBits_bernoulliVec`, `entropyDefect_bernoulliVec`,
-      `dim_pos_of_defect_gt`, `one_le_C_mul_binaryEntropy` (d3bc836).
+      `dim_pos_of_defect_gt`, `one_le_C_mul_binaryEntropy` (d3bc836). CI green at d3bc836 (job log
+      not readable, so linter warnings from the `first` blocks unchecked); ticked by the formalize
+      task 2026-11-15 22:34 UTC.
   - [ ] E3b. Real analysis (`EntropyLean/ScaleNecessaryLimit.lean`): for `0 < c < c' < 2` and
         `p = 2^(−c'/ε)`, eventually as `ε ↓ 0`: `ε h₂(p) < (1+ε) bernoulliDefect p`
         (`scale_gap_eventually`, from `binaryEntropy_le` and `bernoulliDefect_ge`) and
         `c ≤ −ε logb 2 (h₂(p))` (`scale_log_eventually`, from `binaryEntropy_le` and
         `ε logb 2 (c'/ε + 1/log 2) → 0`). Split further if over one run.
+        Split by the formalize task 2026-11-15 (`p = scaleParam c' ε`):
+    - [ ] E3b1. `scaleParam a ε = 2^(−a/ε)` with `0 < p < 1`, `log₂(1/p) = a/ε`, `p · a · log 2 ≤ ε`,
+          the explicit gap `scale_gap_of_le` and `scale_gap_eventually` (for `0 < a < 2`,
+          eventually `ε h₂(p) < (1+ε) bernoulliDefect p`) (`EntropyLean/ScaleNecessaryLimit.lean`).
+      - Written by the formalize task 2026-11-15 22:34 UTC (uncompiled at push): `scaleParam`,
+        `scaleParam_pos`, `log_scaleParam`, `scaleParam_lt_one`, `logb_inv_scaleParam`,
+        `scaleParam_mul_le`, `scale_eventually_of_lt`, `scale_gap_of_le`, `scale_gap_eventually`
+        (5b0cb69).
+    - [ ] E3b2. `scale_log_eventually`: for `0 < a` and `c < a`, eventually
+          `c ≤ −(ε logb 2 (h₂(scaleParam a ε)))` (`EntropyLean/ScaleNecessaryLog.lean`, importing
+          `EntropyLean.ScaleNecessaryLimit`). Suggested route: for `ε ≤ 1/2`,
+          `h₂(p) ≤ p (a + 1)/ε` (`binaryEntropy_le`, `half_le_log_two`); `x²/4 ≤ eˣ` (from
+          `eˣ = (e^(x/2))²` and `1 + x/2 ≤ e^(x/2)`) gives `(a + 1)/ε ≤ exp((a − c) log 2 / ε)` once
+          `16 ε (a + 1) ≤ (a − c)²`; then `ε log h₂(p) ≤ −c log 2`. Use `scale_eventually_of_lt`.
   - [ ] E3c. `exponential_scale_necessary` from E3a and E3b: `C(ε) ≥ 1/h₂(p) > 0`, so
         `ε logb 2 (C ε) ≥ −ε logb 2 (h₂(p)) ≥ c` (for `c ≤ 0` use `c < c' := 1`). The proof goes in a
         new file (`exponential_scale_necessary_proof`) and `Statements.lean` then uses it, as for
