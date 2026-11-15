@@ -394,10 +394,16 @@ and no hypotheses beyond the paper's.
         - Written by the formalize task 2026-11-15 03:45 UTC (uncompiled at push): `sum_kernel_congr`,
           `tripleSwap12`, `tripleSwap12_injective`, `fourLaw_eq_swap`, `fourLaw_post_toReal`,
           `acsLaw_fibre_toReal` (68237b0). CI green at 68237b0.
-      - [ ] D6d3b. Rewrite the left side of `four_conditional_bsg` with `ruzsaDist_fibreLaw`, the
+      - [x] D6d3b. Rewrite the left side of `four_conditional_bsg` with `ruzsaDist_fibreLaw`, the
             reindexing `(s, z) ↦ (z, s + z)` of `V × V`, and `sum_kernel_congr` with `acsLaw_fibre_toReal`
             and `fourLaw_post_toReal`, as `∑_{b,d} (P₁ * P₃)(b) (P₂ * P₄)(d) D(Q_{13,b} * Q_{24,d})`
             (`four_posterior_doubling_fixed`).
+        - Written by the formalize task 2026-11-15 03:49 UTC (uncompiled at push):
+          `four_posterior_doubling_fixed`, `four_posterior_doubling_bound` (the posterior form of the
+          left side bounded by `3 J + 2 H(C | S) − H(B | S) − H(A | S)`)
+          (`EntropyLean/PosteriorDoublingFixed.lean`, 5ee3558). First push failed CI
+          (`(Equiv.addLeft b).sum_comp` resolved to `Equiv.Perm.sum_comp`); fixed with
+          `Equiv.sum_comp` in d652178, CI green.
       - [ ] D6d3c. `H(C | S) = s(P₂ * P₃, P₁ * P₄)` over F₂ (`C = X₂ + X₃`; exchange coordinates as in
             `fourLaw_condEntropy_B`) (`fourLaw_condEntropy_C`).
     - [ ] D6d4. Average over `T`: reindex the left side to `∑_{u,w} m(u) m(w) D(Q_u * Q_w)` with
