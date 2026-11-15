@@ -1,6 +1,8 @@
 import Mathlib
 import EntropyLean.MartonStep
 import EntropyLean.PosteriorDoublingAvg
+import EntropyLean.PosteriorClosure
+import EntropyLean.DensitySqrt
 
 /-!
 # Lemma 7.1, averaged Marton step over posterior pairs (roadmap item D8b, Section 7)
@@ -17,9 +19,15 @@ pair `(Q_x, Q_y)` and choose the subspace `W(x, y)` it gives (`postSubspace`). T
 
 All sums run over all triples, as in `meanInteraction_posterior_full`.
 
-What this file does NOT prove: the bound of the first term by `14 √ρ h(𝒬)` through Lemma 5.1, nor
-Lemma 7.1 (37) itself (roadmap item D8c); nor the entropic Marton bound (35), which enters only as
-the hypothesis `hM : MartonInput V`.
+Roadmap item D8c adds
+* `posterior_double_sum`: an average over pairs of posterior indices is the sum over all pairs of
+  triples with weights `m(x) m(y)`;
+* `sparse_posterior_estimate`: **Lemma 7.1** (37), `e(𝒬) ≤ 36 J + 14 √ρ δH` with `δH = e(𝒫)`,
+  for a `ρ`-sparse posterior family `𝒬` (`ρ ≥ 0`), via Lemma 5.1 (29) (`averaged_density_sqrt`);
+* `sparse_posterior_estimate_of_sparse`: the same when `𝒫` itself is `ρ`-sparse (Lemma 2.2).
+
+What this file does NOT prove: the entropic Marton bound (35), which enters only as the hypothesis
+`hM : MartonInput V`; nor Lemma 8.1 or Theorem 8.2.
 -/
 
 namespace EntropyLean
@@ -125,6 +133,57 @@ theorem posterior_mean_dim_le (P : WeightedFamily V) (hM : MartonInput V) :
   rw [P.sum_postMass_mul_entropy, P.postMass_sum] at hs
   rw [meanEntropy_posterior]
   linarith
+
+open Classical in
+/-- An average over pairs of posterior indices, as a sum over all pairs of triples:
+`∑_{u,w} m(u) m(w) g(u, w)` (the terms with `m = 0` vanish). -/
+theorem posterior_double_sum (P : WeightedFamily V)
+    (g : P.index × P.index × V → P.index × P.index × V → ℝ) :
+    ∑ u : P.posterior.index, P.posterior.weights u *
+        ∑ w : P.posterior.index, P.posterior.weights w * g (Subtype.val u) (Subtype.val w) =
+      ∑ x, ∑ y, P.postMass x * P.postMass y * g x y := by
+  show ∑ x : {x : P.index × P.index × V // conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0},
+      P.postMass x.1 *
+        ∑ y : {x : P.index × P.index × V // conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0},
+          P.postMass y.1 * g x.1 y.1 = _
+  have inner : ∀ x : P.index × P.index × V,
+      ∑ y : {x : P.index × P.index × V // conv (P.laws x.1) (P.laws x.2.1) x.2.2 ≠ 0},
+        P.postMass y.1 * g x y.1 = ∑ y, P.postMass y * g x y := fun x =>
+    sum_posterior_index P (fun y => P.postMass y * g x y) fun y hy => by
+      simp only [postMass_eq_zero P hy, zero_mul]
+  simp only [inner]
+  refine (sum_posterior_index P (fun x => P.postMass x * ∑ y, P.postMass y * g x y)
+    fun x hx => by simp only [postMass_eq_zero P hx, zero_mul]).trans ?_
+  simp only [Finset.mul_sum, mul_assoc]
+
+/-- **Lemma 7.1** (37), sparse posterior estimate: if the posterior family `𝒬 = Post 𝒫` is
+`ρ`-sparse (`ρ ≥ 0`), then `e(𝒬) ≤ 36 J + 14 √ρ δH`, where `δH = e(𝒫) = h(𝒬)` and
+`J = I(A ; B | S, T)` (`fourSampleJ`). The Marton bound (35) is the hypothesis `hM`. -/
+theorem sparse_posterior_estimate (P : WeightedFamily V) (hM : MartonInput V) {rho : ℝ}
+    (hsp : P.posterior.IsSparse rho) (hrho : 0 ≤ rho) :
+    P.posterior.meanInteraction ≤
+      36 * P.fourSampleJ + 14 * Real.sqrt rho * P.meanInteraction := by
+  have h1 := P.posterior_interaction_le_subspace hM
+  have hB := P.posterior_mean_dim_le hM
+  have hBQ := (posterior_double_sum P fun x y =>
+    (Module.finrank (ZMod 2) (P.postSubspace hM x y) : ℝ)).le.trans hB
+  have hA := P.posterior.averaged_density_sqrt hsp hrho
+    (fun u w => P.postSubspace hM (Subtype.val u) (Subtype.val w)) hBQ
+  have hA' : ∑ x, ∑ y, P.postMass x * P.postMass y *
+        subspaceInteraction (P.postLawAt x) (P.postLawAt y) (P.postSubspace hM x y) ≤
+      14 * Real.sqrt rho * P.posterior.meanEntropy :=
+    (posterior_double_sum P fun x y => subspaceInteraction (P.postLawAt x) (P.postLawAt y)
+      (P.postSubspace hM x y)).symm.le.trans hA
+  rw [meanEntropy_posterior] at hA'
+  linarith
+
+/-- **Lemma 7.1** for a `ρ`-sparse family `𝒫`: its posterior family is `ρ`-sparse by Lemma 2.2
+(`posterior_closure`), so `e(Post 𝒫) ≤ 36 J + 14 √ρ e(𝒫)`. -/
+theorem sparse_posterior_estimate_of_sparse (P : WeightedFamily V) (hM : MartonInput V)
+    {rho : ℝ} (hsp : P.IsSparse rho) (hrho : 0 ≤ rho) :
+    P.posterior.meanInteraction ≤
+      36 * P.fourSampleJ + 14 * Real.sqrt rho * P.meanInteraction :=
+  P.sparse_posterior_estimate hM (posterior_closure rho P hsp) hrho
 
 end WeightedFamily
 
