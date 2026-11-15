@@ -29,11 +29,44 @@ namespace EntropyLean
 
 universe u
 
+open scoped ENNReal
+
 open Classical in
-/-- The uniform law `U_W` on a subspace `W` of a finite F₂-space. -/
+/-- The indicator weights `1_W` of a subspace, before normalisation. -/
+noncomputable def subIndicator {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
+    (W : Submodule (ZMod 2) V) (v : V) : ℝ≥0∞ :=
+  if v ∈ W then 1 else 0
+
+theorem subIndicator_le_one {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
+    (W : Submodule (ZMod 2) V) (v : V) : subIndicator W v ≤ 1 := by
+  unfold subIndicator
+  split_ifs <;> simp
+
+theorem tsum_subIndicator_ne_zero {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
+    (W : Submodule (ZMod 2) V) : ∑' v, subIndicator W v ≠ 0 := by
+  intro h
+  have h0 := ENNReal.tsum_eq_zero.mp h 0
+  simp [subIndicator] at h0
+
+theorem tsum_subIndicator_ne_top {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    (W : Submodule (ZMod 2) V) : ∑' v, subIndicator W v ≠ ∞ := by
+  have hle : ∑' v, subIndicator W v ≤ ∑' _ : V, (1 : ℝ≥0∞) :=
+    ENNReal.tsum_le_tsum (subIndicator_le_one W)
+  have h1 : ∑' _ : V, (1 : ℝ≥0∞) = (Fintype.card V : ℝ≥0∞) := by
+    rw [tsum_fintype]
+    simp
+  have h2 : ∑' _ : V, (1 : ℝ≥0∞) ≠ ∞ := by
+    rw [h1]
+    first
+    | exact ENNReal.natCast_ne_top _
+    | simp
+  exact ne_top_of_le_ne_top h2 hle
+
+/-- The uniform law `U_W` on a subspace `W` of a finite F₂-space (the normalised indicator of
+`W`; Mathlib no longer has a uniform `PMF` on a finset). -/
 noncomputable def uniformSub {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
     (W : Submodule (ZMod 2) V) : PMF V :=
-  PMF.uniformOfFinset (Finset.univ.filter fun v => v ∈ W) ⟨0, by simp⟩
+  PMF.normalize (subIndicator W) (tsum_subIndicator_ne_zero W) (tsum_subIndicator_ne_top W)
 
 /-- The entropic Marton bound (35) on a finite F₂-space `V`, as a named hypothesis: every law
 `K` on `V` has a subspace `W` with `d(K, U_W) ≤ 6 D(K)`. -/
