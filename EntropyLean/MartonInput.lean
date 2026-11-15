@@ -57,9 +57,7 @@ theorem tsum_subIndicator_ne_top {V : Type*} [AddCommGroup V] [Module (ZMod 2) V
     simp
   have h2 : ∑' _ : V, (1 : ℝ≥0∞) ≠ ∞ := by
     rw [h1]
-    first
-    | exact ENNReal.natCast_ne_top _
-    | simp
+    exact ENNReal.natCast_ne_top _
   exact ne_top_of_le_ne_top h2 hle
 
 /-- The uniform law `U_W` on a subspace `W` of a finite F₂-space (the normalised indicator of
