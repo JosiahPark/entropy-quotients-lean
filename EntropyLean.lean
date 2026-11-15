@@ -7,6 +7,8 @@ import EntropyLean.CondInformation
 import EntropyLean.Conditional
 import EntropyLean.ConditionalBSG
 import EntropyLean.ConditionalBSGLemma
+import EntropyLean.ConstantSlack
+import EntropyLean.CosetConcentration
 import EntropyLean.DensityEstimate
 import EntropyLean.DensitySqrt
 import EntropyLean.DoubleTrial
@@ -20,7 +22,9 @@ import EntropyLean.Increment
 import EntropyLean.Information
 import EntropyLean.Interaction
 import EntropyLean.KernelBSG
+import EntropyLean.MartonChainConst
 import EntropyLean.MartonConsequence
+import EntropyLean.MartonConst
 import EntropyLean.MartonConv
 import EntropyLean.MartonConvEntropy
 import EntropyLean.MartonInput
@@ -40,7 +44,13 @@ import EntropyLean.RatioGrowth
 import EntropyLean.RatioGrowthProof
 import EntropyLean.RatioSparsification
 import EntropyLean.RigidityArith
+import EntropyLean.RigidityArithParam
+import EntropyLean.RigidityConst
 import EntropyLean.RuzsaDistance
+import EntropyLean.ScaleNecessary
+import EntropyLean.ScaleNecessaryLimit
+import EntropyLean.ScaleNecessaryLog
+import EntropyLean.ScaleNecessaryProof
 import EntropyLean.SparsePosterior
 import EntropyLean.Statements
 import EntropyLean.Supermodular

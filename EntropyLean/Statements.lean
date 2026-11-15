@@ -1,6 +1,7 @@
 import EntropyLean.Families
 import EntropyLean.Variational
 import EntropyLean.RatioSparsification
+import EntropyLean.ScaleNecessaryProof
 
 /-!
 # Main results of arXiv:2610.38525: statements (open) and the elementary steps (proved)
@@ -8,19 +9,20 @@ import EntropyLean.RatioSparsification
 Every `sorry` below is an open proof obligation, **not** a certified theorem. The statements are
 checked against the paper (v1, 28 Oct 2026) but have not been independently reviewed.
 
-Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2,
-Proposition 9.3. Lemma 9.1 (`variational_sparsification`) is proved from
+Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2. Lemma 9.1
+(`variational_sparsification`) is proved from
 `WeightedFamily.variational_sparsification_proof` in `EntropyLean/Variational.lean`; Lemma 4.1
 (`ratio_preserving_sparsification`) from `WeightedFamily.ratio_preserving_sparsification_proof`
-in `EntropyLean/RatioSparsification.lean`.
+in `EntropyLean/RatioSparsification.lean`; Proposition 9.3 (`exponential_scale_necessary`) from
+`exponential_scale_necessary_proof` in `EntropyLean/ScaleNecessaryProof.lean`.
 
 Proved here: `entropy_le_of_defect_le` and `entropy_le_increment_of_defect_le`, the algebraic step
 in the proof of Theorem 1.1 turning `E(Z) ≤ θ H(Z)` with `θ = ε/(1+ε)` into
 `H(Z) ≤ (1+ε) D(Z)`.
 
-What this file does NOT prove: no `sorry`-free result about entropy quotients beyond that
-algebraic step; in particular Theorem 1.1 is NOT proved. The entropic Marton theorem
-(Gowers–Green–Manners–Tao) on which the paper relies is not formalized here.
+What this file does NOT prove: Theorems 1.1, 1.2 and 8.2 (their proofs here are `sorry`); in
+particular Theorem 1.1 is NOT proved. The entropic Marton theorem (Gowers–Green–Manners–Tao) on
+which the paper relies is not formalized here.
 -/
 
 namespace EntropyLean
@@ -88,8 +90,8 @@ theorem exponential_scale_necessary (C : ℝ → ℝ)
     (hC : ∀ ε > 0, ∀ (m : ℕ) (X : PMF (F2Vec m)), ∃ G : Submodule (ZMod 2) (F2Vec m),
       (Module.finrank (ZMod 2) G : ℝ) ≤ C ε * entropyBits X ∧
       entropyBits (X.map fun v => G.mkQ v) ≤ (1 + ε) * entropyIncrement X) :
-    ∀ c : ℝ, c < 2 → ∀ᶠ ε in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ ε * Real.logb 2 (C ε) := by
-  sorry
+    ∀ c : ℝ, c < 2 → ∀ᶠ ε in nhdsWithin (0 : ℝ) (Set.Ioi 0), c ≤ ε * Real.logb 2 (C ε) :=
+  exponential_scale_necessary_proof C hC
 
 /-- Algebraic step in the proof of Theorem 1.1: from `H - D ≤ (ε/(1+ε)) H` get
 `H ≤ (1+ε) D`. -/
