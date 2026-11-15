@@ -72,6 +72,7 @@ theorem fourSwap_injective : Function.Injective (fourSwap (V := V)) := by
   obtain ⟨b1, b2⟩ := Prod.mk.inj h2
   exact Prod.ext (Prod.ext a1 b1) (Prod.ext a2 b2)
 
+omit [AddCommGroup V] in
 /-- Exchanging `X₂` and `X₃`. -/
 theorem fourProd_swap (P₁ P₂ P₃ P₄ : PMF V) :
     (fourProd P₁ P₂ P₃ P₄).map fourSwap = fourProd P₁ P₃ P₂ P₄ := by
@@ -135,7 +136,6 @@ theorem fourLaw_map_C (P₁ P₂ P₃ P₄ : PMF V) :
   rw [PMF.map_comp]
   try rfl
 
-omit [Fintype V] in
 /-- The law of `(B, S)` is the law of `(X₁ + X₃, S)` after exchanging `X₂` and `X₃`. -/
 theorem fourLaw_map_BC (P₁ P₂ P₃ P₄ : PMF V) :
     (fourLaw P₁ P₂ P₃ P₄).map Prod.snd = (fourProd P₁ P₃ P₂ P₄).map fourAS := by
@@ -147,7 +147,6 @@ theorem fourLaw_map_BC (P₁ P₂ P₃ P₄ : PMF V) :
   show x.1.1 + x.1.2 + (x.2.1 + x.2.2) = x.1.1 + x.2.1 + (x.1.2 + x.2.2)
   abel
 
-omit [Fintype V] in
 /-- The law of `S`, after exchanging `X₂` and `X₃`. -/
 theorem fourLaw_map_C_swap (P₁ P₂ P₃ P₄ : PMF V) :
     (fourLaw P₁ P₂ P₃ P₄).map tripleC = (fourProd P₁ P₃ P₂ P₄).map fourS := by
