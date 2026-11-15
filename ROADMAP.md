@@ -471,7 +471,23 @@ and no hypotheses beyond the paper's.
     - Written by the formalize task 2026-11-15 16:37 UTC (uncompiled at push): `ruzsaDist_uniformSub_ge`,
       `MartonInput.consequence` (795cb8f). (36) now follows from the hypothesis `MartonInput V` alone.
       CI green at 795cb8f. D7 ticked: (35) itself stays the hypothesis `MartonInput V`.
-- [ ] D8. Lemma 7.1 from D4–D7.
+- [ ] D8. Lemma 7.1 (sparse posterior estimate, (37)): `e(𝒬) ≤ 36 J + 14 √ρ δH` for a `ρ`-sparse
+      posterior family `𝒬 = Post 𝒫`, with the Marton bound as the hypothesis `MartonInput V`.
+      Split by the formalize task 2026-11-15:
+  - [ ] D8a. Two laws `P`, `Q`: apply (36) to `K = P * Q`, then (21) and `s(q_W P, q_W Q) ≤
+        H(q_W (P * Q))` give `s(P, Q) ≤ s_W(P, Q) + 12 D(P * Q)` with `dim W ≤ 13 (H(P) + H(Q))`
+        (`EntropyLean/MartonStep.lean`, `interaction_le_subspace_add_increment`).
+    - Written by the formalize task 2026-11-15 16:47 UTC (uncompiled at push):
+      `interaction_quot_le_entropyBits_conv`, `interaction_le_subspace_add_increment` (a1b87ac).
+  - [ ] D8b. Average D8a over posterior pairs `(x, y)` with weights `m(x) m(y)` (`m = postMass`,
+        all triples as in `meanInteraction_posterior_full`): choose `W(x, y)` by `Classical.choose`,
+        then with `posterior_doubling` (34) get `e(𝒬) ≤ ∑ m(x) m(y) s_{W(x,y)}(Q_x, Q_y) + 36 J` and
+        (38) `∑ m(x) m(y) dim W(x, y) ≤ 26 h(𝒬)` (`EntropyLean/SparsePosterior.lean`,
+        `posterior_interaction_le_subspace`, `posterior_mean_dim_le`).
+  - [ ] D8c. Lemma 5.1 (`averaged_density_lemma`, (29)) for the `ρ`-sparse family `𝒬` with the
+        subspace choice of D8b bounds the first term by `14 √ρ h(𝒬)`; with `meanEntropy_posterior`
+        (`h(𝒬) = e(𝒫) = δH`) conclude `sparse_posterior_estimate` (37)
+        (`EntropyLean/SparsePosterior.lean`).
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
 ## E. Proposition 9.3 (independent of Theorem 8.2)
