@@ -5,7 +5,7 @@ Lean 4 / Mathlib formalization work for
 > Josiah Park, *Dimension-free exponential entropy quotients over 𝔽₂*, arXiv:2610.38525v1 (28 Oct 2026).
 > The paper is included at [`paper/2610.38525v1.pdf`](paper/2610.38525v1.pdf).
 
-**Status: research scaffold, not a verified proof.** The main results are stated in Lean with
+**Status: research blueprint, not a verified proof.** The main results are stated in Lean with
 `sorry`; only definitions and elementary identities are proved. GitHub Actions compiles the
 project with Lean 4.35.0 and Mathlib v4.35.0 on every push (see the Actions tab); the library
 first compiled at commit `9130247`.
