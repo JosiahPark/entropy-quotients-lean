@@ -468,6 +468,8 @@ and no hypotheses beyond the paper's.
         `H(K * U_W) ≥ max(H(K), H(U_W))`), and `MartonInput.consequence` ((36) with no smoothing
         hypotheses) (`EntropyLean/MartonConsequence.lean`, importing `EntropyLean.MartonConvEntropy`:
         `ruzsaDist_uniformSub` is not available in `MartonSmoothing.lean`, which that file imports).
+    - Written by the formalize task 2026-11-15 16:37 UTC (uncompiled at push): `ruzsaDist_uniformSub_ge`,
+      `MartonInput.consequence` (795cb8f). (36) now follows from the hypothesis `MartonInput V` alone.
 - [ ] D8. Lemma 7.1 from D4–D7.
 - [ ] D9. Lemma 8.1 from C4, D3, D6, D8.
 
