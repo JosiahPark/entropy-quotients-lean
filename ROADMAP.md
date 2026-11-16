@@ -774,14 +774,25 @@ none may add a `sorry` to `Statements.lean`.
       on the pointwise Gibbs slack rather than via Jensen.
       CI green at 368970f (after a fix: `div_add_div_same` unknown, replaced by `add_div`/`sub_div`);
       ticked by the formalize task 2026-11-16 04:48 UTC.
-  - [ ] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
+  - [x] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
         (`map_add_eq_conv_of_increment_zero`), from H3b applied to the pair `(B, A + B)`, whose mutual
         information is `H(K * K) − H(K) = D(K)`.
     - Written by the formalize task 2026-11-16 04:48 UTC (uncompiled at push): `mutualInfo_snd_add`,
       `toReal_sub_eq_conv_of_increment_zero`, `map_add_eq_conv_of_increment_zero` in
       `EntropyLean/MartonPartial.lean` (ec62d4b; the file now imports `EntropyLean.MutualInfoZero`).
+      CI green at ec62d4b and 13b417d (no `MartonPartial.lean` warnings besides the module notice);
+      ticked by the formalize task 2026-11-16 05:33 UTC.
   - [ ] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
         `d(K, U_W) = 0` and `marton_of_increment_zero` (uses H3a to get `S + S = S + b`).
+    - Written by the formalize task 2026-11-16 05:33 UTC (uncompiled at push): `lawPeriods`,
+      `mem_lawPeriods`, `pmf_map_add_neg_apply`, `pmf_map_add_neg_apply_of_mem`, `lawPeriodSub`,
+      `mem_lawPeriodSub`, `apply_sub_eq_of_increment_zero`, `sub_mem_lawPeriods`,
+      `mem_lawSupport_iff_of_increment_zero`, `pmf_map_add_neg_apply_of_not_mem`,
+      `map_add_neg_eq_uniformSub_of_increment_zero`, `ruzsaDist_lawPeriodSub_of_increment_zero`,
+      `marton_of_increment_zero` in `EntropyLean/MartonPartial.lean` (b6ea618). `W` is the
+      subspace of periods of `K` (via `AddSubgroup.toZModSubmodule`); for `x` in the support,
+      `K − x = U_W`, so `d(K, U_W) = d(K, K − x) = D(K) = 0` by translation invariance (no entropy
+      computation and no use of H3a needed).
 - [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
       finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
