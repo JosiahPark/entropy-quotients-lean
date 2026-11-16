@@ -48,15 +48,12 @@ theorem negMulLog_mix {x y a b z : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (ha : 0 �
     (hab : a + b = 1) (hz : a * x + b * y = z) :
     a * (-x * Real.log x) + b * (-y * Real.log y) ≤ -z * Real.log z := by
   have hc : ConcaveOn ℝ (Set.Ici (0 : ℝ)) Real.negMulLog := by
-    first
-      | exact Real.concaveOn_negMulLog
-      | exact Real.strictConcaveOn_negMulLog.concaveOn
+    exact Real.concaveOn_negMulLog
   have h := hc.2 (Set.mem_Ici.mpr hx) (Set.mem_Ici.mpr hy) ha hb hab
   simp only [smul_eq_mul] at h
   rw [hz] at h
-  first
-    | (simp only [Real.negMulLog] at h; linarith)
-    | (unfold Real.negMulLog at h; linarith)
+  simp only [Real.negMulLog] at h
+  linarith
 
 /-- `H(p) ≤ 12 (H(2p(1−p)) − H(p))` in nats for `0 < p ≤ 1/8`. -/
 theorem bernoulli_marton_small_nats {p : ℝ} (h0 : 0 < p) (h8 : p ≤ 1 / 8) :
@@ -71,14 +68,10 @@ theorem bernoulli_marton_small_nats {p : ℝ} (h0 : 0 < p) (h8 : p ≤ 1 / 8) :
       Real.log_mul (show (2 : ℝ) ≠ 0 by norm_num) h0.ne']
   have hlp : Real.log p ≤ -(3 * Real.log 2) := by
     have h : Real.log p ≤ Real.log (1 / 8) := by
-      first
-        | exact Real.log_le_log h0 h8
-        | exact Real.log_le_log_of_le h0 h8
+      exact Real.log_le_log h0 h8
     have e : Real.log ((1 : ℝ) / 8) = -(3 * Real.log 2) := by
       rw [show (1 : ℝ) / 8 = ((2 : ℝ) ^ 3)⁻¹ by norm_num, Real.log_inv, Real.log_pow]
-      first
-        | norm_num
-        | (push_cast; ring)
+      norm_num
     linarith
   have F1 := one_sub_mul_log_one_sub_ge h1
   have F3 := one_sub_mul_log_one_sub_le (bernoulli_q_lt_one h0 h1)
@@ -114,16 +107,12 @@ theorem bernoulli_concave_step {p : ℝ} (hp : 0 < p) (h2 : p ≤ 1 / 2) :
   rw [hl2] at k1 k2
   have hHp : binaryEntropy p * Real.log 2 = -p * Real.log p - (1 - p) * Real.log (1 - p) := by
     rw [binaryEntropy_eq_nats hp h1]
-    first
-      | exact div_mul_cancel₀ _ hl'
-      | field_simp
+    exact div_mul_cancel₀ _ hl'
   have hHq : binaryEntropy (2 * p * (1 - p)) * Real.log 2 =
       -(2 * p * (1 - p)) * Real.log (2 * p * (1 - p)) -
         (1 - 2 * p * (1 - p)) * Real.log (1 - 2 * p * (1 - p)) := by
     rw [binaryEntropy_eq_nats hq0 hq1]
-    first
-      | exact div_mul_cancel₀ _ hl'
-      | field_simp
+    exact div_mul_cancel₀ _ hl'
   have hconc : (1 - 2 * p) * (binaryEntropy p * Real.log 2) + 2 * p * Real.log 2 ≤
       binaryEntropy (2 * p * (1 - p)) * Real.log 2 := by
     rw [hHp, hHq]
@@ -144,7 +133,7 @@ theorem bernoulli_marton_ineq_le_half {p : ℝ} (h0 : 0 ≤ p) (h2 : p ≤ 1 / 2
     rw [hq, hz]
     exact min_le_of_left_le (by norm_num)
   have h1 : p < 1 := by linarith
-  rcases le_or_lt p (1 / 8) with h8 | h8
+  rcases le_or_gt p (1 / 8) with h8 | h8
   · apply min_le_of_left_le
     unfold bernoulliIncrement
     rw [binaryEntropy_eq_nats hp h1,
@@ -158,7 +147,7 @@ theorem bernoulli_marton_ineq_le_half {p : ℝ} (h0 : 0 ≤ p) (h2 : p ≤ 1 / 2
       exact entropyIncrement_nonneg _
     unfold bernoulliIncrement at hDnn ⊢
     apply min_le_of_right_le
-    rcases le_or_lt (binaryEntropy p) 1 with hh | hh
+    rcases le_or_gt (binaryEntropy p) 1 with hh | hh
     · have := mul_le_mul_of_nonneg_right h8.le (sub_nonneg.2 hh)
       linarith
     · linarith
