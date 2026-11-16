@@ -765,16 +765,21 @@ none may add a `sorry` to `Statements.lean`.
       `lawSupport`, `mem_lawSupport`, `lawSupport_nonempty`, `lawSupport_conv` in
       `EntropyLean/MartonPartial.lean` (082b63e).
       CI green at 4a86741; ticked by the formalize task 2026-11-16 04:18 UTC (fallbacks removed in a83d9f2).
-  - [ ] H3b. Equality case of subadditivity (`EntropyLean/Information.lean` or a new file):
+  - [x] H3b. Equality case of subadditivity (`EntropyLean/Information.lean` or a new file):
         `mutualInfo P = 0 → P = prodLaw (P.map Prod.fst) (P.map Prod.snd)` (`eq_prodLaw_of_mutualInfo_eq_zero`),
         via the equality case of Jensen for `−x log x` (`StrictConcaveOn.map_sum_eq_iff`).
     - Written by the formalize task 2026-11-16 04:18 UTC (uncompiled at push): `crossSlack`,
       `crossSlack_nonneg`, `crossSlack_eq_zero`, `sum_crossSlack`, `eq_prodLaw_of_mutualInfo_eq_zero` in the
       new file `EntropyLean/MutualInfoZero.lean` (a83d9f2); proved via the strict bound `log y < y − 1`
       on the pointwise Gibbs slack rather than via Jensen.
+      CI green at 368970f (after a fix: `div_add_div_same` unknown, replaced by `add_div`/`sub_div`);
+      ticked by the formalize task 2026-11-16 04:48 UTC.
   - [ ] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
         (`map_add_eq_conv_of_increment_zero`), from H3b applied to the pair `(B, A + B)`, whose mutual
         information is `H(K * K) − H(K) = D(K)`.
+    - Written by the formalize task 2026-11-16 04:48 UTC (uncompiled at push): `mutualInfo_snd_add`,
+      `toReal_sub_eq_conv_of_increment_zero`, `map_add_eq_conv_of_increment_zero` in
+      `EntropyLean/MartonPartial.lean` (ec62d4b; the file now imports `EntropyLean.MutualInfoZero`).
   - [ ] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
         `d(K, U_W) = 0` and `marton_of_increment_zero` (uses H3a to get `S + S = S + b`).
 - [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
