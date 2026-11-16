@@ -824,7 +824,7 @@ none may add a `sorry` to `Statements.lean`.
       `martonInput_zmod2` in the new file `EntropyLean/MartonFinrankLeOne.lean` (8e4ebd4).
       CI green at 8e4ebd4 and 811c6ca; ticked by the formalize task 2026-11-16 19:39 UTC. With H4a–H4c done,
       H4 is complete.
-- [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
+- [x] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
       `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
       martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
       (Theorem 1.1 with exponent `287(1+ε)/ε` from `MartonBoundConst.{0} (11/2)`). This does not
@@ -833,6 +833,38 @@ none may add a `sorry` to `Statements.lean`.
       `weighted_family_rigidity_287_of_marton_const`, `exponential_entropy_quotient_287_of_marton_const`,
       `sparse_rigidity_287_of_marton_const` in the new file `EntropyLean/MartonConstPFR.lean` (195c6d9):
       `K(11/2) = 281 + 2 log₂(13/2) < 287`, since `13/2 < 8`.
+      CI green at 195c6d9 and f241ff8; ticked by the formalize task 2026-11-16 20:45 UTC.
+
+## I. More special cases of (35)
+
+Added by the formalize task 2026-11-16 20:45 UTC (no unchecked item was actionable: B1 is Josiah's
+decision and G4 waits for it). Section H proved (35) when `H(K) ≤ 12 D(K)`, when
+`dim V − H(K) ≤ 12 D(K)`, when `D(K) = 0`, and on every space of dimension at most one. These items
+cover more laws with the same tools (transport, translation, products), so they move the external
+node MAR of docs/DEPENDENCIES.md toward green only in that sense. None of them proves the entropic
+Marton theorem, and none may add a `sorry` to `Statements.lean`.
+
+- [ ] I1. Transport along linear equivalences (`EntropyLean/MartonTransport.lean`, a new file):
+      `ruzsaDist_map_addEquiv : d(K.map e, L.map e) = d(K, L)` for `e : V ≃+ V'`,
+      `uniformSub_map_linearEquiv : (uniformSub W).map e = uniformSub (W.map e)` for
+      `e : V ≃ₗ[ZMod 2] V'`, and `MartonInput.of_linearEquiv : MartonInput V → MartonInput V'`.
+- [ ] I2. Laws on a coset of a subspace (`EntropyLean/MartonTransport.lean`): for
+      `U : Submodule (ZMod 2) V` and a law `K` with `lawSupport K ⊆ x + U`, (35) for `K` on `V`
+      from (35) on `U` (`marton_of_support_subset_coset`), via `ruzsaDist_map_add_const`
+      (translation) and pushing laws on `U` forward along `U.subtype` (`ruzsaDist_map_injective`,
+      `uniformSub_map_subtype`).
+- [ ] I3. Two-point laws (`EntropyLean/MartonTransport.lean`): `marton_of_card_lawSupport_le_two :
+      (lawSupport K).card ≤ 2 → ∃ W, d(K, U_W) ≤ 6 D(K)` on every finite F₂-space, from I2 and
+      `martonInput_of_finrank_le_one` (H4c): a support `{a, b}` lies in the coset
+      `a + span {b − a}` of a subspace of dimension at most one.
+- [ ] I4. Products (`EntropyLean/MartonProduct.lean`, a new file): for laws `K₁` on `V₁` and `K₂`
+      on `V₂`, `entropyIncrement_prodLaw : D(K₁ ⊗ K₂) = D(K₁) + D(K₂)`, `ruzsaDist_prodLaw :
+      d(K₁ ⊗ K₂, L₁ ⊗ L₂) = d(K₁, L₁) + d(K₂, L₂)`, `uniformSub_prod : U_{W₁ × W₂} = U_{W₁} ⊗ U_{W₂}`
+      (all from `entropyBits_prodLaw`), and `marton_prodLaw`: if (35) holds for `K₁` and for `K₂`,
+      it holds for `K₁ ⊗ K₂` with the witness `W₁.prod W₂`.
+- [ ] I5. Independent bits (`EntropyLean/MartonProduct.lean`): (35) for every law on
+      `Fin n → ZMod 2` whose coordinates are independent (`marton_of_indep_coords`), by induction on
+      `n` from I4, I1 and `martonInput_zmod2` (H4c).
 
 ## Not attempted here
 
