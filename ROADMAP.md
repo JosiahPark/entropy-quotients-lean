@@ -755,7 +755,7 @@ none may add a `sorry` to `Statements.lean`.
     `entropyBits_map_mkQ_top`, `ruzsaDist_uniformSub_bot`, `ruzsaDist_uniformSub_top`,
     `marton_of_entropy_le`, `marton_of_codim_le` in the new file `EntropyLean/MartonPartial.lean` (6b740e5).
     CI green at 6b740e5; ticked by the formalize task 2026-11-16 04:00 UTC (unused `first` fallbacks removed in 082b63e).
-- [ ] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
+- [x] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
       `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split by
       the formalize task 2026-11-16 04:00 UTC (there is no equality-case lemma for entropy in the
       repository yet, so the original H3a/H3b plan was too large for one run):
@@ -782,7 +782,7 @@ none may add a `sorry` to `Statements.lean`.
       `EntropyLean/MartonPartial.lean` (ec62d4b; the file now imports `EntropyLean.MutualInfoZero`).
       CI green at ec62d4b and 13b417d (no `MartonPartial.lean` warnings besides the module notice);
       ticked by the formalize task 2026-11-16 05:33 UTC.
-  - [ ] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
+  - [x] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
         `d(K, U_W) = 0` and `marton_of_increment_zero` (uses H3a to get `S + S = S + b`).
     - Written by the formalize task 2026-11-16 05:33 UTC (uncompiled at push): `lawPeriods`,
       `mem_lawPeriods`, `pmf_map_add_neg_apply`, `pmf_map_add_neg_apply_of_mem`, `lawPeriodSub`,
@@ -793,10 +793,24 @@ none may add a `sorry` to `Statements.lean`.
       subspace of periods of `K` (via `AddSubgroup.toZModSubmodule`); for `x` in the support,
       `K − x = U_W`, so `d(K, U_W) = d(K, K − x) = D(K) = 0` by translation invariance (no entropy
       computation and no use of H3a needed).
+      CI green at ec3c48f (contains b6ea618; no `MartonPartial.lean` warnings besides the module notice);
+      ticked by the formalize task 2026-11-16 05:53 UTC. With H3a–H3d done, H3 is complete.
 - [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
       finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
-      not close in one run, prove it for `p ≤ 1/8` first (H4a) and record the gap.
+      not close in one run, prove it for `p ≤ 1/8` first and record the gap. Split by the formalize
+      task 2026-11-16 05:53 UTC:
+  - [ ] H4a. Reduction (`EntropyLean/MartonOneBit.lean`): `martonInput_of_finrank_eq_zero`, invariance of
+        `H` and `D` under an additive equivalence, `eq_bernoulliBit` (every law on `ZMod 2` is
+        Bernoulli), and `martonInput_of_finrank_eq_one_of_bernoulli` ((35) on a one-dimensional space
+        from the Bernoulli inequality as an explicit hypothesis `hB`).
+    - Written by the formalize task 2026-11-16 05:53 UTC (uncompiled at push): `martonInput_of_finrank_eq_zero`,
+      `entropyBits_map_addEquiv`, `entropyIncrement_map_addEquiv`, `eq_bernoulliBit`,
+      `martonInput_of_finrank_eq_one_of_bernoulli` in the new file `EntropyLean/MartonOneBit.lean` (1f3879f).
+  - [ ] H4b. The Bernoulli inequality (`EntropyLean/MartonOneBit.lean` or a new file): `bernoulli_marton_ineq :
+        0 ≤ p → p ≤ 1 → min (binaryEntropy p) (1 − binaryEntropy p) ≤ 12 * bernoulliIncrement p`;
+        if it does not close in one run, prove the range `p ≤ 1/8` (and its mirror `p ≥ 7/8`) first.
+  - [ ] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
 - [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
       `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
       martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
