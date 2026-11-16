@@ -36,9 +36,7 @@ theorem crossSlack_eq_zero {p q : ℝ} (hp : 0 ≤ p) (hpq : 0 < p → 0 < q)
   rcases hp.eq_or_lt with h0 | hpos
   · rw [← h0] at h
     rw [← h0]
-    first
-    | linarith
-    | (norm_num at h; linarith)
+    linarith
   · have hq' := hpq hpos
     by_contra hne
     have hy : q / p ≠ 1 := by
@@ -48,9 +46,7 @@ theorem crossSlack_eq_zero {p q : ℝ} (hp : 0 ≤ p) (hpq : 0 < p → 0 < q)
     rw [Real.log_div hq'.ne' hpos.ne'] at key
     have k2 := mul_lt_mul_of_pos_left key hpos
     have e : p * (q / p - 1) = q - p := by
-      first
-      | (field_simp; done)
-      | (field_simp; ring)
+      field_simp
     rw [e] at k2
     linarith [mul_sub p (Real.log q) (Real.log p), neg_mul p (Real.log q),
       neg_mul p (Real.log p)]
@@ -91,10 +87,7 @@ theorem sum_crossSlack (P : PMF (α × β)) :
       ∑ b, ((P.map Prod.snd) b).toReal * Real.log ((P.map Prod.snd) b).toReal :=
     sum_toReal_mul_comp P Prod.snd (fun b => Real.log ((P.map Prod.snd) b).toReal)
   have S3 : ∑ x : α × β, ((P.map Prod.fst) x.1).toReal * ((P.map Prod.snd) x.2).toReal = 1 := by
-    first
-    | (simp only [Fintype.sum_prod_type, ← Finset.mul_sum, pmf_sum_toReal, mul_one]; done)
-    | (rw [Fintype.sum_prod_type]; simp only [← Finset.mul_sum, pmf_sum_toReal, mul_one]; done)
-    | (simp [Fintype.sum_prod_type, ← Finset.mul_sum, pmf_sum_toReal])
+    simp only [Fintype.sum_prod_type, ← Finset.mul_sum, pmf_sum_toReal, mul_one]
   have S4 := pmf_sum_toReal P
   have N0 : ∑ x, -(P x).toReal * Real.log (P x).toReal =
       -∑ x, (P x).toReal * Real.log (P x).toReal := by
@@ -117,8 +110,7 @@ theorem eq_prodLaw_of_mutualInfo_eq_zero (P : PMF (α × β)) (h : mutualInfo P 
   have hl : 0 < Real.log 2 := Real.log_pos (by norm_num)
   unfold mutualInfo at h
   rw [entropyBits_eq_div_log P, entropyBits_eq_div_log (P.map Prod.fst),
-    entropyBits_eq_div_log (P.map Prod.snd), div_add_div_same, div_sub_div_same,
-    div_eq_zero_iff] at h
+    entropyBits_eq_div_log (P.map Prod.snd), ← add_div, ← sub_div, div_eq_zero_iff] at h
   have hn := h.resolve_right hl.ne'
   have hpos : ∀ x : α × β, 0 < (P x).toReal →
       0 < ((P.map Prod.fst) x.1).toReal * ((P.map Prod.snd) x.2).toReal := fun x hp =>
