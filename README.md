@@ -70,5 +70,6 @@ which is Josiah's: Proposition 9.3 is proved, and Corollary 9.4 is proved from t
 Theorem 1.1 (or from the entropic Marton bound (35)). Section G is done apart from G4 (which
 waits on B1): with (35) as the only hypothesis, Theorems 1.1, 1.2 and 8.2 hold with the constant
 311 in place of 320 (`EntropyLean/ConstantSlack.lean`), and with a Marton constant `C` in place of
-6 they hold with `48C + 17 + 2 log₂(1 + C)` (`EntropyLean/MartonChainConst.lean`). What remains
-open is the entropic Marton bound (35) itself, which is the paper's one external input.
+6 they hold with `48C + 17 + 2 log₂(1 + C)` (`EntropyLean/MartonChainConst.lean`). The only input
+not proved here is the entropic Marton bound (35) itself. The paper cites it from Gowers, Green,
+Manners and Tao rather than proving it, and every result above takes it as a hypothesis.
