@@ -808,7 +808,7 @@ none may add a `sorry` to `Statements.lean`.
       `entropyBits_map_addEquiv`, `entropyIncrement_map_addEquiv`, `eq_bernoulliBit`,
       `martonInput_of_finrank_eq_one_of_bernoulli` in the new file `EntropyLean/MartonOneBit.lean` (1f3879f).
       CI green at 1f3879f and 1203638; ticked by the formalize task 2026-11-16 06:09 UTC.
-  - [ ] H4b. The Bernoulli inequality (`EntropyLean/MartonOneBit.lean` or a new file): `bernoulli_marton_ineq :
+  - [x] H4b. The Bernoulli inequality (`EntropyLean/MartonOneBit.lean` or a new file): `bernoulli_marton_ineq :
         0 ≤ p → p ≤ 1 → min (binaryEntropy p) (1 − binaryEntropy p) ≤ 12 * bernoulliIncrement p`;
         if it does not close in one run, prove the range `p ≤ 1/8` (and its mirror `p ≥ 7/8`) first.
     - Written by the formalize task 2026-11-16 06:09 UTC (uncompiled at push): `binaryEntropy_one_sub`,
@@ -816,8 +816,12 @@ none may add a `sorry` to `Statements.lean`.
       `bernoulli_marton_ineq_le_half`, `bernoulli_marton_ineq` in the new file
       `EntropyLean/MartonBernoulliIneq.lean` (26b5aeb). Full range `0 ≤ p ≤ 1`, no split: for `1/8 < p ≤ 1/2`
       concavity of `−x log x` at `p` and `1/2` gives `D ≥ 2p(1 − h₂(p))`; for `p ≤ 1/8` the E2a bounds and
-      `log p ≤ −3 log 2`; `p ≥ 1/2` by the symmetry `p ↦ 1 − p`.
+      `log p ≤ −3 log 2`; `p ≥ 1/2` by the symmetry `p ↦ 1 − p`. CI failed at 26b5aeb and fb23d20 (`le_or_lt`
+      no longer exists), fixed at a7857af; CI green at a7857af, a060b7b and 0168b64; ticked by the formalize
+      task 2026-11-16 18:37 UTC.
   - [ ] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
+    - Written by the formalize task 2026-11-16 18:36 UTC (uncompiled at push): `martonInput_of_finrank_le_one`,
+      `martonInput_zmod2` in the new file `EntropyLean/MartonFinrankLeOne.lean` (8e4ebd4).
 - [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
       `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
       martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
