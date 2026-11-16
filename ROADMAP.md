@@ -734,7 +734,7 @@ remaining distance to green is the external node MAR. These items make that visi
 the cases of (35) that need no new ideas. None of them proves the entropic Marton theorem, and
 none may add a `sorry` to `Statements.lean`.
 
-- [ ] H1. Chart: add a class `conditional` ("proved in Lean from (35) as a hypothesis") to
+- [x] H1. Chart: add a class `conditional` ("proved in Lean from (35) as a hypothesis") to
       docs/DEPENDENCIES.md, move E36, L71, L81, T82, T12, T11, C92, C94 to it, and put the Lean
       names in their labels (`MartonInput.consequence`, `sparse_posterior_estimate`,
       `ratio_growth_of_marton`, `weighted_family_rigidity_of_marton_univ`,
@@ -746,10 +746,14 @@ none may add a `sorry` to `Statements.lean`.
     `two_input_almost_additivity_of_rigidity` + `weighted_family_rigidity_of_marton_univ`) (4d14fc1).
     No node is `stated` any more; the open `sorry`s are the statements of Theorems 1.1, 1.2, 8.2 in
     `Statements.lean` (3) and `FeatureMap.lean` (2).
+    CI green at 4d14fc1 (docs only); ticked by the formalize task 2026-11-16 03:51 UTC.
 - [ ] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
       d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
       `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
       6 D(K)` and `marton_of_codim_le : dim V − H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤ 6 D(K)`.
+  - Written by the formalize task 2026-11-16 03:51 UTC (uncompiled at push): `entropyBits_map_mkQ_bot`,
+    `entropyBits_map_mkQ_top`, `ruzsaDist_uniformSub_bot`, `ruzsaDist_uniformSub_top`,
+    `marton_of_entropy_le`, `marton_of_codim_le` in the new file `EntropyLean/MartonPartial.lean` (6b740e5).
 - [ ] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
       `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split if
       needed: H3a `support (K * K)` contains `support K + support K`, so `D(K) = 0` forces
