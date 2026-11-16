@@ -747,18 +747,31 @@ none may add a `sorry` to `Statements.lean`.
     No node is `stated` any more; the open `sorry`s are the statements of Theorems 1.1, 1.2, 8.2 in
     `Statements.lean` (3) and `FeatureMap.lean` (2).
     CI green at 4d14fc1 (docs only); ticked by the formalize task 2026-11-16 03:51 UTC.
-- [ ] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
+- [x] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
       d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
       `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
       6 D(K)` and `marton_of_codim_le : dim V − H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤ 6 D(K)`.
   - Written by the formalize task 2026-11-16 03:51 UTC (uncompiled at push): `entropyBits_map_mkQ_bot`,
     `entropyBits_map_mkQ_top`, `ruzsaDist_uniformSub_bot`, `ruzsaDist_uniformSub_top`,
     `marton_of_entropy_le`, `marton_of_codim_le` in the new file `EntropyLean/MartonPartial.lean` (6b740e5).
+    CI green at 6b740e5; ticked by the formalize task 2026-11-16 04:00 UTC (unused `first` fallbacks removed in 082b63e).
 - [ ] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
-      `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split if
-      needed: H3a `support (K * K)` contains `support K + support K`, so `D(K) = 0` forces
-      `|S + S| = |S|` for `S = support K` (`card_add_support_of_increment_zero`); H3b `S` is a coset
-      of the subspace `S + S` and `K` is uniform on it.
+      `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split by
+      the formalize task 2026-11-16 04:00 UTC (there is no equality-case lemma for entropy in the
+      repository yet, so the original H3a/H3b plan was too large for one run):
+  - [ ] H3a. Support of a convolution: `lawSupport K = {v : K v ≠ 0}`, `mem_support_conv_iff`,
+        `lawSupport_conv : lawSupport (P * Q) = lawSupport P + lawSupport Q`.
+    - Written by the formalize task 2026-11-16 04:00 UTC (uncompiled at push): `mem_support_conv_iff`,
+      `lawSupport`, `mem_lawSupport`, `lawSupport_nonempty`, `lawSupport_conv` in
+      `EntropyLean/MartonPartial.lean` (082b63e).
+  - [ ] H3b. Equality case of subadditivity (`EntropyLean/Information.lean` or a new file):
+        `mutualInfo P = 0 → P = prodLaw (P.map Prod.fst) (P.map Prod.snd)` (`eq_prodLaw_of_mutualInfo_eq_zero`),
+        via the equality case of Jensen for `−x log x` (`StrictConcaveOn.map_sum_eq_iff`).
+  - [ ] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
+        (`map_add_eq_conv_of_increment_zero`), from H3b applied to the pair `(B, A + B)`, whose mutual
+        information is `H(K * K) − H(K) = D(K)`.
+  - [ ] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
+        `d(K, U_W) = 0` and `marton_of_increment_zero` (uses H3a to get `S + S = S + b`).
 - [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
       finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
