@@ -13,17 +13,17 @@
 :root{
   --bg:#f3f4f1; --panel:#fbfbf9; --ink:#1d2430; --muted:#5d6675; --rule:#d6d9d2; --band:#e9ebe5;
   --paper:#2e8a57; --paperbg:#d7eedf; --cond:#c48413; --condbg:#f7e6c2; --supp:#8b93a1; --suppbg:#e3e6ea;
-  --open:#c0392f; --openbg:#f6dcd8; --ext:#1f5fa8; --extbg:#dbe9f7; --accent:#2b4a7a; --edge:#7b8698;
+  --open:#c0392f; --openbg:#f6dcd8; --ext:#1f5fa8; --extbg:#dbe9f7; --lilac:#6a3fa0; --lilacbg:#ece4f7; --accent:#2b4a7a; --edge:#7b8698;
   --display:"Newsreader", Georgia, serif; --body:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif; --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#14181f; --panel:#1b2029; --ink:#e4e7ec; --muted:#9aa3b2; --rule:#2e3542; --band:#1a1f27;
   --paper:#5cc08a; --paperbg:#1e3a2b; --cond:#e6a93c; --condbg:#3d3018; --supp:#8e97a6; --suppbg:#262c36;
-  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}}
+  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --lilac:#c3a6ee; --lilacbg:#2d2442; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#14181f; --panel:#1b2029; --ink:#e4e7ec; --muted:#9aa3b2; --rule:#2e3542; --band:#1a1f27;
   --paper:#5cc08a; --paperbg:#1e3a2b; --cond:#e6a93c; --condbg:#3d3018; --supp:#8e97a6; --suppbg:#262c36;
-  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}
+  --open:#ef6b5f; --openbg:#3e2220; --ext:#7fb0ec; --extbg:#1c2c40; --lilac:#c3a6ee; --lilacbg:#2d2442; --accent:#8fb0e6; --edge:#7f8aa0; color-scheme:dark}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;display:flex;flex-direction:column}
 header{padding-block:14px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-end}
@@ -48,22 +48,22 @@ main{flex:1;display:flex;min-height:0;position:relative}
 #wrap{flex:1;overflow:auto;min-width:0;cursor:grab}
 #wrap.drag{cursor:grabbing}
 svg{display:block}
-.bandlbl{font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.07em;text-transform:uppercase;fill:var(--muted)}
-.bandref{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.bandlbl{font-family:var(--body);font-weight:600;font-size:13.5px;letter-spacing:.07em;text-transform:uppercase;fill:var(--muted)}
+.bandref{font-family:var(--mono);font-size:12px;fill:var(--muted)}
 .node rect.box{fill:var(--panel);stroke:var(--rule);stroke-width:1}
 .node.next rect.box{stroke:var(--accent);stroke-width:2}
 .node.skipped rect.box,.node.decision rect.box{stroke-dasharray:4 3}
-.node text.id{font-family:var(--mono);font-size:11px;font-weight:500;fill:var(--ink)}
-.node text.nm{font-family:var(--mono);font-size:10.5px;fill:var(--ink)}
-.node text.ct{font-family:var(--body);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;fill:var(--muted)}
+.node text.id{font-family:var(--mono);font-size:13.5px;font-weight:500;fill:var(--ink)}
+.node text.nm{font-family:var(--mono);font-size:12.5px;fill:var(--ink)}
+.node text.ct{font-family:var(--body);font-size:12px;letter-spacing:.04em;text-transform:uppercase;fill:var(--muted)}
 .node text.ct.nx{fill:var(--accent);font-weight:600}
 .node{cursor:pointer}
 .node:hover rect.box,.node.sel rect.box{stroke:var(--ink);stroke-width:2}
 .node.dim,.rnode.dim{opacity:.18}
-.edge{fill:none;stroke:var(--edge);stroke-width:1;opacity:.45}
+.edge{fill:none;stroke:var(--edge);stroke-width:1;opacity:.28}
 .edge.hot{stroke:var(--accent);opacity:1;stroke-width:2}
 .edge.dim,.redge.dim{opacity:.06}
-.redge{fill:none;stroke-dasharray:4 3;stroke-width:1.2;opacity:.6}
+.redge{fill:none;stroke-dasharray:4 3;stroke-width:1.2;opacity:.4}
 .redge.hot{opacity:1;stroke-width:2}
 .rnode{cursor:pointer}
 .rnode rect{stroke-width:1.5}
@@ -71,12 +71,13 @@ svg{display:block}
 .rnode.stated rect{fill:var(--condbg);stroke:var(--cond)}
 .rnode.missing rect{fill:var(--suppbg);stroke:var(--supp);stroke-dasharray:4 3}
 .rnode.external rect{fill:var(--extbg);stroke:var(--ext);stroke-dasharray:4 3}
+.rnode.conditional rect{fill:var(--lilacbg);stroke:var(--lilac)}
 .rnode.main rect{stroke-width:2.5}
 .rnode:hover rect,.rnode.sel rect{stroke:var(--ink)}
-.rnode text.rt{font-family:var(--display);font-size:14px;font-weight:600;fill:var(--ink)}
-.rnode text{font-family:var(--body);font-size:11.5px;fill:var(--ink)}
-.small{font-family:var(--body);font-size:11px;fill:var(--muted)}
-aside{width:380px;max-width:100%;border-left:1px solid var(--rule);background:var(--panel);overflow:auto;padding-block:14px 24px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rnode text.rt{font-family:var(--display);font-size:17px;font-weight:600;fill:var(--ink)}
+.rnode text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.small{font-family:var(--body);font-size:12.5px;fill:var(--muted)}
+aside{width:350px;max-width:100%;border-left:1px solid var(--rule);background:var(--panel);overflow:auto;padding-block:14px 24px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px))}
 aside h2{font-family:var(--display);font-size:20px;margin:0 0 2px;font-weight:600;word-break:break-word}
 aside h3{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px;font-weight:600}
 aside .area{color:var(--muted);font-size:12px;margin-bottom:10px}
@@ -85,7 +86,7 @@ aside code,.hint code{font-family:var(--mono);font-size:11.5px;background:var(--
 aside a{color:var(--accent)}
 .bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--band);margin:6px 0 12px}
 .pill{display:inline-block;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:1px}
-.p-done,.p-proved{background:var(--paperbg);color:var(--paper)} .p-written,.p-stated{background:var(--condbg);color:var(--cond)} .p-open,.p-missing{background:var(--suppbg);color:var(--supp)} .p-skipped,.p-decision{background:var(--band);color:var(--muted);outline:1px dashed var(--muted)} .p-next{background:var(--accent);color:var(--panel)} .p-external{background:var(--extbg);color:var(--ext)} .p-failing{background:var(--openbg);color:var(--open)}
+.p-done,.p-proved{background:var(--paperbg);color:var(--paper)} .p-written,.p-stated{background:var(--condbg);color:var(--cond)} .p-open,.p-missing{background:var(--suppbg);color:var(--supp)} .p-skipped,.p-decision{background:var(--band);color:var(--muted);outline:1px dashed var(--muted)} .p-next{background:var(--accent);color:var(--panel)} .p-external{background:var(--extbg);color:var(--ext)} .p-conditional{background:var(--lilacbg);color:var(--lilac)} .p-failing{background:var(--openbg);color:var(--open)}
 .note{border-left:3px solid var(--cond);background:var(--condbg);padding:6px 9px;margin:8px 0;font-size:13px;line-height:1.4;border-radius:0 4px 4px 0}
 .note.plain{border-left-color:var(--rule);background:var(--band)}
 .refs{display:flex;flex-wrap:wrap;gap:6px}
@@ -111,7 +112,7 @@ aside a{color:var(--accent)}
   <button class="chip" data-f="written" aria-pressed="true"><span class="dot" style="background:var(--cond)"></span>Written, awaiting CI</button>
   <button class="chip" data-f="open" aria-pressed="true"><span class="dot" style="background:var(--supp)"></span>Open</button>
   <button class="chip" data-f="skipped" aria-pressed="true"><span class="dot" style="background:var(--band);border:1px dashed var(--muted)"></span>Skipped or Josiah's decision</button>
-  <span class="chip" style="cursor:default"><span class="dot" style="background:var(--panel);border:2px solid var(--accent)"></span>Next for the hourly task</span>
+  <span class="chip" style="cursor:default"><span class="dot" style="background:var(--panel);border:2px solid var(--accent)"></span>Next for the formalize task</span>
   <span class="spacer"></span>
   <input type="search" id="q" placeholder="Find item or theorem" aria-label="Find item or theorem">
   <button class="btn" id="zin" aria-label="Zoom in">+</button><button class="btn" id="zout" aria-label="Zoom out">−</button><button class="btn" id="zfit">Fit</button>
@@ -126,18 +127,20 @@ const REPO = "JosiahPark/entropy-quotients-lean";
 // Structure that ROADMAP.md does not carry: paper sections per band, short labels, item dependencies, and which items feed which result.
 // Items added later (splits like A3a, new sections) still appear, in their section, with no lines until listed here.
 const CFG = {
-  bandRef: {Done: "v0.2", A: "§2", B: "§2", C: "§4, §9", D: "§2.3, §3, §5–8", E: "§9", F: "§9", G: "§8 · (35)"},
+  bandRef: {Done: "v0.2", A: "§2", B: "§2", C: "§4, §9", D: "§2.3, §3, §5–8", E: "§9", F: "§9", G: "§8 · (35)", H: "(35), special cases"},
   short: {V1: "definitions", V2: "identities", V3: "algebraic step", V4: "statements (sorry)",
     A1: "entropyBits_nonneg", A2: "entropyBits_le_log_card", A3: "entropyBits_map_le", A4: "conv_map_hom", A5: "quotient_quotient",
     B1: "entropy backend", B2: "chain rule, I ≥ 0", B3: "interaction bounds", B4: "meanEntropy_convFamily", B5: "D(q_G X) ≤ D(X)", B6: "Lemma 2.1",
     C1: "Lemma 9.1", C2: "Thm 1.1 | Thm 8.2", C3: "Thm 1.2 | Thm 8.2", C4: "Lemma 4.1", C5: "Corollary 9.2",
     D1: "d log₂(1/λ) < 320", D2: "Thm 8.2 | Lem 8.1", D3: "Lemma 2.2", D4: "Lemma 3.1", D5: "Lemma 5.1", D6: "Lemmas 6.1–6.3", D7: "MartonInput", D8: "Lemma 7.1", D9: "Lemma 8.1", D10: "universe transport",
     E1: "Bernoulli entropy", E2: "Bernoulli expansions", E3: "Prop 9.3", F1: "Corollary 9.4",
-    G1: "parametric arithmetic", G2: "constant as a field", G3: "slack in (42)–(43)", G4: "PFR constant"},
+    G1: "parametric arithmetic", G2: "constant as a field", G3: "slack in (42)–(43)", G4: "PFR constant",
+    H1: "lilac chart class", H2: "trivial subspaces", H3: "zero doubling", H4: "one-bit spaces", H5: "PFR-strength constant"},
   deps: {B2: ["A1"], B3: ["B2"], B4: ["B3", "V2"], B5: ["B2", "A3"], B6: ["B2"],
     C1: ["A1", "A5"], C2: ["C1", "B5", "V3"], C3: ["V4"], C4: ["A4", "B3", "B4"], C5: ["C1", "B5"],
     D2: ["D1"], D3: ["B2"], D4: ["B3", "B6"], D5: ["D4", "B6"], D6: ["B2", "B4", "D3"], D8: ["D4", "D5", "D6", "D7"], D9: ["C4", "D3", "D6", "D8"], D10: ["D9"],
-    E2: ["E1"], E3: ["E1", "E2", "V3"], F1: ["C2"], G1: ["D1"], G2: ["G1", "D7", "D2", "C2"], G3: ["G1"], G4: ["B1", "G2"]},
+    E2: ["E1"], E3: ["E1", "E2", "V3"], F1: ["C2"], G1: ["D1"], G2: ["G1", "D7", "D2", "C2"], G3: ["G1"], G4: ["B1", "G2"],
+    H2: ["D7"], H3: ["H2"], H4: ["H2", "E1", "E2"], H5: ["G2"]},
   decision: ["B1"],
   results: [
     {id: "T11", name: "Theorem 1.1", sub: "exponential entropy quotient", main: true, items: ["C2", "C1", "B5", "D10"]},
@@ -148,12 +151,14 @@ const CFG = {
     {id: "C92", name: "Corollary 9.2", sub: "two-input almost-additivity", items: ["C5"]},
     {id: "P93", name: "Proposition 9.3", sub: "exponential scale is necessary", items: ["E3", "E2", "E1"]},
     {id: "C94", name: "Corollary 9.4", sub: "subspace-coset concentration", items: ["F1"]},
-    {id: "MAR", name: "Entropic Marton (35)", sub: "external input, not proved here", items: ["D7", "G2"]}
+    {id: "MAR", name: "Entropic Marton (35)", sub: "external input, not proved here", items: ["D7", "G2", "H2", "H3", "H4"]}
   ]
 };
 const STATUS_TEXT = {done: "done", written: "awaiting CI", open: "open", skipped: "skipped", decision: "decision"};
 const STATUS_COL = {done: "var(--paper)", written: "var(--cond)", open: "var(--supp)", skipped: "var(--muted)", decision: "var(--muted)"};
-const RES_TEXT = {proved: "proved", stated: "stated, sorry", missing: "not yet stated", external: "external"};
+const RES_TEXT = {proved: "proved", stated: "stated, sorry", conditional: "proved from (35)", missing: "not yet stated", external: "external"};
+const RES_COL = {proved: "var(--paper)", stated: "var(--cond)", conditional: "var(--lilac)", missing: "var(--supp)", external: "var(--ext)"};
+const WRITTEN = /written by (the (hourly|formalize) task|claude)/i;
 const NS = "http://www.w3.org/2000/svg";
 const svg = document.getElementById("map"), side = document.getElementById("side"), wrap = document.getElementById("wrap");
 const filt = {done: true, written: true, open: true, skipped: true};
@@ -183,11 +188,13 @@ function parseRoadmap(text) {
     if (it) {
       let t = it[2], id; const idm = t.match(/^([A-Z]\d+[a-z]*)\.\s+(.*)$/);
       if (idm) { id = idm[1]; t = idm[2]; } else id = (band.key === "Done" ? "V" : band.key) + (band.items.length + 1);
-      item = {id, mark: it[1].toLowerCase(), text: t, notes: [], band: band.key};
+      item = {id, mark: it[1].toLowerCase(), text: t, notes: [], subs: [], band: band.key};
       band.items.push(item); items.push(item); continue;
     }
+    const sit = raw.match(/^\s{2,3}-\s+\[( |x|X|-)\]\s+([A-Z]\d+[a-z]+\d*)\.\s+(.*)$/);
+    if (sit && item) { item.subs.push({id: sit[2], mark: sit[1].toLowerCase(), notes: []}); item.notes.push(raw.trim().replace(/^-\s+/, "")); continue; }
     const sub = raw.match(/^\s{2,4}-\s+(.*)$/);
-    if (sub && item) { item.notes.push(sub[1]); continue; }
+    if (sub && item) { item.notes.push(sub[1]); const s = item.subs[item.subs.length - 1]; if (s && /^\s{4}-/.test(raw)) s.notes.push(sub[1]); continue; }
     if (!raw.trim()) continue;
     if (/^\s+\S/.test(raw) && item) {
       const ind = raw.match(/^\s*/)[0].length;
@@ -208,36 +215,40 @@ function model(s) {
   const R = parseRoadmap(s.roadmap), rs = parseDeps(s.deps), byId = {};
   for (const it of R.items) {
     byId[it.id] = it;
-    const written = it.notes.some(n => /written by the hourly task/i.test(n));
+    for (const s of it.subs) s.status = s.mark === "x" ? "done" : s.mark === "-" ? "skipped" : s.notes.some(n => WRITTEN.test(n)) ? "written" : "open";
+    const openSubs = it.subs.filter(s => s.status === "open" || s.status === "written");
+    const written = it.subs.length ? openSubs.length > 0 && openSubs.every(s => s.status === "written") : it.notes.some(n => WRITTEN.test(n));
     it.status = it.mark === "x" ? "done" : it.mark === "-" ? "skipped" : CFG.decision.includes(it.id) ? "decision" : written ? "written" : "open";
     const code = [...(it.text + " " + it.notes.join(" ")).matchAll(/`([^`]+)`/g)].map(m => m[1]);
     it.files = [...new Set(code.filter(c => /^EntropyLean\/\w+\.lean$/.test(c)))];
     it.names = [...new Set(code.filter(c => /^[\w.']+$/.test(c) && !/\.lean$/.test(c)))];
     it.short = CFG.short[it.id] || it.names.find(n => n.length > 5 || /[_.]/.test(n)) || trunc(it.text.replace(/`/g, "").replace(/\s*\(.*$/, ""), 22);
   }
-  const next = R.items.find(it => it.band !== "Done" && it.status === "open");
-  if (next) next.next = true;
   // dependencies: configured ones, plus a parent item for split items (A3a needs nothing extra, but inherits A3's)
   const deps = {};
   for (const it of R.items) {
     const base = it.id.replace(/[a-z]+$/, "");
     deps[it.id] = (CFG.deps[it.id] || CFG.deps[base] || []).filter(d => byId[d] && d !== it.id);
   }
+  const undecided = new Set(R.items.filter(it => it.status === "decision").map(it => it.id));
+  for (const it of R.items) { const w = deps[it.id].filter(d => undecided.has(d)); if (w.length && it.status === "open") it.waits = w; }
+  const next = R.items.find(it => it.band !== "Done" && it.status === "open" && !it.waits);
+  if (next) next.next = true;
   const usedBy = {};
   for (const [a, ds] of Object.entries(deps)) for (const d of ds) (usedBy[d] ||= []).push(a);
   const results = CFG.results.map(r => ({...r, status: rs[r.id] || (r.id === "MAR" ? "external" : "missing"), items: r.items.filter(i => byId[i])}));
   const feeds = {};
   for (const r of results) for (const i of r.items) (feeds[i] ||= []).push(r.id);
   // layout
-  const NW = 178, NH = 44, GX = 12, GY = 12, PER = 6, X0 = 24;
+  const NW = 214, NH = 54, GX = 14, GY = 14, PER = 4, X0 = 24;
   let y = 16; const bands = [];
   for (const b of R.bands) {
-    b.items.forEach((it, i) => { const r = Math.floor(i / PER), c = i % PER; it.x = X0 + c * (NW + GX); it.y = y + 32 + r * (NH + GY); });
-    const h = 32 + Math.ceil(b.items.length / PER) * (NH + GY) + 6;
+    b.items.forEach((it, i) => { const r = Math.floor(i / PER), c = i % PER; it.x = X0 + c * (NW + GX); it.y = y + 40 + r * (NH + GY); });
+    const h = 40 + Math.ceil(b.items.length / PER) * (NH + GY) + 6;
     bands.push({...b, y, h}); y += h + 10;
   }
-  const spineX = X0 + PER * (NW + GX) + 48, RW = 236, RH = 52;
-  results.forEach((r, i) => { r.x = spineX; r.y = 96 + i * (RH + 12); r.w = RW; r.h = RH; });
+  const spineX = X0 + PER * (NW + GX) + 36, RW = 250, RH = 60;
+  results.forEach((r, i) => { r.x = spineX; r.y = 108 + i * (RH + 12); r.w = RW; r.h = RH; });
   const H = Math.max(y + 10, results.length ? results[results.length - 1].y + RH + 24 : 0);
   return {R, byId, deps, usedBy, results, feeds, next, bands, L: {NW, NH, W: spineX + RW + 24, H, spineX}};
 }
@@ -251,11 +262,11 @@ function draw() {
   M.bands.forEach((b, i) => {
     el("rect", {x: 8, y: b.y, width: L.spineX - 32, height: b.h, rx: 6, fill: i % 2 ? "var(--bg)" : "var(--band)"}, gB);
     const label = b.key === "Done" ? b.title : `${b.key}. ${b.title.replace(/\s*\(`[^)]*\)\s*$/, "")}`;
-    const t = el("text", {x: 24, y: b.y + 20, class: "bandlbl"}, gB); t.textContent = trunc(label, 70);
-    const r = el("text", {x: L.spineX - 40, y: b.y + 20, class: "bandref", "text-anchor": "end"}, gB); r.textContent = CFG.bandRef[b.key] || "";
+    const t = el("text", {x: 24, y: b.y + 25, class: "bandlbl"}, gB); t.textContent = trunc(label, 70);
+    const r = el("text", {x: L.spineX - 40, y: b.y + 25, class: "bandref", "text-anchor": "end"}, gB); r.textContent = CFG.bandRef[b.key] || "";
   });
-  const lbl = el("text", {x: L.spineX, y: 36, class: "bandlbl"}, gB); lbl.textContent = "Paper results";
-  ["Status from docs/DEPENDENCIES.md. A result", "counts as proved only with no sorry and", "no hypotheses beyond the paper's."].forEach((s, k) => { const t = el("text", {x: L.spineX, y: 54 + 14 * k, class: "small"}, gB); t.textContent = s; });
+  const lbl = el("text", {x: L.spineX, y: 40, class: "bandlbl"}, gB); lbl.textContent = "Paper results";
+  ["Status from docs/DEPENDENCIES.md. Proved", "means no sorry and no hypotheses", "beyond the paper's."].forEach((s, k) => { const t = el("text", {x: L.spineX, y: 60 + 16 * k, class: "small"}, gB); t.textContent = s; });
   const curve = (x1, y1, x2, y2) => { const mx = (x1 + x2) / 2; return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`; };
   const edges = [];
   for (const [a, ds] of Object.entries(M.deps)) for (const d of ds) {
@@ -263,7 +274,7 @@ function draw() {
     const p = el("path", {d: curve(B.x + L.NW / 2, B.y + L.NH / 2, A.x + L.NW / 2, A.y + L.NH / 2), class: "edge"}, gE);
     p.dataset.a = a; p.dataset.b = d; edges.push(p);
   }
-  const RCOL = {proved: "var(--paper)", stated: "var(--cond)", missing: "var(--supp)", external: "var(--ext)"};
+  const RCOL = RES_COL;
   for (const r of M.results) for (const i of r.items) {
     const it = M.byId[i];
     const p = el("path", {d: curve(it.x + L.NW, it.y + L.NH / 2, r.x, r.y + r.h / 2), class: "redge", stroke: RCOL[r.status] || "var(--supp)"}, gE);
@@ -273,9 +284,9 @@ function draw() {
     const g = el("g", {class: `rnode ${r.status}${r.main ? " main" : ""}`, tabindex: 0, role: "button", "aria-label": r.name}, gN);
     g.dataset.id = r.id;
     el("rect", {x: r.x, y: r.y, width: r.w, height: r.h, rx: 7}, g);
-    const t1 = el("text", {x: r.x + 11, y: r.y + 21, class: "rt"}, g); t1.textContent = r.name;
-    const t2 = el("text", {x: r.x + r.w - 10, y: r.y + 20, class: "small", "text-anchor": "end"}, g); t2.textContent = RES_TEXT[r.status] || r.status;
-    const t3 = el("text", {x: r.x + 11, y: r.y + 39, class: "small"}, g); t3.textContent = r.sub;
+    const t1 = el("text", {x: r.x + 12, y: r.y + 25, class: "rt"}, g); t1.textContent = r.name;
+    const t2 = el("text", {x: r.x + r.w - 10, y: r.y + 23, class: "small", "text-anchor": "end"}, g); t2.textContent = RES_TEXT[r.status] || r.status;
+    const t3 = el("text", {x: r.x + 12, y: r.y + 46, class: "small"}, g); t3.textContent = r.sub;
     const ti = el("title", {}, g); ti.textContent = `${r.name}: ${RES_TEXT[r.status] || r.status}. Roadmap items: ${r.items.join(", ") || "none"}`;
     g.addEventListener("click", () => selectResult(r.id));
     g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectResult(r.id); } });
@@ -286,11 +297,12 @@ function draw() {
     const g = el("g", {class: `node ${it.status}${it.next ? " next" : ""}${filt[key] ? "" : " dim"}`, tabindex: 0, role: "button", "aria-label": `${it.id} ${it.short}`}, gN);
     g.dataset.id = it.id;
     el("rect", {x: it.x, y: it.y, width: L.NW, height: L.NH, rx: 5, class: "box"}, g);
-    const t = el("text", {x: it.x + 8, y: it.y + 17, class: "id"}, g); t.textContent = it.id;
-    const nm = el("text", {x: it.x + 8 + 8 * it.id.length + 6, y: it.y + 17, class: "nm"}, g); nm.textContent = trunc(it.short, 23 - it.id.length);
-    const ct = el("text", {x: it.x + L.NW - 8, y: it.y + 36, class: "ct" + (it.next ? " nx" : ""), "text-anchor": "end"}, g); ct.textContent = it.next ? "next" : STATUS_TEXT[it.status];
-    el("rect", {x: it.x + 8, y: it.y + 29, width: L.NW - 80, height: 6, rx: 1, fill: STATUS_COL[it.status], opacity: it.status === "skipped" || it.status === "decision" ? .35 : 1}, g);
-    const ti = el("title", {}, g); ti.textContent = `${it.id}: ${it.text.replace(/`/g, "")}`;
+    const t = el("text", {x: it.x + 10, y: it.y + 22, class: "id"}, g); t.textContent = it.id;
+    const nm = el("text", {x: it.x + 10 + 8.2 * it.id.length + 8, y: it.y + 22, class: "nm"}, g); nm.textContent = trunc(it.short, 25 - it.id.length);
+    const ct = el("text", {x: it.x + L.NW - 10, y: it.y + 43, class: "ct" + (it.next ? " nx" : ""), "text-anchor": "end"}, g); ct.textContent = it.next ? "next" : it.waits ? "waits on " + it.waits.join(", ") : STATUS_TEXT[it.status];
+    const bw = L.NW - 112, parts = it.subs.length ? it.subs : [it], pw = (bw - 3 * (parts.length - 1)) / parts.length;
+    parts.forEach((s, k) => el("rect", {x: it.x + 10 + k * (pw + 3), y: it.y + 35, width: pw, height: 8, rx: 1.5, fill: STATUS_COL[s.status], opacity: s.status === "skipped" || s.status === "decision" ? .35 : 1}, g));
+    const ti = el("title", {}, g); ti.textContent = `${it.id}: ${it.text.replace(/`/g, "")}` + (it.subs.length ? `\nParts: ${it.subs.map(s => s.id + " " + STATUS_TEXT[s.status]).join(", ")}` : "");
     g.addEventListener("click", () => select(it.id));
     g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(it.id); } });
     g.addEventListener("mouseenter", () => hot(it.id)); g.addEventListener("mouseleave", () => hot(sel));
@@ -306,7 +318,7 @@ function hot(id) {
 const pill = s => `<span class="pill p-${s}">${esc(STATUS_TEXT[s] || RES_TEXT[s] || s)}</span>`;
 function refBtn(id) {
   const it = M.byId[id], r = M.results.find(x => x.id === id);
-  const col = it ? STATUS_COL[it.status] : r ? ({proved: "var(--paper)", stated: "var(--cond)", missing: "var(--supp)", external: "var(--ext)"}[r.status]) : "var(--supp)";
+  const col = it ? STATUS_COL[it.status] : r ? (RES_COL[r.status] || "var(--supp)") : "var(--supp)";
   return `<button class="ref" data-ref="${esc(id)}"><span class="dot" style="background:${col}"></span>${esc(it ? id + " " + it.short : r ? r.name : id)}</button>`;
 }
 function wireRefs() {
@@ -321,9 +333,11 @@ function select(id, scroll) {
     <div class="area">${esc(band.key === "Done" ? band.title : band.key + ". " + band.title.replace(/\s*\(`[^)]*\)\s*$/, ""))}${CFG.bandRef[band.key] ? " · " + esc(CFG.bandRef[band.key]) : ""}</div>
     <div>${pill(it.status)}${it.next ? pill("next") : ""}</div>
     <p style="margin-top:10px">${md(it.text)}</p>
-    ${it.notes.map(n => `<div class="note${/written by the hourly task/i.test(n) ? "" : " plain"}">${md(n)}</div>`).join("")}
-    ${it.next ? `<div class="note plain">The hourly task takes this item on its next run: it is the first open item, after any item still awaiting CI, skipping B1 and skipped items.</div>` : ""}
-    ${it.status === "decision" ? `<div class="note plain">This is Josiah's decision; the hourly task skips it and keeps the PMF-based definitions.</div>` : ""}
+    ${it.subs.length ? `<h3>Parts</h3><div>${it.subs.map(s => `<span style="white-space:nowrap;margin-right:8px"><code>${esc(s.id)}</code> ${pill(s.status)}</span>`).join(" ")}</div>` : ""}
+    ${it.notes.map(n => `<div class="note${WRITTEN.test(n) ? "" : " plain"}">${md(n)}</div>`).join("")}
+    ${it.next ? `<div class="note plain">The formalize task takes this item on its next run: it is the first open item, after any item still awaiting CI, skipping B1, items that wait on B1, and skipped items.</div>` : ""}
+    ${it.waits ? `<div class="note plain">Waits on ${esc(it.waits.join(", "))}, which is Josiah's decision, so the formalize task skips it for now.</div>` : ""}
+    ${it.status === "decision" ? `<div class="note plain">This is Josiah's decision; the formalize task skips it and keeps the PMF-based definitions.</div>` : ""}
     ${it.files.length ? `<h3>Files</h3><div class="refs">${it.files.map(f => `<a class="ref" href="https://github.com/${REPO}/blob/main/${esc(f)}" target="_blank" rel="noopener">${esc(f)}</a>`).join("")}</div>` : ""}
     ${needs.length ? `<h3>Needs${blocked.length ? ` · ${blocked.length} not done` : " · all done"}</h3><div class="refs">${needs.map(refBtn).join("")}</div>` : ""}
     ${unl.length ? `<h3>Unlocks</h3><div class="refs">${unl.map(refBtn).join("")}</div>` : ""}
@@ -348,9 +362,9 @@ function scrollTo(x, y) { wrap.scrollTo({left: x * scale - wrap.clientWidth / 2,
 function intro() {
   const na = M.R.notAttempted;
   side.innerHTML = `<h2>How to read the roadmap</h2><div class="hint">
-    <p>Each box is one roadmap item, in its section of ROADMAP.md. Its bar shows its state: <b style="color:var(--paper)">done</b> (ticked after CI compiled it), <b style="color:var(--cond)">awaiting CI</b> (written by the hourly task, not yet ticked), <b>open</b>, or dashed when skipped or left to Josiah.</p>
-    <p>Solid lines join an item to the items it needs. Dashed lines run to the paper results on the right, coloured by their Lean status: proved, stated with <code>sorry</code>, not yet stated, or external.</p>
-    <p>The box outlined in blue is the next item the hourly task will take. Select any box for its full text, files, and what it needs and unlocks.</p>
+    <p>Each box is one roadmap item, in its section of ROADMAP.md. Its bar shows its state: <b style="color:var(--paper)">done</b> (ticked after CI compiled it), <b style="color:var(--cond)">awaiting CI</b> (written by the formalize task, not yet ticked), <b>open</b>, or dashed when skipped or left to Josiah.</p>
+    <p>Solid lines join an item to the items it needs. Dashed lines run to the paper results on the right, coloured by their Lean status: <b style="color:var(--paper)">proved</b>, <b style="color:var(--lilac)">proved from (35)</b> (the entropic Marton bound as a hypothesis), stated with <code>sorry</code>, not yet stated, or <b style="color:var(--ext)">external</b>.</p>
+    <p>A split item shows one bar segment per part. The box outlined in blue is the next item the formalize task will take. Select any box for its full text, files, and what it needs and unlocks.</p>
     ${na.length ? `<h3>Not attempted here</h3><ul>${na.map(n => `<li>${md(n)}</li>`).join("")}</ul>` : ""}</div>
     <div class="src" id="srcnote"></div>`;
   renderSrc();
@@ -378,7 +392,7 @@ function stats() {
 function render() {
   M = model(src); stats(); draw();
   if (sel && (M.byId[sel])) select(sel); else if (sel && M.results.find(r => r.id === sel)) selectResult(sel); else intro();
-  if (!fitted) { setScale(Math.min(1, (wrap.clientWidth || M.L.W) / M.L.W)); fitted = true; }
+  if (!fitted) { setScale(Math.min(1, Math.max(.85, (wrap.clientWidth || M.L.W) / M.L.W))); fitted = true; }
 }
 function setScale(s) { scale = Math.max(.35, Math.min(2.2, s)); svg.setAttribute("width", M.L.W * scale); svg.setAttribute("height", M.L.H * scale); }
 document.getElementById("zin").onclick = () => setScale(scale * 1.2);
