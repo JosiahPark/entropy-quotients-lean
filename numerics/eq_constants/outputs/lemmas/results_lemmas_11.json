@@ -1,0 +1,182 @@
+{
+ "(14) 0<=e<=h": {
+  "tests": 37,
+  "min_slack": 0.0003610587983297539,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "(15) h(R)=2h-e |err|": {
+  "tests": 37,
+  "min_slack": -8.881784197001252e-16,
+  "worst": "n=3 dir0.3/even/ball",
+  "violations": 0
+ },
+ "(19) 0<=s_W<=min F": {
+  "tests": 12760,
+  "min_slack": -2.26554885962571e-15,
+  "worst": "n=5 spike/even",
+  "violations": 0
+ },
+ "(20) fibring identity |err|": {
+  "tests": 12760,
+  "min_slack": -1.7763568394002505e-15,
+  "worst": "n=5 ball/sphere",
+  "violations": 0
+ },
+ "(21)": {
+  "tests": 12760,
+  "min_slack": -3.1086244689504383e-15,
+  "worst": "n=4 two_cosets/bern_mid",
+  "violations": 0
+ },
+ "(22) nested": {
+  "tests": 35460,
+  "min_slack": -1.7763568394002505e-15,
+  "worst": "n=4 dir1/even",
+  "violations": 0
+ },
+ "(35') Marton with 11/2": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 even/two_cosets",
+  "violations": 0
+ },
+ "(35) Marton min_V d(K,U_V) <= 6D(K)": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 even/two_cosets",
+  "violations": 0
+ },
+ "(36)": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 even/two_cosets",
+  "violations": 0
+ },
+ "(38) E dim V <= 26 h(Q)": {
+  "tests": 37,
+  "min_slack": 0.008667248963523276,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "(9) s<=minH": {
+  "tests": 200,
+  "min_slack": -2.220446049250313e-16,
+  "worst": "n=2 dir0.3/ball",
+  "violations": 0
+ },
+ "(9) s>=0": {
+  "tests": 200,
+  "min_slack": -2.220446049250313e-16,
+  "worst": "n=2 even/support2",
+  "violations": 0
+ },
+ "B5 D(q_W X) <= D(X)": {
+  "tests": 12760,
+  "min_slack": -2.220446049250313e-16,
+  "worst": "n=4 support3/coset",
+  "violations": 0
+ },
+ "D>=0, E>=0": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 even/two_cosets",
+  "violations": 0
+ },
+ "J>=0": {
+  "tests": 37,
+  "min_slack": 1.3830721558531073e-06,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L2.1 supermodularity (11)": {
+  "tests": 286200,
+  "min_slack": -9.246031854223e-16,
+  "worst": "n=4 bern_mid/dir0.3",
+  "violations": 0
+ },
+ "L2.2 F_Post(W)<=F_P(W)": {
+  "tests": 317,
+  "min_slack": 0.0,
+  "worst": "n=2 support2/support3",
+  "violations": 0
+ },
+ "L2.2 h(Post)=e |err|": {
+  "tests": 37,
+  "min_slack": -6.661338147750939e-16,
+  "worst": "n=3 subspace/ball",
+  "violations": 0
+ },
+ "L4.1 P0 is 2lam-sparse": {
+  "tests": 595,
+  "min_slack": 0.0,
+  "worst": "n=2 support2/support3",
+  "violations": 0
+ },
+ "L4.1 P0*P0 is 4lam-sparse": {
+  "tests": 595,
+  "min_slack": 0.0,
+  "worst": "n=2 support2/support3",
+  "violations": 0
+ },
+ "L4.1 h(P0)>0": {
+  "tests": 74,
+  "min_slack": 0.0025004877033080824,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L4.1 ratio e(P0)/h(P0) >= d": {
+  "tests": 74,
+  "min_slack": 0.0,
+  "worst": "n=2 support2/support3",
+  "violations": 0
+ },
+ "L5.1 (28) A <= h/N + rho B (N-1)/2": {
+  "tests": 259,
+  "min_slack": 5.222965567603314e-05,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L5.1 (29) A <= 14 sqrt(rho) h  [rho=lambda*(Q)]": {
+  "tests": 37,
+  "min_slack": 9.59190987624283e-05,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L6.1 e(R)+e(Q)=2dH+J |err|": {
+  "tests": 37,
+  "min_slack": -1.3165819346197538e-14,
+  "worst": "n=2 two_cosets/dir1/bern_mid",
+  "violations": 0
+ },
+ "L6.2 conditional BSG (33)": {
+  "tests": 120,
+  "min_slack": 0.07584262041367995,
+  "worst": "n=2",
+  "violations": 0
+ },
+ "L6.3 E D(Qu*Qw) <= 3J": {
+  "tests": 37,
+  "min_slack": 2.636397052194272e-06,
+  "worst": "n=2 support2 J=1.38e-06",
+  "violations": 0
+ },
+ "L7.1 (37) e(Q) <= 36J + 14 sqrt(rho) dH": {
+  "tests": 37,
+  "min_slack": 0.00014564482258105332,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L9.1 dim G <= h/lam": {
+  "tests": 74,
+  "min_slack": 0.4166802118065501,
+  "worst": "n=2 support2",
+  "violations": 0
+ },
+ "L9.1 qG P is lam-sparse": {
+  "tests": 634,
+  "min_slack": -3.3306690738754696e-16,
+  "worst": "n=3 two_cosets/dir1",
+  "violations": 0
+ }
+}

@@ -1,0 +1,182 @@
+{
+ "(14) 0<=e<=h": {
+  "tests": 35,
+  "min_slack": 0.0,
+  "worst": "n=2 coset",
+  "violations": 0
+ },
+ "(15) h(R)=2h-e |err|": {
+  "tests": 35,
+  "min_slack": -1.3322676295501878e-15,
+  "worst": "n=3 subspace/set2k+1/dir1",
+  "violations": 0
+ },
+ "(19) 0<=s_W<=min F": {
+  "tests": 12760,
+  "min_slack": -2.733924198139448e-15,
+  "worst": "n=4 subspace/bern_small",
+  "violations": 0
+ },
+ "(20) fibring identity |err|": {
+  "tests": 12760,
+  "min_slack": -2.6645352591003757e-15,
+  "worst": "n=5 bern_mid/bern_mid",
+  "violations": 0
+ },
+ "(21)": {
+  "tests": 12760,
+  "min_slack": -2.220446049250313e-15,
+  "worst": "n=4 even/bern_mid",
+  "violations": 0
+ },
+ "(22) nested": {
+  "tests": 35460,
+  "min_slack": -2.733924198139448e-15,
+  "worst": "n=4 subspace/bern_small",
+  "violations": 0
+ },
+ "(35') Marton with 11/2": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 sphere/coset",
+  "violations": 0
+ },
+ "(35) Marton min_V d(K,U_V) <= 6D(K)": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 sphere/coset",
+  "violations": 0
+ },
+ "(36)": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 sphere/coset",
+  "violations": 0
+ },
+ "(38) E dim V <= 26 h(Q)": {
+  "tests": 35,
+  "min_slack": 9.971121781892267e-05,
+  "worst": "n=2 support2/two_cosets",
+  "violations": 0
+ },
+ "(9) s<=minH": {
+  "tests": 200,
+  "min_slack": -1.1796119636642288e-15,
+  "worst": "n=4 subspace/bern_small",
+  "violations": 0
+ },
+ "(9) s>=0": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 sphere/coset",
+  "violations": 0
+ },
+ "B5 D(q_W X) <= D(X)": {
+  "tests": 12760,
+  "min_slack": -4.440892098500626e-16,
+  "worst": "n=4 support3/coset",
+  "violations": 0
+ },
+ "D>=0, E>=0": {
+  "tests": 200,
+  "min_slack": 0.0,
+  "worst": "n=2 sphere/coset",
+  "violations": 0
+ },
+ "J>=0": {
+  "tests": 35,
+  "min_slack": 0.0,
+  "worst": "n=2 coset",
+  "violations": 0
+ },
+ "L2.1 supermodularity (11)": {
+  "tests": 286200,
+  "min_slack": -1.1102230246251565e-15,
+  "worst": "n=4 bern_mid/support3",
+  "violations": 0
+ },
+ "L2.2 F_Post(W)<=F_P(W)": {
+  "tests": 307,
+  "min_slack": 0.0,
+  "worst": "n=2 dir0.05/subspace/support2",
+  "violations": 0
+ },
+ "L2.2 h(Post)=e |err|": {
+  "tests": 35,
+  "min_slack": -8.881784197001252e-16,
+  "worst": "n=3 near_sub/set2k+1/bern_mid",
+  "violations": 0
+ },
+ "L4.1 P0 is 2lam-sparse": {
+  "tests": 605,
+  "min_slack": 0.0,
+  "worst": "n=2 dir0.05/subspace/support2",
+  "violations": 0
+ },
+ "L4.1 P0*P0 is 4lam-sparse": {
+  "tests": 605,
+  "min_slack": 0.0,
+  "worst": "n=2 dir0.05/subspace/support2",
+  "violations": 0
+ },
+ "L4.1 h(P0)>0": {
+  "tests": 70,
+  "min_slack": 0.000760675040559465,
+  "worst": "n=2 support2/two_cosets",
+  "violations": 0
+ },
+ "L4.1 ratio e(P0)/h(P0) >= d": {
+  "tests": 70,
+  "min_slack": 0.0,
+  "worst": "n=2 dir0.05/subspace/support2",
+  "violations": 0
+ },
+ "L5.1 (28) A <= h/N + rho B (N-1)/2": {
+  "tests": 245,
+  "min_slack": 0.0,
+  "worst": "n=2 coset",
+  "violations": 0
+ },
+ "L5.1 (29) A <= 14 sqrt(rho) h  [rho=lambda*(Q)]": {
+  "tests": 35,
+  "min_slack": 1.1815158484419872e-07,
+  "worst": "n=2 support2/two_cosets",
+  "violations": 0
+ },
+ "L6.1 e(R)+e(Q)=2dH+J |err|": {
+  "tests": 35,
+  "min_slack": -6.3976601794024646e-15,
+  "worst": "n=3 spike/bern_mid/near_sub",
+  "violations": 0
+ },
+ "L6.2 conditional BSG (33)": {
+  "tests": 120,
+  "min_slack": 0.11177790415452661,
+  "worst": "n=2",
+  "violations": 0
+ },
+ "L6.3 E D(Qu*Qw) <= 3J": {
+  "tests": 35,
+  "min_slack": 0.0,
+  "worst": "n=2 coset J=0",
+  "violations": 0
+ },
+ "L7.1 (37) e(Q) <= 36J + 14 sqrt(rho) dH": {
+  "tests": 35,
+  "min_slack": 2.7489932485434436e-05,
+  "worst": "n=3 dir0.05",
+  "violations": 0
+ },
+ "L9.1 dim G <= h/lam": {
+  "tests": 70,
+  "min_slack": 0.30169354372975604,
+  "worst": "n=2 support2/two_cosets",
+  "violations": 0
+ },
+ "L9.1 qG P is lam-sparse": {
+  "tests": 614,
+  "min_slack": -2.220446049250313e-16,
+  "worst": "n=2 ball/two_cosets/even",
+  "violations": 0
+ }
+}
