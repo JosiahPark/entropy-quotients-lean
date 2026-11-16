@@ -800,16 +800,23 @@ none may add a `sorry` to `Statements.lean`.
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
       not close in one run, prove it for `p ≤ 1/8` first and record the gap. Split by the formalize
       task 2026-11-16 05:53 UTC:
-  - [ ] H4a. Reduction (`EntropyLean/MartonOneBit.lean`): `martonInput_of_finrank_eq_zero`, invariance of
+  - [x] H4a. Reduction (`EntropyLean/MartonOneBit.lean`): `martonInput_of_finrank_eq_zero`, invariance of
         `H` and `D` under an additive equivalence, `eq_bernoulliBit` (every law on `ZMod 2` is
         Bernoulli), and `martonInput_of_finrank_eq_one_of_bernoulli` ((35) on a one-dimensional space
         from the Bernoulli inequality as an explicit hypothesis `hB`).
     - Written by the formalize task 2026-11-16 05:53 UTC (uncompiled at push): `martonInput_of_finrank_eq_zero`,
       `entropyBits_map_addEquiv`, `entropyIncrement_map_addEquiv`, `eq_bernoulliBit`,
       `martonInput_of_finrank_eq_one_of_bernoulli` in the new file `EntropyLean/MartonOneBit.lean` (1f3879f).
+      CI green at 1f3879f and 1203638; ticked by the formalize task 2026-11-16 06:09 UTC.
   - [ ] H4b. The Bernoulli inequality (`EntropyLean/MartonOneBit.lean` or a new file): `bernoulli_marton_ineq :
         0 ≤ p → p ≤ 1 → min (binaryEntropy p) (1 − binaryEntropy p) ≤ 12 * bernoulliIncrement p`;
         if it does not close in one run, prove the range `p ≤ 1/8` (and its mirror `p ≥ 7/8`) first.
+    - Written by the formalize task 2026-11-16 06:09 UTC (uncompiled at push): `binaryEntropy_one_sub`,
+      `bernoulliIncrement_one_sub`, `negMulLog_mix`, `bernoulli_marton_small_nats`, `bernoulli_concave_step`,
+      `bernoulli_marton_ineq_le_half`, `bernoulli_marton_ineq` in the new file
+      `EntropyLean/MartonBernoulliIneq.lean` (26b5aeb). Full range `0 ≤ p ≤ 1`, no split: for `1/8 < p ≤ 1/2`
+      concavity of `−x log x` at `p` and `1/2` gives `D ≥ 2p(1 − h₂(p))`; for `p ≤ 1/8` the E2a bounds and
+      `log p ≤ −3 log 2`; `p ≥ 1/2` by the symmetry `p ↦ 1 − p`.
   - [ ] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
 - [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
       `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
