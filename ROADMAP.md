@@ -740,6 +740,12 @@ none may add a `sorry` to `Statements.lean`.
       `ratio_growth_of_marton`, `weighted_family_rigidity_of_marton_univ`,
       `sparse_rigidity_of_marton`, `exponential_entropy_quotient_of_marton`,
       `coset_concentration_of_marton`). Docs only; no Lean change.
+  - Written by the formalize task 2026-11-16 03:45 UTC (uncompiled at push): docs/DEPENDENCIES.md now has
+    class `conditional` (lilac, with a legend row and a note under "Reading the chart"); E36, L71, L81,
+    T82, T12, T11, C92, C94 moved to it with the Lean names above (C92 as
+    `two_input_almost_additivity_of_rigidity` + `weighted_family_rigidity_of_marton_univ`) (4d14fc1).
+    No node is `stated` any more; the open `sorry`s are the statements of Theorems 1.1, 1.2, 8.2 in
+    `Statements.lean` (3) and `FeatureMap.lean` (2).
 - [ ] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
       d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
       `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
