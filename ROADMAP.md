@@ -795,7 +795,7 @@ none may add a `sorry` to `Statements.lean`.
       computation and no use of H3a needed).
       CI green at ec3c48f (contains b6ea618; no `MartonPartial.lean` warnings besides the module notice);
       ticked by the formalize task 2026-11-16 05:53 UTC. With H3a–H3d done, H3 is complete.
-- [ ] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
+- [x] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
       finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
       not close in one run, prove it for `p ≤ 1/8` first and record the gap. Split by the formalize
@@ -819,14 +819,20 @@ none may add a `sorry` to `Statements.lean`.
       `log p ≤ −3 log 2`; `p ≥ 1/2` by the symmetry `p ↦ 1 − p`. CI failed at 26b5aeb and fb23d20 (`le_or_lt`
       no longer exists), fixed at a7857af; CI green at a7857af, a060b7b and 0168b64; ticked by the formalize
       task 2026-11-16 18:37 UTC.
-  - [ ] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
+  - [x] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
     - Written by the formalize task 2026-11-16 18:36 UTC (uncompiled at push): `martonInput_of_finrank_le_one`,
       `martonInput_zmod2` in the new file `EntropyLean/MartonFinrankLeOne.lean` (8e4ebd4).
+      CI green at 8e4ebd4 and 811c6ca; ticked by the formalize task 2026-11-16 19:39 UTC. With H4a–H4c done,
+      H4 is complete.
 - [ ] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
       `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
       martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
       (Theorem 1.1 with exponent `287(1+ε)/ε` from `MartonBoundConst.{0} (11/2)`). This does not
       depend on B1: it only says what a proof of (35) with constant 11/2 would give.
+    - Written by the formalize task 2026-11-16 19:38 UTC (uncompiled at push): `martonRigidityConst_eleven_half_lt`,
+      `weighted_family_rigidity_287_of_marton_const`, `exponential_entropy_quotient_287_of_marton_const`,
+      `sparse_rigidity_287_of_marton_const` in the new file `EntropyLean/MartonConstPFR.lean` (195c6d9):
+      `K(11/2) = 281 + 2 log₂(13/2) < 287`, since `13/2 < 8`.
 
 ## Not attempted here
 
