@@ -759,14 +759,19 @@ none may add a `sorry` to `Statements.lean`.
       `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split by
       the formalize task 2026-11-16 04:00 UTC (there is no equality-case lemma for entropy in the
       repository yet, so the original H3a/H3b plan was too large for one run):
-  - [ ] H3a. Support of a convolution: `lawSupport K = {v : K v ≠ 0}`, `mem_support_conv_iff`,
+  - [x] H3a. Support of a convolution: `lawSupport K = {v : K v ≠ 0}`, `mem_support_conv_iff`,
         `lawSupport_conv : lawSupport (P * Q) = lawSupport P + lawSupport Q`.
     - Written by the formalize task 2026-11-16 04:00 UTC (uncompiled at push): `mem_support_conv_iff`,
       `lawSupport`, `mem_lawSupport`, `lawSupport_nonempty`, `lawSupport_conv` in
       `EntropyLean/MartonPartial.lean` (082b63e).
+      CI green at 4a86741; ticked by the formalize task 2026-11-16 04:18 UTC (fallbacks removed in a83d9f2).
   - [ ] H3b. Equality case of subadditivity (`EntropyLean/Information.lean` or a new file):
         `mutualInfo P = 0 → P = prodLaw (P.map Prod.fst) (P.map Prod.snd)` (`eq_prodLaw_of_mutualInfo_eq_zero`),
         via the equality case of Jensen for `−x log x` (`StrictConcaveOn.map_sum_eq_iff`).
+    - Written by the formalize task 2026-11-16 04:18 UTC (uncompiled at push): `crossSlack`,
+      `crossSlack_nonneg`, `crossSlack_eq_zero`, `sum_crossSlack`, `eq_prodLaw_of_mutualInfo_eq_zero` in the
+      new file `EntropyLean/MutualInfoZero.lean` (a83d9f2); proved via the strict bound `log y < y − 1`
+      on the pointwise Gibbs slack rather than via Jensen.
   - [ ] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
         (`map_add_eq_conv_of_increment_zero`), from H3b applied to the pair `(B, A + B)`, whose mutual
         information is `H(K * K) − H(K) = D(K)`.
