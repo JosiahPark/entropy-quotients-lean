@@ -2,6 +2,7 @@ import Mathlib
 import EntropyLean.MartonConvEntropy
 import EntropyLean.QuotientFacts
 import EntropyLean.EntropyFacts
+import EntropyLean.MutualInfoZero
 
 /-!
 # Trivial cases of the entropic Marton bound (roadmap item H2, Section 7)
@@ -18,11 +19,14 @@ Hence (35) holds for `K` whenever `H(K) ≤ 12 D(K)` (`marton_of_entropy_le`, wi
 
 It also records the support of a convolution (roadmap item H3a): with `lawSupport K` the finset
 `{v : K v ≠ 0}`, `lawSupport (P * Q) = lawSupport P + lawSupport Q` (`lawSupport_conv`), the
-first step toward the zero-doubling case `D(K) = 0` of (35).
+first step toward the zero-doubling case `D(K) = 0` of (35). Roadmap item H3c adds the second
+step: `I(B ; A + B) = D(K)` for independent `A, B ∼ K` (`mutualInfo_snd_add`), so by the equality
+case of subadditivity (`eq_prodLaw_of_mutualInfo_eq_zero`) `D(K) = 0` forces
+`K.map (· + b) = K * K` for every `b` in the support (`map_add_eq_conv_of_increment_zero`).
 
 What this file does NOT prove: the entropic Marton bound (35) in general (it remains the
-hypothesis `MartonInput V` / `MartonBound` elsewhere), nor the zero-doubling case beyond the
-support computation (roadmap items H3b–H3d), nor the one-bit case (H4).
+hypothesis `MartonInput V` / `MartonBound` elsewhere), nor that a law with `D(K) = 0` is
+uniform on a coset (roadmap item H3d), nor the one-bit case (H4).
 -/
 
 namespace EntropyLean
@@ -113,5 +117,72 @@ theorem lawSupport_conv [Add V] [DecidableEq V] (P Q : PMF V) :
   simp only [mem_lawSupport, PMF.mem_support_iff]
 
 end SupportConv
+
+/-! ## Zero doubling: translates (roadmap item H3c) -/
+
+section ZeroDoublingTranslates
+
+variable {V : Type*} [Fintype V] [AddCommGroup V]
+
+/-- The mutual information of the pair `(B, A + B)` for independent `A, B ∼ K` is the entropy
+increment: `I(B ; A + B) = H(K) + H(K * K) − 2H(K) = D(K)`. -/
+theorem mutualInfo_snd_add (K : PMF V) :
+    mutualInfo ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)) = entropyIncrement K := by
+  have hfst : ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)).map Prod.fst = K := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_snd K K
+  have hsnd : ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)).map Prod.snd =
+      conv K K := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_add K K
+  have hR : entropyBits ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)) =
+      entropyBits K + entropyBits K := by
+    rw [entropyBits_map_injective _ snd_add_injective, entropyBits_prodLaw]
+  unfold mutualInfo entropyIncrement
+  rw [hfst, hsnd, hR]
+  ring
+
+/-- If `D(K) = 0` and `K(b) ≠ 0`, then `K(t − b) = (K * K)(t)` for every `t` (in `ℝ`). -/
+theorem toReal_sub_eq_conv_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0)
+    {b : V} (hb : K b ≠ 0) (t : V) :
+    (K (t - b)).toReal = (conv K K t).toReal := by
+  have hfst : ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)).map Prod.fst = K := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_snd K K
+  have hsnd : ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)).map Prod.snd =
+      conv K K := by
+    rw [PMF.map_comp]
+    exact prodLaw_map_add K K
+  have hI : mutualInfo ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)) = 0 := by
+    rw [mutualInfo_snd_add, hD]
+  have heq := eq_prodLaw_of_mutualInfo_eq_zero _ hI
+  rw [hfst, hsnd] at heq
+  have e : ((b, t) : V × V) = (fun x : V × V => (x.2, x.1 + x.2)) (t - b, b) :=
+    Prod.ext rfl (sub_add_cancel t b).symm
+  have h1 : ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)) (b, t) =
+      prodLaw K K (t - b, b) :=
+    (congrArg (fun y => ((prodLaw K K).map fun x : V × V => (x.2, x.1 + x.2)) y) e).trans
+      (pmf_map_apply_injective (prodLaw K K) (snd_add_injective (V := V)) (t - b, b))
+  have h2 : prodLaw K K (t - b, b) = prodLaw K (conv K K) (b, t) := by
+    rw [← h1, heq]
+  have h3 := congrArg ENNReal.toReal h2
+  rw [prodLaw_apply, prodLaw_apply, ENNReal.toReal_mul, ENNReal.toReal_mul] at h3
+  have hpos : 0 < (K b).toReal := ENNReal.toReal_pos hb (PMF.apply_ne_top K b)
+  exact mul_right_cancel₀ hpos.ne' (h3.trans (mul_comm _ _))
+
+/-- Roadmap item H3c: if `D(K) = 0`, every translate of `K` by a point `b` of its support is
+`K * K`, i.e. `K.map (· + b) = K * K`. -/
+theorem map_add_eq_conv_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0)
+    {b : V} (hb : K b ≠ 0) : K.map (fun a => a + b) = conv K K := by
+  refine PMF.ext fun t => ?_
+  have e : t = (fun a : V => a + b) (t - b) := (sub_add_cancel t b).symm
+  have hm : (K.map fun a => a + b) t = K (t - b) :=
+    (congrArg (fun y => (K.map fun a : V => a + b) y) e).trans
+      (pmf_map_apply_injective K (add_left_injective b) (t - b))
+  rw [hm]
+  exact (ENNReal.toReal_eq_toReal_iff' (PMF.apply_ne_top _ _) (PMF.apply_ne_top _ _)).mp
+    (toReal_sub_eq_conv_of_increment_zero K hD hb t)
+
+end ZeroDoublingTranslates
 
 end EntropyLean
