@@ -1,0 +1,28 @@
+import EntropyLean.SparsePosterior
+import EntropyLean.DensitySqrt
+import EntropyLean.RatioGrowth
+import EntropyLean.TwoInput
+import EntropyLean.ConditionalBSGLemma
+import EntropyLean.FourSampleSplitting
+import EntropyLean.PosteriorClosure
+import EntropyLean.Statements
+open EntropyLean
+#print axioms EntropyLean.WeightedFamily.posterior_interaction_le_subspace
+#print axioms EntropyLean.WeightedFamily.posterior_mean_dim_le
+#print axioms EntropyLean.interaction_le_subspace_add_increment
+#print axioms EntropyLean.MartonInput.consequence
+#print axioms EntropyLean.WeightedFamily.averaged_density_lemma
+#print axioms EntropyLean.WeightedFamily.posterior_doubling
+#print axioms EntropyLean.WeightedFamily.four_sample_splitting
+#print axioms EntropyLean.conditional_bsg
+#print axioms EntropyLean.WeightedFamily.posterior_lemma
+#print axioms EntropyLean.subspaceInteraction_nested
+#print axioms EntropyLean.ratio_preserving_sparsification
+#print axioms EntropyLean.variational_sparsification
+#print axioms EntropyLean.weighted_family_rigidity_of_growth
+#print axioms EntropyLean.exponential_entropy_quotient_of_growth
+#print axioms EntropyLean.rigidity_iteration_bound
+#print axioms EntropyLean.entropyIncrement_quotient_le
+#print axioms EntropyLean.exponential_entropy_quotient
+#print axioms EntropyLean.sparse_rigidity
+#print axioms EntropyLean.exponential_scale_necessary

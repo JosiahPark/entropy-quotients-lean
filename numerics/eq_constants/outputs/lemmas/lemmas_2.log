@@ -1,0 +1,36 @@
+n 2 done 0.09449028968811035
+n 3 done 0.6286814212799072
+n 4 done 8.56207275390625
+n 5 done 9.61293077468872
+fam n 2 done 10.889385461807251
+fam n 3 done 13.022783517837524
+(14) 0<=e<=h                                            tests=    34 viol=0 min_slack=0.000e+00  worst=n=3 two_cosets
+(15) h(R)=2h-e |err|                                    tests=    34 viol=0 min_slack=-6.661e-16  worst=n=2 dir1/support2/support2
+(19) 0<=s_W<=min F                                      tests= 12760 viol=0 min_slack=-3.997e-15  worst=n=5 two_cosets/bern_mid
+(20) fibring identity |err|                             tests= 12760 viol=0 min_slack=-1.554e-15  worst=n=5 bern_small/support2
+(21)                                                    tests= 12760 viol=0 min_slack=-3.997e-15  worst=n=5 two_cosets/bern_mid
+(22) nested                                             tests= 35460 viol=0 min_slack=-1.776e-15  worst=n=4 subspace/ball
+(35') Marton with 11/2                                  tests=   200 viol=0 min_slack=0.000e+00  worst=n=2 even/coset
+(35) Marton min_V d(K,U_V) <= 6D(K)                     tests=   200 viol=0 min_slack=0.000e+00  worst=n=2 even/coset
+(36)                                                    tests=   200 viol=0 min_slack=0.000e+00  worst=n=2 even/coset
+(38) E dim V <= 26 h(Q)                                 tests=    34 viol=0 min_slack=9.693e-03  worst=n=3 support3/support2
+(9) s<=minH                                             tests=   200 viol=0 min_slack=-3.053e-16  worst=n=4 support2/two_cosets
+(9) s>=0                                                tests=   200 viol=0 min_slack=-4.441e-16  worst=n=4 two_cosets/support2
+B5 D(q_W X) <= D(X)                                     tests= 12760 viol=0 min_slack=-2.220e-16  worst=n=3 support3/support2
+D>=0, E>=0                                              tests=   200 viol=0 min_slack=0.000e+00  worst=n=2 even/coset
+J>=0                                                    tests=    34 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1
+L2.1 supermodularity (11)                               tests=286200 viol=0 min_slack=-6.661e-16  worst=n=4 bern_mid/near_sub
+L2.2 F_Post(W)<=F_P(W)                                  tests=   291 viol=0 min_slack=-2.220e-16  worst=n=2 set2k+1/two_cosets
+L2.2 h(Post)=e |err|                                    tests=    34 viol=0 min_slack=-6.661e-16  worst=n=2 dir1
+L4.1 P0 is 2lam-sparse                                  tests=   568 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1/coset/support3
+L4.1 P0*P0 is 4lam-sparse                               tests=   568 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1/coset/support3
+L4.1 h(P0)>0                                            tests=    68 viol=0 min_slack=1.068e-03  worst=n=3 support3/support2
+L4.1 ratio e(P0)/h(P0) >= d                             tests=    68 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1/coset/support3
+L5.1 (28) A <= h/N + rho B (N-1)/2                      tests=   238 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1
+L5.1 (29) A <= 14 sqrt(rho) h  [rho=lambda*(Q)]         tests=    34 viol=0 min_slack=1.103e-04  worst=n=3 support3/support2
+L6.1 e(R)+e(Q)=2dH+J |err|                              tests=    34 viol=0 min_slack=-3.830e-15  worst=n=3 dir0.3/even
+L6.2 conditional BSG (33)                               tests=   120 viol=0 min_slack=1.157e-03  worst=n=2
+L6.3 E D(Qu*Qw) <= 3J                                   tests=    34 viol=0 min_slack=0.000e+00  worst=n=2 set2k+1 J=0
+L7.1 (37) e(Q) <= 36J + 14 sqrt(rho) dH                 tests=    34 viol=0 min_slack=9.593e-04  worst=n=2 spike
+L9.1 dim G <= h/lam                                     tests=    68 viol=0 min_slack=4.996e-01  worst=n=2 near_sub/sphere
+L9.1 qG P is lam-sparse                                 tests=   582 viol=0 min_slack=-2.220e-16  worst=n=2 dir1/support2/support2

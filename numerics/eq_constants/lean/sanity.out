@@ -1,0 +1,11 @@
+@exponential_entropy_quotient_of_growth : ∀ {V : Type 1} [inst : AddCommGroup V] [inst_1 : Module (ZMod 2) V]
+  [Fintype V],
+  RatioGrowth →
+    ∀ (ε : ℝ),
+      0 < ε →
+        ∀ (X : PMF V),
+          ∃ G,
+            ↑(Module.finrank (ZMod 2) ↥G) ≤ 2 ^ (320 * (1 + ε) / ε) * entropyBits X ∧
+              entropyBits (PMF.map (fun v => G.mkQ v) X) ≤ (1 + ε) * entropyIncrement (PMF.map (fun v => G.mkQ v) X) ∧
+                entropyIncrement (PMF.map (fun v => G.mkQ v) X) ≤ entropyIncrement X
+@WeightedFamily.posterior : {V : Type} → [Fintype V] → [AddCommGroup V] → WeightedFamily V → WeightedFamily V

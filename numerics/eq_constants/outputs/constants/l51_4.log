@@ -1,0 +1,1 @@
+{'max_ratio': np.float64(1.0), 'viol': 0, 'tests': 748, 'max_ratio_N>=2': np.float64(1.0), 'at': (2, 1, ['two_cosets'], np.float64(1.0), np.float64(1.0)), 'at_N>=2': (2, 2, ['two_cosets'], np.float64(1.0), np.float64(1.0))} []
