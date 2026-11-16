@@ -85,9 +85,7 @@ end MartonPartial
 theorem mem_support_conv_iff {W : Type*} [Add W] (P Q : PMF W) (t : W) :
     t ∈ (conv P Q).support ↔ ∃ a ∈ P.support, ∃ b ∈ Q.support, a + b = t := by
   unfold conv
-  first
-  | (simp only [PMF.mem_support_bind_iff, PMF.mem_support_map_iff]; done)
-  | simp [PMF.mem_support_bind_iff, PMF.mem_support_map_iff]
+  simp only [PMF.mem_support_bind_iff, PMF.mem_support_map_iff]
 
 section SupportConv
 
@@ -104,19 +102,15 @@ theorem mem_lawSupport (K : PMF V) (v : V) : v ∈ lawSupport K ↔ K v ≠ 0 :=
 
 theorem lawSupport_nonempty (K : PMF V) : (lawSupport K).Nonempty := by
   obtain ⟨v, hv⟩ := K.support_nonempty
-  first
-  | exact ⟨v, (mem_lawSupport K v).mpr ((K.mem_support_iff v).mp hv)⟩
-  | exact ⟨v, (mem_lawSupport K v).mpr (by simpa using hv)⟩
+  exact ⟨v, (mem_lawSupport K v).mpr ((K.mem_support_iff v).mp hv)⟩
 
 open Pointwise in
 /-- `supp (P * Q) = supp P + supp Q` (roadmap item H3a). -/
 theorem lawSupport_conv [Add V] [DecidableEq V] (P Q : PMF V) :
     lawSupport (conv P Q) = lawSupport P + lawSupport Q := by
   ext t
-  first
-  | (rw [Finset.mem_add, mem_lawSupport, ← PMF.mem_support_iff, mem_support_conv_iff]
-     simp only [mem_lawSupport, PMF.mem_support_iff]; done)
-  | simp only [Finset.mem_add, mem_lawSupport, ← PMF.mem_support_iff, mem_support_conv_iff]
+  rw [Finset.mem_add, mem_lawSupport, ← PMF.mem_support_iff, mem_support_conv_iff]
+  simp only [mem_lawSupport, PMF.mem_support_iff]
 
 end SupportConv
 
