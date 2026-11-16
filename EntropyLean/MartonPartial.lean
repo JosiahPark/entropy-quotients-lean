@@ -23,10 +23,15 @@ first step toward the zero-doubling case `D(K) = 0` of (35). Roadmap item H3c ad
 step: `I(B ; A + B) = D(K)` for independent `A, B ∼ K` (`mutualInfo_snd_add`), so by the equality
 case of subadditivity (`eq_prodLaw_of_mutualInfo_eq_zero`) `D(K) = 0` forces
 `K.map (· + b) = K * K` for every `b` in the support (`map_add_eq_conv_of_increment_zero`).
+Roadmap item H3d finishes the zero-doubling case: the periods `{d : ∀ u, K (u + d) = K u}` of `K`
+form a subspace `W` (`lawPeriods`, `lawPeriodSub`); if `D(K) = 0` and `K x ≠ 0`, the support of
+`K` is the coset `x + W` (`mem_lawSupport_iff_of_increment_zero`) and `K − x = U_W`
+(`map_add_neg_eq_uniformSub_of_increment_zero`), so `d(K, U_W) = D(K) = 0`
+(`ruzsaDist_lawPeriodSub_of_increment_zero`) and (35) holds (`marton_of_increment_zero`).
 
 What this file does NOT prove: the entropic Marton bound (35) in general (it remains the
-hypothesis `MartonInput V` / `MartonBound` elsewhere), nor that a law with `D(K) = 0` is
-uniform on a coset (roadmap item H3d), nor the one-bit case (H4).
+hypothesis `MartonInput V` / `MartonBound` elsewhere); the only cases proved here are
+`H(K) ≤ 12 D(K)`, `dim V − H(K) ≤ 12 D(K)` and `D(K) = 0`. Nor the one-bit case (H4).
 -/
 
 namespace EntropyLean
@@ -184,5 +189,156 @@ theorem map_add_eq_conv_of_increment_zero (K : PMF V) (hD : entropyIncrement K =
     (toReal_sub_eq_conv_of_increment_zero K hD hb t)
 
 end ZeroDoublingTranslates
+
+/-! ## Zero doubling: the support is a coset (roadmap item H3d) -/
+
+section Periods
+
+variable {V : Type*} [AddCommGroup V]
+
+/-- The periods of a law: the additive subgroup of the `d` with `K (u + d) = K u` for all `u`. -/
+noncomputable def lawPeriods (K : PMF V) : AddSubgroup V where
+  carrier := {d | ∀ u, K (u + d) = K u}
+  add_mem' := by
+    intro a b ha hb
+    have ha' : ∀ u, K (u + a) = K u := ha
+    have hb' : ∀ u, K (u + b) = K u := hb
+    show ∀ u, K (u + (a + b)) = K u
+    intro u
+    rw [← add_assoc, hb' (u + a), ha' u]
+  zero_mem' := by
+    show ∀ u, K (u + 0) = K u
+    intro u
+    rw [add_zero]
+  neg_mem' := by
+    intro a ha
+    have ha' : ∀ u, K (u + a) = K u := ha
+    show ∀ u, K (u + -a) = K u
+    intro u
+    have h := ha' (u + -a)
+    have e : u + -a + a = u := by abel
+    rw [e] at h
+    exact h.symm
+
+theorem mem_lawPeriods (K : PMF V) (d : V) :
+    d ∈ lawPeriods K ↔ ∀ u, K (u + d) = K u :=
+  Iff.rfl
+
+/-- `(K − x)(v) = K(v + x)`, writing `K − x` for the law of `A − x` with `A ∼ K`. -/
+theorem pmf_map_add_neg_apply (K : PMF V) (x v : V) :
+    (K.map fun a => a + -x) v = K (v + x) := by
+  have e : v = (fun a : V => a + -x) (v + x) := by
+    show v = v + x + -x
+    abel
+  exact (congrArg (fun y => (K.map fun a : V => a + -x) y) e).trans
+    (pmf_map_apply_injective K (add_left_injective (-x)) (v + x))
+
+/-- If `v` is a period of `K`, then `(K − x)(v) = K(x)`. -/
+theorem pmf_map_add_neg_apply_of_mem (K : PMF V) (x : V) {v : V} (hv : v ∈ lawPeriods K) :
+    (K.map fun a => a + -x) v = K x := by
+  rw [pmf_map_add_neg_apply, add_comm]
+  exact (mem_lawPeriods K v).mp hv x
+
+variable [Module (ZMod 2) V]
+
+/-- The periods of a law as an F₂-subspace. -/
+noncomputable def lawPeriodSub (K : PMF V) : Submodule (ZMod 2) V :=
+  AddSubgroup.toZModSubmodule 2 (lawPeriods K)
+
+theorem mem_lawPeriodSub (K : PMF V) (d : V) : d ∈ lawPeriodSub K ↔ d ∈ lawPeriods K :=
+  Iff.rfl
+
+end Periods
+
+section ZeroDoublingCoset
+
+variable {V : Type*} [Fintype V] [AddCommGroup V]
+
+/-- If `D(K) = 0` and `K b ≠ 0`, `K c ≠ 0`, then `K (t − b) = K (t − c)` for every `t`. -/
+theorem apply_sub_eq_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0)
+    {b c : V} (hb : K b ≠ 0) (hc : K c ≠ 0) (t : V) : K (t - b) = K (t - c) :=
+  (ENNReal.toReal_eq_toReal_iff' (PMF.apply_ne_top _ _) (PMF.apply_ne_top _ _)).mp
+    ((toReal_sub_eq_conv_of_increment_zero K hD hb t).trans
+      (toReal_sub_eq_conv_of_increment_zero K hD hc t).symm)
+
+/-- If `D(K) = 0`, the difference of two points charged by `K` is a period of `K`. -/
+theorem sub_mem_lawPeriods (K : PMF V) (hD : entropyIncrement K = 0)
+    {b c : V} (hb : K b ≠ 0) (hc : K c ≠ 0) : b - c ∈ lawPeriods K := by
+  rw [mem_lawPeriods]
+  intro u
+  have h := apply_sub_eq_of_increment_zero K hD hb hc (u + b)
+  have e1 : u + b - b = u := by abel
+  have e2 : u + b - c = u + (b - c) := by abel
+  rw [e1, e2] at h
+  exact h.symm
+
+/-- If `D(K) = 0` and `K x ≠ 0`, the support of `K` is the coset `x + W` of its periods. -/
+theorem mem_lawSupport_iff_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0)
+    {x : V} (hx : K x ≠ 0) (v : V) : v ∈ lawSupport K ↔ v - x ∈ lawPeriods K := by
+  rw [mem_lawSupport]
+  refine ⟨fun hv => sub_mem_lawPeriods K hD hv hx, fun hv h => hx ?_⟩
+  have h1 := (mem_lawPeriods K _).mp hv x
+  have e : x + (v - x) = v := by abel
+  rw [e, h] at h1
+  exact h1.symm
+
+/-- If `D(K) = 0`, `K x ≠ 0` and `v` is not a period of `K`, then `(K − x)(v) = 0`. -/
+theorem pmf_map_add_neg_apply_of_not_mem (K : PMF V) (hD : entropyIncrement K = 0) {x : V}
+    (hx : K x ≠ 0) {v : V} (hv : v ∉ lawPeriods K) : (K.map fun a => a + -x) v = 0 := by
+  rw [pmf_map_add_neg_apply]
+  by_contra h
+  have hmem := sub_mem_lawPeriods K hD h hx
+  have e : v + x - x = v := by abel
+  rw [e] at hmem
+  exact hv hmem
+
+variable [Module (ZMod 2) V]
+
+open Classical in
+/-- If `D(K) = 0` and `K x ≠ 0`, then `K − x` is the uniform law on the subspace `W` of periods,
+i.e. `K` is uniform on the coset `x + W`. -/
+theorem map_add_neg_eq_uniformSub_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0)
+    {x : V} (hx : K x ≠ 0) : K.map (fun a => a + -x) = uniformSub (lawPeriodSub K) := by
+  have hL : ∀ v, ((K.map fun a => a + -x) v).toReal =
+      if v ∈ lawPeriodSub K then (K x).toReal else 0 := by
+    intro v
+    by_cases hv : v ∈ lawPeriods K
+    · have hv' : v ∈ lawPeriodSub K := (mem_lawPeriodSub K v).mpr hv
+      rw [pmf_map_add_neg_apply_of_mem K x hv]
+      simp [hv']
+    · have hv' : v ∉ lawPeriodSub K := fun h => hv ((mem_lawPeriodSub K v).mp h)
+      rw [pmf_map_add_neg_apply_of_not_mem K hD hx hv]
+      simp [hv']
+  have hsum : (subCard (lawPeriodSub K) : ℝ) * (K x).toReal = 1 := by
+    have h1 := pmf_sum_toReal (K.map fun a => a + -x)
+    rw [Finset.sum_congr rfl fun v _ => hL v, Finset.sum_ite, Finset.sum_const_zero, add_zero,
+      Finset.sum_const, nsmul_eq_mul] at h1
+    exact h1
+  have hN : (subCard (lawPeriodSub K) : ℝ) ≠ 0 := by
+    exact_mod_cast (subCard_pos (lawPeriodSub K)).ne'
+  have hc : (K x).toReal = (subCard (lawPeriodSub K) : ℝ)⁻¹ := by
+    have h2 : (subCard (lawPeriodSub K) : ℝ) * (K x).toReal *
+        (subCard (lawPeriodSub K) : ℝ)⁻¹ = (K x).toReal := by
+      rw [mul_comm (subCard (lawPeriodSub K) : ℝ), mul_assoc, mul_inv_cancel₀ hN, mul_one]
+    rw [← h2, hsum, one_mul]
+  refine PMF.ext fun v => (ENNReal.toReal_eq_toReal_iff' (PMF.apply_ne_top _ _)
+    (PMF.apply_ne_top _ _)).mp ?_
+  rw [hL v, uniformSub_toReal]
+  split_ifs <;> simp [hc]
+
+/-- Roadmap item H3d: if `D(K) = 0`, then `d(K, U_W) = 0` for the subspace `W` of periods of
+`K`. -/
+theorem ruzsaDist_lawPeriodSub_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0) :
+    ruzsaDist K (uniformSub (lawPeriodSub K)) = 0 := by
+  obtain ⟨x, hx⟩ := K.support_nonempty
+  rw [← map_add_neg_eq_uniformSub_of_increment_zero K hD ((K.mem_support_iff x).mp hx),
+    ruzsaDist_translate_self, hD]
+
+/-- (35) in the zero-doubling case: if `D(K) = 0`, some subspace `W` has `d(K, U_W) ≤ 6 D(K)`. -/
+theorem marton_of_increment_zero (K : PMF V) (hD : entropyIncrement K = 0) :
+    ∃ W : Submodule (ZMod 2) V, ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K :=
+  ⟨lawPeriodSub K, by linarith [ruzsaDist_lawPeriodSub_of_increment_zero K hD]⟩
+
+end ZeroDoublingCoset
 
 end EntropyLean
