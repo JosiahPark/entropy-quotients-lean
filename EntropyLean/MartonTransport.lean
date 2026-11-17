@@ -52,9 +52,7 @@ theorem subCard_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (W : Submodule (ZMod 2
     subCard (W.map (e : V →ₗ[ZMod 2] V')) = subCard W := by
   rw [subCard_eq, subCard_eq]
   congr 1
-  first
-    | exact LinearEquiv.finrank_map_eq e W
-    | exact (e.submoduleMap W).finrank_eq.symm
+  exact LinearEquiv.finrank_map_eq e W
 
 /-- The image of the uniform law on `W` under a linear equivalence `e` is uniform on `e W`. -/
 theorem uniformSub_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (W : Submodule (ZMod 2) V) :
@@ -64,9 +62,7 @@ theorem uniformSub_map_linearEquiv (e : V ≃ₗ[ZMod 2] V') (W : Submodule (ZMo
   intro v'
   obtain ⟨v, rfl⟩ := e.surjective v'
   have hmem : e v ∈ W.map (e : V →ₗ[ZMod 2] V') ↔ v ∈ W := by
-    first
-      | rw [Submodule.mem_map_equiv, LinearEquiv.symm_apply_apply]
-      | exact ⟨fun ⟨y, hy, h⟩ => (e.injective h) ▸ hy, fun h => ⟨v, h, rfl⟩⟩
+    rw [Submodule.mem_map_equiv, LinearEquiv.symm_apply_apply]
   rw [pmf_map_apply_injective _ e.injective, uniformSub_toReal, uniformSub_toReal,
     subCard_map_linearEquiv]
   by_cases hv : v ∈ W
