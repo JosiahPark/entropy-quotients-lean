@@ -21,12 +21,17 @@ and no hypotheses beyond the paper's.
       `quotientLoss`, `IsSparse` (`EntropyLean/Basic.lean`); `WeightedFamily`, `meanEntropy`,
       `meanInteraction`, `averagedLoss`, `WeightedFamily.IsSparse`, `quotient`, `convFamily`
       (`EntropyLean/Families.lean`).
+  - Written in the v0.2 consolidation, before the roadmap tasks; CI green at 9130247.
 - [x] Identities: `entropyBits_eq_sum`, `entropyDefect_eq`, `interaction_self`,
       `meanEntropy_quotient`, `conv_weights_sum`.
+  - Written in the v0.2 consolidation, before the roadmap tasks; CI green at 9130247.
 - [x] `bernoulli_parameter_mem_Ioo`; `entropy_le_increment_of_defect_le` (the algebraic step in
       the proof of Theorem 1.1).
+  - Written in the v0.2 consolidation, before the roadmap tasks; CI green at 9130247.
 - [x] Statements with `sorry`: Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1,
       Proposition 9.3 (`EntropyLean/Statements.lean`).
+  - Written in the v0.2 consolidation; CI green at 9130247. Lemma 4.1, Lemma 9.1 and
+    Proposition 9.3 were proved later (C4, C1, E3); Theorems 1.1, 1.2 and 8.2 still have `sorry`.
 
 ## A. Entropy basics (`EntropyLean/Basic.lean` or `EntropyLean/EntropyFacts.lean`)
 
@@ -70,6 +75,7 @@ and no hypotheses beyond the paper's.
     check is still open.
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
+  - Done through B2a–B2c below (each has its own note); ticked once all of them had compiled.
   - [x] B2a. `condEntropy`, `mutualInfo`, chain rule `entropyBits_chain`, `condEntropy_nonneg`,
         `mutualInfo_le_left`, `mutualInfo_le_right`, `mutualInfo_swap`.
     - Written by the hourly task 2026-11-13 (uncompiled at push; CI green at 2e3eabd).
@@ -87,6 +93,7 @@ and no hypotheses beyond the paper's.
 - [x] B3. Equation (9): `interaction_nonneg`, `interaction_le_left`, `interaction_le_right`;
       equation (14): `0 ≤ e(𝒫) ≤ h(𝒫)` (`meanInteraction_nonneg`, `meanInteraction_le`).
       Split by the hourly task 2026-11-13 (`EntropyLean/Interaction.lean`):
+  - Done through B3a–B3c below (each has its own note); ticked once all of them had compiled.
   - [x] B3a. Joint law `prodLaw P Q` with marginals `P`, `Q` and sum law `conv P Q`;
         `entropyBits_conv_le : H(P * Q) ≤ H(P) + H(Q)`, `interaction_nonneg`,
         `WeightedFamily.meanInteraction_nonneg`.
@@ -144,6 +151,7 @@ and no hypotheses beyond the paper's.
     (`EntropyLean/Conditional.lean`, 6af3de7). Theorem 1.2 itself stays open. CI green.
 - [x] C4. Lemma 4.1: prove `ratio_preserving_sparsification` from the objective (24) (needs A4,
       B3, B4). Split by the hourly task 2026-11-14 (`EntropyLean/RatioSparsification.lean`):
+  - Done through C4a and C4b below (each has its own note); ticked once all of them had compiled.
   - [x] C4a. Objective `WeightedFamily.ratioObjective` (24); equation (26) at a minimizer
         (`ratioObjective_min_loss`); items 2–3 of Lemma 4.1 (`ratioObjective_min_sparse`).
     - Written by the hourly task 2026-11-14 (uncompiled at push): `quotientLoss_nonneg`,
@@ -192,6 +200,7 @@ and no hypotheses beyond the paper's.
     warnings unchecked); L81 marked stated in docs/DEPENDENCIES.md (6aed3f7).
 - [x] D3. Posterior families: `WeightedFamily.posterior` and Lemma 2.2 (`posterior_closure`).
       Split by the hourly task 2026-11-14 (`EntropyLean/Posterior.lean`):
+  - Done through D3a–D3c below (each has its own note); ticked once all of them had compiled.
   - [x] D3a. `conv_apply : (P * Q)(t) = ∑ₐ P(a) Q(t − a)`, the posterior law `posteriorLaw` of `A`
         given `A + B = t`, and the posterior family `WeightedFamily.posterior` (equation (16)) with
         weights `a_i a_j (P_i * P_j)(t)` summing to one (for `V : Type`).
@@ -231,6 +240,7 @@ and no hypotheses beyond the paper's.
         lives in `Type`).
 - [x] D4. Lemma 3.1: fibring identity (20) and the nested inequality (22).
       Split by the hourly task 2026-11-14 (`EntropyLean/Fibring.lean`):
+  - Done through D4a–D4c below (each has its own note); ticked once all of them had compiled.
   - [x] D4a. Fibre interaction `s_W` (18) along an additive map, the fibring identity (20) and (21).
     - Written by the hourly task 2026-11-14 (uncompiled at push): `prodLaw_map_right`,
       `prodLaw_map_both`, `fibreJoint`, `fibreInteraction`, `fibreTriple`, `fibreMutualInfo`,
@@ -257,6 +267,7 @@ and no hypotheses beyond the paper's.
       warnings unchecked). L31 marked proved in docs/DEPENDENCIES.md.
 - [x] D5. Lemma 5.1: averaged density estimate (28)–(29).
       Split by Claude 2026-11-14 (`EntropyLean/DensityEstimate.lean`):
+  - Done through D5a–D5c below (each has its own note); ticked once all of them had compiled.
   - [x] D5a. One-step inequality (30) `subspaceInteraction_step` (from (22) with `U = S ⊓ W`,
         monotonicity `quotientLoss_mono` and (11)), and its average over a fresh index for a
         `λ`-sparse family, `WeightedFamily.averaged_density_step`.
@@ -285,6 +296,7 @@ and no hypotheses beyond the paper's.
       docs/DEPENDENCIES.md (eb44992).
 - [x] D6. Lemma 6.1 (four-sample splitting), Lemma 6.2 (conditional BSG), Lemma 6.3.
       Split by the hourly task 2026-11-14:
+  - Done through D6a–D6d below (each has its own note); ticked once all of them had compiled.
   - [x] D6a. Entropic Ruzsa distance (8) `ruzsaDist` with `ruzsaDist_self` (`d(P, P) = D(P)`),
         `ruzsaDist_comm`, `ruzsaDist_nonneg`, translation invariance `ruzsaDist_map_add_const`,
         `ruzsaDist_translate_self`; entropy submodularity `entropyBits_submodular`
@@ -429,6 +441,7 @@ and no hypotheses beyond the paper's.
 - [x] D7. `structure MartonInput`: the entropic Marton bound (35) as a named hypothesis, and its
       consequence (36). Replace by a theorem if B1 chooses the PFR backend and the constant
       matches. Split by the formalize task 2026-11-15:
+  - Done through D7a–D7c below (each has its own note); ticked once all of them had compiled.
   - [x] D7a. `uniformSub W` (uniform law on a subspace), `structure MartonInput` with (35) as the field
         `marton`, `MartonBound`, `0 ≤ D(K) ≤ H(K)`, and (36) from (35) with the two uniform-smoothing
         facts as explicit hypotheses (`MartonInput.consequence_of_smoothing`)
@@ -478,6 +491,7 @@ and no hypotheses beyond the paper's.
 - [x] D8. Lemma 7.1 (sparse posterior estimate, (37)): `e(𝒬) ≤ 36 J + 14 √ρ δH` for a `ρ`-sparse
       posterior family `𝒬 = Post 𝒫`, with the Marton bound as the hypothesis `MartonInput V`.
       Split by the formalize task 2026-11-15:
+  - Done through D8a–D8c below (each has its own note); ticked once all of them had compiled.
   - [x] D8a. Two laws `P`, `Q`: apply (36) to `K = P * Q`, then (21) and `s(q_W P, q_W Q) ≤
         H(q_W (P * Q))` give `s(P, Q) ≤ s_W(P, Q) + 12 D(P * Q)` with `dim W ≤ 13 (H(P) + H(Q))`
         (`EntropyLean/MartonStep.lean`, `interaction_le_subspace_add_increment`).
@@ -550,6 +564,7 @@ and no hypotheses beyond the paper's.
 - [x] E2. Bernoulli expansions: `binaryEntropy p = p logb 2 (1/p) + p logb 2 e + O(p²)` and
       `bernoulliDefect p = 2p + O(p² log(1/p))` as explicit inequalities for small `p`.
       Split by the formalize task 2026-11-15:
+  - Done through E2a and E2b below (each has its own note); ticked once all of them had compiled.
   - [x] E2a. `p logb 2 (1/p) + (p − p²)/log 2 ≤ h₂(p) ≤ p logb 2 (1/p) + p/log 2` and
         `2p − 2p² − 2p²/log 2 ≤ bernoulliDefect p` for `0 < p < 1`
         (`EntropyLean/BernoulliExpansion.lean`).
@@ -760,6 +775,7 @@ none may add a `sorry` to `Statements.lean`.
       `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split by
       the formalize task 2026-11-16 04:00 UTC (there is no equality-case lemma for entropy in the
       repository yet, so the original H3a/H3b plan was too large for one run):
+  - Done through H3a–H3d below (each has its own note); ticked once all of them had compiled.
   - [x] H3a. Support of a convolution: `lawSupport K = {v : K v ≠ 0}`, `mem_support_conv_iff`,
         `lawSupport_conv : lawSupport (P * Q) = lawSupport P + lawSupport Q`.
     - Written by the formalize task 2026-11-16 04:00 UTC (uncompiled at push): `mem_support_conv_iff`,
@@ -801,6 +817,7 @@ none may add a `sorry` to `Statements.lean`.
       (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
       not close in one run, prove it for `p ≤ 1/8` first and record the gap. Split by the formalize
       task 2026-11-16 05:53 UTC:
+  - Done through H4a–H4c below (each has its own note); ticked once all of them had compiled.
   - [x] H4a. Reduction (`EntropyLean/MartonOneBit.lean`): `martonInput_of_finrank_eq_zero`, invariance of
         `H` and `D` under an additive equivalence, `eq_bernoulliBit` (every law on `ZMod 2` is
         Bernoulli), and `martonInput_of_finrank_eq_one_of_bernoulli` ((35) on a one-dimensional space
@@ -860,6 +877,7 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
       from (35) on `U` (`marton_of_support_subset_coset`), via `ruzsaDist_map_add_const`
       (translation) and pushing laws on `U` forward along `U.subtype` (`ruzsaDist_map_injective`,
       `uniformSub_map_subtype`). Split by the formalize task 2026-11-17 00:17 UTC:
+  - Done through I2a and I2b below (each has its own note); ticked once all of them had compiled.
   - [x] I2a. Translation and inclusion (`EntropyLean/MartonTransport.lean`): `entropyIncrement_map_add_const :
         D(K + c) = D(K)` and `uniformSub_map_subtype : (U_W).map U.subtype = U_{W.map U.subtype}` for
         a subspace `W` of `U`.
@@ -902,6 +920,10 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
     Independence is defined as `IndepCoords K : ∃ P, K = piLaw n P`, with `piLaw n P` the iterated
     product of the laws `P i`. CI green at d56f5cd; ticked by the formalize task
     2026-11-17 22:36 UTC.
+  - Checked in the CI log of d56f5cd (formalize task 2026-11-17 22:58 UTC):
+    `EntropyLean.MartonProduct` built with no error and no `sorry`, so the induction step of
+    `marton_piLaw` closes. The only warnings are linter notes (unused `first` alternatives,
+    deprecated `if_pos`/`if_neg`).
 
 ## J. Independent coordinates, made intrinsic
 
@@ -911,17 +933,27 @@ connect that definition to the usual one (the law is the product of its coordina
 remove the dependence on the standard coordinates. None of them proves the entropic Marton theorem,
 and none may add a `sorry` to `Statements.lean`.
 
-- [ ] J1. Masses of `piLaw` (`EntropyLean/MartonProduct.lean`): `piLaw_apply :
+- [x] J1. Masses of `piLaw` (`EntropyLean/MartonProduct.lean`): `piLaw_apply :
       piLaw n P v = ∏ i, P i (v i)`, by induction on `n` from `prodLaw_apply`,
       `pmf_map_apply_injective` (along `finConsEquiv n`) and `Fin.prod_univ_succ`.
+  - Written by the formalize task 2026-11-17 22:45 UTC (uncompiled at push): `finConsEquiv_apply`,
+    `piLaw_apply` in `EntropyLean/MartonProduct.lean` (c8ab90a). CI green at c8ab90a; ticked by
+    the formalize task 2026-11-17 22:58 UTC.
 - [ ] J2. Independence as a property of the law (`EntropyLean/MartonProduct.lean`): the
       coordinate marginals `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i`, and
       `indepCoords_iff : IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (from J1), so
       I5 covers exactly the laws that are the product of their coordinate marginals.
+  - Planned route (formalize task 2026-11-17; not yet checked in Lean): for `piLaw_map_eval`, sum
+    `piLaw_apply` over the other coordinates with `Finset.prod_univ_sum`, using that each `P j` has
+    total mass one; for the converse in `indepCoords_iff`, take `P i := K.map fun w => w i` and
+    conclude with `PMF.ext` and `piLaw_apply`.
 - [ ] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
       equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
       `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
       `IndepCoords (K.map e)` (`marton_of_indepCoords_map`), from I5 and `marton_map_linearEquiv`.
+  - Planned route (formalize task 2026-11-17; not yet checked in Lean): apply
+    `marton_of_indep_coords` to `K.map e`, then transport the bound back along `e.symm` with
+    `marton_map_linearEquiv`, using `(K.map e).map e.symm = K`.
 
 ## Not attempted here
 
