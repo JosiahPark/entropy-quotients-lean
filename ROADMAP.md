@@ -883,11 +883,16 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
     `finrank_span_singleton_le_one`, `marton_of_card_lawSupport_le_two` in
     `EntropyLean/MartonTransport.lean` (e76429e). CI green at e76429e; ticked by the formalize task
     2026-11-17 05:20 UTC.
-- [ ] I4. Products (`EntropyLean/MartonProduct.lean`, a new file): for laws `K₁` on `V₁` and `K₂`
+- [x] I4. Products (`EntropyLean/MartonProduct.lean`, a new file): for laws `K₁` on `V₁` and `K₂`
       on `V₂`, `entropyIncrement_prodLaw : D(K₁ ⊗ K₂) = D(K₁) + D(K₂)`, `ruzsaDist_prodLaw :
       d(K₁ ⊗ K₂, L₁ ⊗ L₂) = d(K₁, L₁) + d(K₂, L₂)`, `uniformSub_prod : U_{W₁ × W₂} = U_{W₁} ⊗ U_{W₂}`
       (all from `entropyBits_prodLaw`), and `marton_prodLaw`: if (35) holds for `K₁` and for `K₂`,
       it holds for `K₁ ⊗ K₂` with the witness `W₁.prod W₂`.
+  - Written by the formalize task 2026-11-17 21:52 UTC: `conv_prodLaw`, `entropyIncrement_prodLaw`,
+    `ruzsaDist_prodLaw`, `subCard_prod`, `uniformSub_prod`, `marton_prodLaw`,
+    `marton_prodLaw_of_exists`, `MartonInput.marton_prodLaw` in the new file
+    `EntropyLean/MartonProduct.lean` (51b4912). CI green at 51b4912; ticked by the formalize task
+    2026-11-17 21:57 UTC.
 - [ ] I5. Independent bits (`EntropyLean/MartonProduct.lean`): (35) for every law on
       `Fin n → ZMod 2` whose coordinates are independent (`marton_of_indep_coords`), by induction on
       `n` from I4, I1 and `martonInput_zmod2` (H4c).
