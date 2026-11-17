@@ -4,7 +4,7 @@ import EntropyLean.DoubleTrial
 import EntropyLean.MartonTransport
 
 /-!
-# The entropic Marton bound (35) for product laws (roadmap item I4)
+# The entropic Marton bound (35) for product laws (roadmap items I4, I5)
 
 For laws `K₁` on `V₁` and `K₂` on `V₂`, `K₁ ⊗ K₂ = prodLaw K₁ K₂` is the law of an independent
 pair. This file proves
@@ -15,11 +15,16 @@ pair. This file proves
 * `marton_prodLaw`: if `d(K₁, U_{W₁}) ≤ 6 D(K₁)` and `d(K₂, U_{W₂}) ≤ 6 D(K₂)`, then
   `d(K₁ ⊗ K₂, U_{W₁ × W₂}) ≤ 6 D(K₁ ⊗ K₂)`, with the existential form `marton_prodLaw_of_exists`
   and `MartonInput.marton_prodLaw` ((35) on `V₁` and on `V₂` gives (35) for every product law
-  on `V₁ × V₂`).
+  on `V₁ × V₂`);
+* `finConsEquiv : F₂ × F₂ⁿ ≃ₗ F₂ⁿ⁺¹`, `piLaw n P` (the law of `n` independent bits with laws
+  `P i`), `IndepCoords` (a law on `Fin n → ZMod 2` is `piLaw n P` for some `P`),
+  `marton_map_linearEquiv` ((35) for one law transfers along a linear equivalence) and
+  `marton_of_indep_coords`: (35) for every law on `Fin n → ZMod 2` with independent coordinates
+  (roadmap item I5, by induction on `n` from `martonInput_zmod2` and `marton_prodLaw`).
 
 What this file does NOT prove: the entropic Marton bound (35) itself, nor (35) for laws on
 `V₁ × V₂` that are not products (so `MartonInput (V₁ × V₂)` is NOT derived from `MartonInput V₁`
-and `MartonInput V₂`); nor the independent-bits case (roadmap item I5).
+and `MartonInput V₂`); nor (35) for laws on `Fin n → ZMod 2` with dependent coordinates.
 -/
 
 namespace EntropyLean
@@ -120,5 +125,78 @@ theorem MartonInput.marton_prodLaw (hM₁ : MartonInput V₁) (hM₂ : MartonInp
   marton_prodLaw_of_exists K₁ K₂ (hM₁.marton K₁) (hM₂.marton K₂)
 
 end Product
+
+/-! ## Independent bits (roadmap item I5) -/
+
+/-- `(a, w) ↦ Fin.cons a w`, the linear equivalence `F₂ × F₂ⁿ ≃ F₂ⁿ⁺¹`. -/
+def finConsEquiv (n : ℕ) : (ZMod 2 × (Fin n → ZMod 2)) ≃ₗ[ZMod 2] (Fin (n + 1) → ZMod 2) where
+  toFun x := (Fin.cons x.1 x.2 : Fin (n + 1) → ZMod 2)
+  invFun v := (v 0, Fin.tail v)
+  map_add' x y := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  map_smul' c x := by
+    funext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  left_inv x := by simp
+  right_inv v := by simp
+
+/-- The law of `n` independent bits with laws `P 0, …, P (n − 1)`, as a law on `Fin n → ZMod 2`
+(the iterated product `P 0 ⊗ (P 1 ⊗ ⋯)`, read through `finConsEquiv`). -/
+noncomputable def piLaw : (n : ℕ) → (Fin n → PMF (ZMod 2)) → PMF (Fin n → ZMod 2)
+  | 0, _ => PMF.pure 0
+  | n + 1, P => (prodLaw (P 0) (piLaw n fun i => P i.succ)).map (finConsEquiv n)
+
+theorem piLaw_succ (n : ℕ) (P : Fin (n + 1) → PMF (ZMod 2)) :
+    piLaw (n + 1) P = (prodLaw (P 0) (piLaw n fun i => P i.succ)).map (finConsEquiv n) := by
+  first
+    | rfl
+    | simp only [piLaw]
+    | rw [piLaw]
+
+/-- A law on `Fin n → ZMod 2` has independent coordinates if it is a product `piLaw n P` of laws
+`P i` on the coordinates. -/
+def IndepCoords {n : ℕ} (K : PMF (Fin n → ZMod 2)) : Prop :=
+  ∃ P : Fin n → PMF (ZMod 2), K = piLaw n P
+
+/-- (35) for one law transfers along a linear equivalence `e`, with witness `e W`. -/
+theorem marton_map_linearEquiv {V V' : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [AddCommGroup V'] [Module (ZMod 2) V'] [Fintype V'] (e : V ≃ₗ[ZMod 2] V') (K : PMF V)
+    {W : Submodule (ZMod 2) V} (h : ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K) :
+    ruzsaDist (K.map e) (uniformSub (W.map (e : V →ₗ[ZMod 2] V'))) ≤
+      6 * entropyIncrement (K.map e) := by
+  rw [← uniformSub_map_linearEquiv, ruzsaDist_map_of_add_injective e (map_add e) e.injective,
+    entropyIncrement_map_of_add_injective e (map_add e) e.injective]
+  exact h
+
+/-- (35) on `Fin 0 → ZMod 2`, a space of dimension `0`. -/
+theorem martonInput_fin_zero : MartonInput (Fin 0 → ZMod 2) :=
+  martonInput_of_finrank_eq_zero (by
+    first
+      | exact Module.finrank_fin_fun (ZMod 2)
+      | exact Module.finrank_zero_of_subsingleton
+      | simp)
+
+/-- (35) for `piLaw n P`, by induction on `n` from `martonInput_zmod2` (H4c), `marton_prodLaw` (I4)
+and `marton_map_linearEquiv`. -/
+theorem marton_piLaw (n : ℕ) : ∀ P : Fin n → PMF (ZMod 2),
+    ∃ W : Submodule (ZMod 2) (Fin n → ZMod 2),
+      ruzsaDist (piLaw n P) (uniformSub W) ≤ 6 * entropyIncrement (piLaw n P) := by
+  induction n with
+  | zero => exact fun P => martonInput_fin_zero.marton (piLaw 0 P)
+  | succ n ih =>
+    intro P
+    obtain ⟨W₀, h₀⟩ := martonInput_zmod2.marton (P 0)
+    obtain ⟨W', h'⟩ := ih fun i => P i.succ
+    rw [piLaw_succ]
+    exact ⟨_, marton_map_linearEquiv (finConsEquiv n) _ (marton_prodLaw _ _ h₀ h')⟩
+
+/-- **I5.** The entropic Marton bound (35) for every law on `Fin n → ZMod 2` whose coordinates
+are independent. -/
+theorem marton_of_indep_coords {n : ℕ} (K : PMF (Fin n → ZMod 2)) (hK : IndepCoords K) :
+    ∃ W : Submodule (ZMod 2) (Fin n → ZMod 2),
+      ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K := by
+  obtain ⟨P, rfl⟩ := hK
+  exact marton_piLaw n P
 
 end EntropyLean
