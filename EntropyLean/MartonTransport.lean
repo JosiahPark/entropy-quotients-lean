@@ -12,10 +12,13 @@ Proved here, for finite F₂-spaces `V`, `V'`:
 * `subCard_map_linearEquiv`, `uniformSub_map_linearEquiv`: for a linear equivalence
   `e : V ≃ₗ[ZMod 2] V'`, `|e W| = |W|` and `(U_W).map e = U_{e W}`;
 * `MartonInput.of_linearEquiv`: (35) on `V` gives (35) on `V'` (witness `e W`);
-* `MartonInput.of_finrank_eq`: hence (35) on `V` gives (35) on every space of the same dimension.
+* `MartonInput.of_finrank_eq`: hence (35) on `V` gives (35) on every space of the same dimension;
+* `entropyIncrement_map_add_const`: translating a law does not change `D` (roadmap item I2a);
+* `uniformSub_map_subtype`: for a subspace `U` of `V` and a subspace `W` of `U`, pushing `U_W`
+  forward along `U ↪ V` gives the uniform law on the image of `W` (roadmap item I2a).
 
 What this file does NOT prove: the entropic Marton bound (35) itself in any dimension `≥ 2`, nor
-the coset and two-point cases (roadmap items I2, I3).
+the coset and two-point cases (roadmap items I2b, I3).
 -/
 
 namespace EntropyLean
@@ -94,6 +97,48 @@ theorem MartonInput.of_finrank_eq
     (h : Module.finrank (ZMod 2) V = Module.finrank (ZMod 2) V') (hM : MartonInput V) :
     MartonInput V' :=
   hM.of_linearEquiv (LinearEquiv.ofFinrankEq V V' h)
+
+/-- Translating a law does not change its entropy increment: `D(K + c) = D(K)`. -/
+theorem entropyIncrement_map_add_const (K : PMF V) (c : V) :
+    entropyIncrement (K.map fun v => v + c) = entropyIncrement K := by
+  rw [← ruzsaDist_self, ← ruzsaDist_self, ruzsaDist_map_add_const, ruzsaDist_comm,
+    ruzsaDist_map_add_const]
+
+/-- Pushing the uniform law on a subspace `W` of `U` forward along `U ↪ V` gives the uniform law
+on the image of `W` in `V`. -/
+theorem uniformSub_map_subtype (U : Submodule (ZMod 2) V) [Fintype U]
+    (W : Submodule (ZMod 2) U) :
+    (uniformSub W).map U.subtype = uniformSub (W.map U.subtype) := by
+  classical
+  have hcard : subCard (W.map U.subtype) = subCard W := by
+    rw [subCard_eq, subCard_eq]
+    congr 1
+    first
+      | exact (Submodule.equivMapOfInjective U.subtype U.injective_subtype W).finrank_eq.symm
+      | exact Submodule.finrank_map_subtype_eq U W
+  apply pmf_ext_toReal
+  intro v
+  by_cases hv : v ∈ U
+  · have hmem : v ∈ W.map U.subtype ↔ (⟨v, hv⟩ : U) ∈ W := by
+      constructor
+      · rintro ⟨y, hy, hyv⟩
+        have hy' : y = ⟨v, hv⟩ := Subtype.ext hyv
+        rwa [← hy']
+      · intro h
+        exact ⟨⟨v, hv⟩, h, rfl⟩
+    have hval : ((uniformSub W).map U.subtype) v = uniformSub W ⟨v, hv⟩ :=
+      pmf_map_apply_injective (uniformSub W) U.injective_subtype ⟨v, hv⟩
+    rw [hval, uniformSub_toReal, uniformSub_toReal, hcard]
+    by_cases hw : (⟨v, hv⟩ : U) ∈ W
+    · rw [if_pos hw, if_pos (hmem.mpr hw)]
+    · rw [if_neg hw, if_neg (fun h => hw (hmem.mp h))]
+  · have hval : ((uniformSub W).map U.subtype) v = 0 := by
+      rw [PMF.map_apply]
+      exact ENNReal.tsum_eq_zero.mpr fun a => if_neg (fun h => hv (by rw [h]; exact a.2))
+    have hnot : v ∉ W.map U.subtype := by
+      rintro ⟨y, _, hyv⟩
+      exact hv (by rw [← hyv]; exact y.2)
+    rw [hval, uniformSub_toReal, if_neg hnot, ENNReal.zero_toReal]
 
 end Transport
 
