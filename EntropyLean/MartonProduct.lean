@@ -20,7 +20,9 @@ pair. This file proves
   `P i`), `IndepCoords` (a law on `Fin n → ZMod 2` is `piLaw n P` for some `P`),
   `marton_map_linearEquiv` ((35) for one law transfers along a linear equivalence) and
   `marton_of_indep_coords`: (35) for every law on `Fin n → ZMod 2` with independent coordinates
-  (roadmap item I5, by induction on `n` from `martonInput_zmod2` and `marton_prodLaw`).
+  (roadmap item I5, by induction on `n` from `martonInput_zmod2` and `marton_prodLaw`);
+* `finConsEquiv_apply` and `piLaw_apply : piLaw n P v = ∏ i, P i (v i)` (roadmap item J1), so
+  `piLaw n P` is the law of independent coordinates with laws `P i` in the usual sense.
 
 What this file does NOT prove: the entropic Marton bound (35) itself, nor (35) for laws on
 `V₁ × V₂` that are not products (so `MartonInput (V₁ × V₂)` is NOT derived from `MartonInput V₁`
@@ -198,5 +200,42 @@ theorem marton_of_indep_coords {n : ℕ} (K : PMF (Fin n → ZMod 2)) (hK : Inde
       ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K := by
   obtain ⟨P, rfl⟩ := hK
   exact marton_piLaw n P
+
+/-! ## Masses of `piLaw` (roadmap item J1) -/
+
+open scoped BigOperators
+
+theorem finConsEquiv_apply (n : ℕ) (x : ZMod 2 × (Fin n → ZMod 2)) :
+    finConsEquiv n x = (Fin.cons x.1 x.2 : Fin (n + 1) → ZMod 2) :=
+  rfl
+
+/-- **J1.** `piLaw n P` gives each point the product of its coordinate masses:
+`piLaw n P v = ∏ i, P i (v i)`. -/
+theorem piLaw_apply (n : ℕ) :
+    ∀ (P : Fin n → PMF (ZMod 2)) (v : Fin n → ZMod 2), piLaw n P v = ∏ i, P i (v i) := by
+  induction n with
+  | zero =>
+    intro P v
+    have hv : v = 0 := Subsingleton.elim v 0
+    have h0 : piLaw 0 P = PMF.pure 0 := by
+      first
+        | rfl
+        | simp only [piLaw]
+    rw [h0, hv]
+    simp [PMF.pure_apply]
+  | succ n ih =>
+    intro P v
+    have hv : finConsEquiv n (v 0, Fin.tail v) = v := by
+      rw [finConsEquiv_apply]
+      exact Fin.cons_self_tail v
+    calc piLaw (n + 1) P v
+        = ((prodLaw (P 0) (piLaw n fun i => P i.succ)).map (finConsEquiv n))
+            (finConsEquiv n (v 0, Fin.tail v)) := by rw [piLaw_succ, hv]
+      _ = prodLaw (P 0) (piLaw n fun i => P i.succ) (v 0, Fin.tail v) :=
+          pmf_map_apply_injective _ (finConsEquiv n).injective _
+      _ = P 0 (v 0) * ∏ i : Fin n, P i.succ (v i.succ) := by
+          rw [prodLaw_apply, ih]
+          try rfl
+      _ = ∏ i, P i (v i) := (Fin.prod_univ_succ fun i => P i (v i)).symm
 
 end EntropyLean
