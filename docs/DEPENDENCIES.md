@@ -8,7 +8,6 @@ time; [ROADMAP.md](../ROADMAP.md) is the ordered work list that moves nodes from
 | --- | --- |
 | green | proved in Lean (no `sorry`) |
 | amber | stated in Lean, proof is `sorry` |
-| lilac | proved in Lean from the entropic Marton bound (35) as a hypothesis (`MartonBound.{0}` or `MartonInput V`), no `sorry` |
 | grey | not yet stated in Lean |
 | blue | external input (cited, not proved in the paper) |
 
@@ -18,7 +17,6 @@ flowchart TD
   classDef stated fill:#fff3cd,stroke:#b8860b,color:#4d3800
   classDef missing fill:#eceff1,stroke:#78909c,color:#263238
   classDef external fill:#dbe9f7,stroke:#1f5fa8,color:#0d2a4d
-  classDef conditional fill:#ece4f7,stroke:#6a3fa0,color:#2b1745
 
   %% Definitions and elementary identities
   DEF["Definitions: H, convolution, D, E, s, F_P(W),<br/>sparsity, weighted families, q_G 𝒫, 𝒫 * 𝒫<br/>(Basic, Families)"]:::proved
@@ -43,22 +41,22 @@ flowchart TD
   L62["Lemma 6.2: conditional BSG inequality"]:::proved
   L63["Lemma 6.3: posterior doubling estimate"]:::proved
   MAR["Entropic Marton theorem (35)<br/>Gowers–Green–Manners–Tao"]:::external
-  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)<br/>MartonInput.consequence"]:::conditional
-  L71["Lemma 7.1: sparse posterior estimate<br/>sparse_posterior_estimate"]:::conditional
+  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)"]:::stated
+  L71["Lemma 7.1: sparse posterior estimate"]:::stated
 
   %% Section 8
-  L81["Lemma 8.1: ratio growth<br/>ratio_growth_of_marton"]:::conditional
+  L81["Lemma 8.1: ratio growth<br/>RatioGrowth (Prop, hypothesis of weighted_family_rigidity_of_growth)"]:::stated
   ARITH["Iteration arithmetic (42)–(43):<br/>d log₂(1/λ) < 320<br/>rigidity_iteration_bound"]:::proved
-  T82["Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity_of_marton_univ<br/>(open statement: weighted_family_rigidity)"]:::conditional
-  T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity_of_marton<br/>(open statement: sparse_rigidity)"]:::conditional
+  T82["Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity"]:::stated
+  T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity"]:::stated
 
   %% Section 9
   L91["Lemma 9.1: variational sparsification<br/>variational_sparsification"]:::proved
-  T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient_of_marton<br/>(open statement: exponential_entropy_quotient)"]:::conditional
-  C92["Corollary 9.2: two-input almost-additivity<br/>two_input_almost_additivity_of_rigidity<br/>+ weighted_family_rigidity_of_marton_univ"]:::conditional
+  T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient"]:::stated
+  C92["Corollary 9.2: two-input almost-additivity<br/>two_input_almost_additivity_of_rigidity (Theorem 8.2 as hypothesis)"]:::stated
   BEXP["Bernoulli expansions of h₂(p), 2h₂(p) − h₂(2p(1−p))<br/>binaryEntropy_ge, binaryEntropy_le, bernoulliDefect_ge, bernoulliDefect_le"]:::proved
   P93["Proposition 9.3: exponential scale is necessary<br/>exponential_scale_necessary"]:::proved
-  C94["Corollary 9.4: subspace-coset concentration<br/>coset_concentration_of_marton"]:::conditional
+  C94["Corollary 9.4: subspace-coset concentration<br/>coset_concentration_of_quotient (Theorem 1.1 as hypothesis)"]:::stated
 
   DEF --> ID
   DEF --> NN
@@ -112,9 +110,6 @@ flowchart TD
 
 - The only external input is the entropic Marton theorem (35). Everything else is proved in the
   paper, so every grey node is a formalization target, not an assumption.
-- Lilac nodes are proved in Lean with (35) as their only hypothesis. They are NOT proved
-  unconditionally: Theorems 1.1, 1.2 and 8.2 in `Statements.lean` still end in `sorry`, and they
-  turn green only when (35) itself is proved in Lean (or imported from the PFR project, item B1).
 - Theorem 1.1 is three steps away from its inputs: Lemma 9.1, Theorem 8.2 and data processing,
   plus the algebraic step already proved. A conditional version, with Theorem 8.2 as a named
   hypothesis, is item C2 of the roadmap.
