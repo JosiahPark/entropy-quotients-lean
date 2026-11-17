@@ -15,10 +15,15 @@ Proved here, for finite F₂-spaces `V`, `V'`:
 * `MartonInput.of_finrank_eq`: hence (35) on `V` gives (35) on every space of the same dimension;
 * `entropyIncrement_map_add_const`: translating a law does not change `D` (roadmap item I2a);
 * `uniformSub_map_subtype`: for a subspace `U` of `V` and a subspace `W` of `U`, pushing `U_W`
-  forward along `U ↪ V` gives the uniform law on the image of `W` (roadmap item I2a).
+  forward along `U ↪ V` gives the uniform law on the image of `W` (roadmap item I2a);
+* `pmf_map_congr_support`, `cosetRetract`, `restrictLaw`, `restrictLaw_map_subtype_add`: a law `K`
+  carried by a coset `x + U` is the image of a law on `U` (`restrictLaw U K x`) under `U ↪ V`
+  followed by translation by `x` (roadmap item I2b);
+* `marton_of_support_subset_coset`: (35) on `U` gives (35) for every law carried by a coset of `U`
+  (roadmap item I2b).
 
 What this file does NOT prove: the entropic Marton bound (35) itself in any dimension `≥ 2`, nor
-the coset and two-point cases (roadmap items I2b, I3).
+the two-point case (roadmap item I3).
 -/
 
 namespace EntropyLean
@@ -143,5 +148,84 @@ theorem uniformSub_map_subtype (U : Submodule (ZMod 2) V) [Fintype U]
     simp
 
 end Transport
+
+section Coset
+
+variable {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+
+/-- Two maps that agree on the support of a law push it forward to the same law. -/
+theorem pmf_map_congr_support {α β : Type*} (K : PMF α) {g g' : α → β}
+    (h : ∀ a, K a ≠ 0 → g a = g' a) : K.map g = K.map g' := by
+  apply PMF.ext
+  intro b
+  rw [PMF.map_apply, PMF.map_apply]
+  refine tsum_congr fun a => ?_
+  by_cases ha : K a = 0
+  · simp [ha]
+  · rw [h a ha]
+
+open Classical in
+/-- The retraction `v ↦ v − x` of the coset `x + U` onto `U` (everything else goes to `0`). -/
+noncomputable def cosetRetract (U : Submodule (ZMod 2) V) (x v : V) : U :=
+  if h : v - x ∈ U then ⟨v - x, h⟩ else 0
+
+theorem subtype_cosetRetract (U : Submodule (ZMod 2) V) (x : V) {v : V} (hv : v - x ∈ U) :
+    U.subtype (cosetRetract U x v) = v - x := by
+  first
+    | simp [cosetRetract, hv]
+    | (unfold cosetRetract; rw [dif_pos hv]; rfl)
+
+/-- The law on `U` of `K − x`, for a law `K` carried by the coset `x + U`. -/
+noncomputable def restrictLaw (U : Submodule (ZMod 2) V) (K : PMF V) (x : V) : PMF U :=
+  K.map (cosetRetract U x)
+
+theorem restrictLaw_map_subtype (U : Submodule (ZMod 2) V) (K : PMF V) (x : V)
+    (hK : ∀ v, K v ≠ 0 → v - x ∈ U) :
+    (restrictLaw U K x).map U.subtype = K.map fun v => v - x := by
+  unfold restrictLaw
+  rw [PMF.map_comp]
+  exact pmf_map_congr_support K fun v hv => subtype_cosetRetract U x (hK v hv)
+
+/-- A law carried by `x + U` is `restrictLaw U K x`, pushed into `V` and translated by `x`. -/
+theorem restrictLaw_map_subtype_add (U : Submodule (ZMod 2) V) (K : PMF V) (x : V)
+    (hK : ∀ v, K v ≠ 0 → v - x ∈ U) :
+    ((restrictLaw U K x).map U.subtype).map (fun v => v + x) = K := by
+  rw [restrictLaw_map_subtype U K x hK, PMF.map_comp]
+  have hc : ((fun v => v + x) ∘ fun v => v - x) = (id : V → V) := by
+    funext v
+    simp
+  rw [hc, PMF.map_id]
+
+/-- **I2b.** The entropic Marton bound (35) for a law carried by a coset `x + U` of a subspace
+`U`, from (35) on `U` (witness: the image in `V` of the witness on `U`). -/
+theorem marton_of_support_subset_coset (U : Submodule (ZMod 2) V) [Fintype U]
+    (hU : MartonInput U) (K : PMF V) (x : V) (hK : ∀ v, K v ≠ 0 → v - x ∈ U) :
+    ∃ W : Submodule (ZMod 2) V, ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K := by
+  obtain ⟨W, hW⟩ := hU.marton (restrictLaw U K x)
+  refine ⟨W.map U.subtype, ?_⟩
+  have hKeq := restrictLaw_map_subtype_add U K x hK
+  have hD : entropyIncrement K = entropyIncrement (restrictLaw U K x) := by
+    calc entropyIncrement K
+        = entropyIncrement (((restrictLaw U K x).map U.subtype).map fun v => v + x) := by
+          rw [hKeq]
+      _ = entropyIncrement ((restrictLaw U K x).map U.subtype) :=
+          entropyIncrement_map_add_const _ x
+      _ = entropyIncrement (restrictLaw U K x) :=
+          entropyIncrement_map_of_add_injective U.subtype (map_add U.subtype)
+            U.injective_subtype _
+  calc ruzsaDist K (uniformSub (W.map U.subtype))
+      = ruzsaDist (uniformSub (W.map U.subtype))
+          (((restrictLaw U K x).map U.subtype).map fun v => v + x) := by
+        rw [hKeq, ruzsaDist_comm]
+    _ = ruzsaDist (uniformSub (W.map U.subtype)) ((restrictLaw U K x).map U.subtype) :=
+        ruzsaDist_map_add_const _ _ x
+    _ = ruzsaDist ((restrictLaw U K x).map U.subtype) ((uniformSub W).map U.subtype) := by
+        rw [ruzsaDist_comm, uniformSub_map_subtype]
+    _ = ruzsaDist (restrictLaw U K x) (uniformSub W) :=
+        ruzsaDist_map_of_add_injective U.subtype (map_add U.subtype) U.injective_subtype _ _
+    _ ≤ 6 * entropyIncrement (restrictLaw U K x) := hW
+    _ = 6 * entropyIncrement K := by rw [hD]
+
+end Coset
 
 end EntropyLean
