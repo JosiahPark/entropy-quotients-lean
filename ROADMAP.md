@@ -701,8 +701,7 @@ what its proof actually gives.
     CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
 - [x] G3. Slack in the paper's argument: find the smallest constant `c₀` that the arithmetic of
       (42)–(43) gives at `C = 6` (prove `K(6) ≤ c₀`), and if `c₀ < 320` state Theorem 1.1
-      with `c₀`. Record in this file where the slack came from, so Josiah can check it against
-      the paper.
+      with `c₀`. Record in this file where the slack came from.
   - Written by Claude (desktop session) 2026-11-15 23:10 UTC: `c₀ = rigidityConst 148 1600 = 300 + log₂ 1600`, with `310 < c₀ < 311`
     (`rigidityConst_paper_eq`, `rigidityConst_paper_gt`, `rigidityConst_paper_lt`).
     `weighted_family_rigidity_slack_of_growth` (Theorem 8.2 with `c₀` from `RatioGrowth`),
@@ -710,7 +709,7 @@ what its proof actually gives.
     `exponential_entropy_quotient_311_of_marton` (Theorem 1.1 with `dim G ≤ 2^(311(1+ε)/ε) H(X)`),
     `sparse_rigidity_311_of_marton`, and the same from `MartonBoundConst C` with `C ≤ 6`
     (`EntropyLean/ConstantSlack.lean`, cfd43a4). The open statements in `Statements.lean` keep 320.
-    Where the slack comes from, for Josiah to check against the paper: (i) the paper bounds
+    Where the slack comes from: (i) the paper bounds
     `d log₂(1/λ) < 298 + (log₂ 1600 + 2) d + 2 d log₂(1/d)` and estimates the last two terms
     separately (`d ≤ 1`, `d log₂(1/d) ≤ 1/(e ln 2)`), getting `< 312`; for `d ≤ 1` their sum is at
     most `log₂ 1600 + 2`, its value at `d = 1` (from `−d log d ≤ 1 − d` and
