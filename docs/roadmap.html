@@ -413,9 +413,11 @@ async function live() {
       next.sorry = texts.reduce((n, t) => n + (t.replace(/\/-[\s\S]*?-\//g, "").replace(/--.*$/gm, "").match(/\bsorry\b/g) || []).length, 0);
     } catch (e) { /* keep snapshot CI and sorry count */ }
     src = next; render();
-  } catch (e) { renderSrc(); }
+  } catch (e) { render(); renderSrc(); }
 }
-render();
+// Draw only once live data has arrived (or failed), so the stale snapshot numbers never flash first.
+document.getElementById("stats").textContent = "Loading live data from main…";
+setTimeout(() => { if (!M) { render(); renderSrc(); } }, 10000);
 live();
 </script>
 
