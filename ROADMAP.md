@@ -875,10 +875,14 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
       `marton_of_support_subset_coset` (support condition stated as `∀ v, K v ≠ 0 → v − x ∈ U`) in
       `EntropyLean/MartonTransport.lean` (292a1a5). CI green at 292a1a5; ticked by the formalize task
       2026-11-17 00:57 UTC.
-- [ ] I3. Two-point laws (`EntropyLean/MartonTransport.lean`): `marton_of_card_lawSupport_le_two :
+- [x] I3. Two-point laws (`EntropyLean/MartonTransport.lean`): `marton_of_card_lawSupport_le_two :
       (lawSupport K).card ≤ 2 → ∃ W, d(K, U_W) ≤ 6 D(K)` on every finite F₂-space, from I2 and
       `martonInput_of_finrank_le_one` (H4c): a support `{a, b}` lies in the coset
       `a + span {b − a}` of a subspace of dimension at most one.
+  - Written by the formalize task 2026-11-17 05:13 UTC: `exists_pair_of_card_le_two`,
+    `finrank_span_singleton_le_one`, `marton_of_card_lawSupport_le_two` in
+    `EntropyLean/MartonTransport.lean` (e76429e). CI green at e76429e; ticked by the formalize task
+    2026-11-17 05:20 UTC.
 - [ ] I4. Products (`EntropyLean/MartonProduct.lean`, a new file): for laws `K₁` on `V₁` and `K₂`
       on `V₂`, `entropyIncrement_prodLaw : D(K₁ ⊗ K₂) = D(K₁) + D(K₂)`, `ruzsaDist_prodLaw :
       d(K₁ ⊗ K₂, L₁ ⊗ L₂) = d(K₁, L₁) + d(K₂, L₂)`, `uniformSub_prod : U_{W₁ × W₂} = U_{W₁} ⊗ U_{W₂}`
