@@ -98,6 +98,7 @@ theorem MartonInput.of_finrank_eq
     MartonInput V' :=
   hM.of_linearEquiv (LinearEquiv.ofFinrankEq V V' h)
 
+omit [Fintype V] [Module (ZMod 2) V] in
 /-- Translating a law does not change its entropy increment: `D(K + c) = D(K)`. -/
 theorem entropyIncrement_map_add_const (K : PMF V) (c : V) :
     entropyIncrement (K.map fun v => v + c) = entropyIncrement K := by
@@ -138,7 +139,8 @@ theorem uniformSub_map_subtype (U : Submodule (ZMod 2) V) [Fintype U]
     have hnot : v ∉ W.map U.subtype := by
       rintro ⟨y, _, hyv⟩
       exact hv (by rw [← hyv]; exact y.2)
-    rw [hval, uniformSub_toReal, if_neg hnot, ENNReal.zero_toReal]
+    rw [hval, uniformSub_toReal, if_neg hnot]
+    simp
 
 end Transport
 
