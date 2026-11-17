@@ -747,6 +747,8 @@ none may add a `sorry` to `Statements.lean`.
     No node is `stated` any more; the open `sorry`s are the statements of Theorems 1.1, 1.2, 8.2 in
     `Statements.lean` (3) and `FeatureMap.lean` (2).
     CI green at 4d14fc1 (docs only); ticked by the formalize task 2026-11-16 03:51 UTC.
+    Chart labels and classes reverted to their state before 4d14fc1 at Josiah's request, 2026-11-17
+    (e69f1c3); the eight nodes are amber (`stated`) again.
 - [x] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
       d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
       `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
@@ -854,19 +856,26 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
     depends only on the dimension) in the new file `EntropyLean/MartonTransport.lean` (e2c10ba).
     CI green at e2c10ba and 14cff1b (unused `first` fallbacks removed); ticked by the formalize task
     2026-11-17 00:17 UTC.
-- [ ] I2. Laws on a coset of a subspace (`EntropyLean/MartonTransport.lean`): for
+- [x] I2. Laws on a coset of a subspace (`EntropyLean/MartonTransport.lean`): for
       `U : Submodule (ZMod 2) V` and a law `K` with `lawSupport K ⊆ x + U`, (35) for `K` on `V`
       from (35) on `U` (`marton_of_support_subset_coset`), via `ruzsaDist_map_add_const`
       (translation) and pushing laws on `U` forward along `U.subtype` (`ruzsaDist_map_injective`,
       `uniformSub_map_subtype`). Split by the formalize task 2026-11-17 00:17 UTC:
-  - [ ] I2a. Translation and inclusion (`EntropyLean/MartonTransport.lean`): `entropyIncrement_map_add_const :
+  - [x] I2a. Translation and inclusion (`EntropyLean/MartonTransport.lean`): `entropyIncrement_map_add_const :
         D(K + c) = D(K)` and `uniformSub_map_subtype : (U_W).map U.subtype = U_{W.map U.subtype}` for
         a subspace `W` of `U`.
     - Written by the formalize task 2026-11-17 00:15 UTC (uncompiled at push): `entropyIncrement_map_add_const`,
       `uniformSub_map_subtype` in `EntropyLean/MartonTransport.lean` (375fd95).
-  - [ ] I2b. Restriction to `U` (`EntropyLean/MartonTransport.lean`): the law on `U` of `K − x` when
+      CI failed at 375fd95 (`ENNReal.zero_toReal` no longer exists), fixed at 02e36b8; CI green at 02e36b8;
+      ticked by the formalize task 2026-11-17 00:57 UTC.
+  - [x] I2b. Restriction to `U` (`EntropyLean/MartonTransport.lean`): the law on `U` of `K − x` when
         `lawSupport K ⊆ x + U` (`restrictLaw`, with `(restrictLaw K x U).map U.subtype = K − x`), and
         `marton_of_support_subset_coset` from I1, I2a, `ruzsaDist_map_add_const` and `ruzsaDist_comm`.
+    - Written by the formalize task 2026-11-17 00:51 UTC: `pmf_map_congr_support`, `cosetRetract`,
+      `subtype_cosetRetract`, `restrictLaw`, `restrictLaw_map_subtype`, `restrictLaw_map_subtype_add`,
+      `marton_of_support_subset_coset` (support condition stated as `∀ v, K v ≠ 0 → v − x ∈ U`) in
+      `EntropyLean/MartonTransport.lean` (292a1a5). CI green at 292a1a5; ticked by the formalize task
+      2026-11-17 00:57 UTC.
 - [ ] I3. Two-point laws (`EntropyLean/MartonTransport.lean`): `marton_of_card_lawSupport_le_two :
       (lawSupport K).card ≤ 2 → ∃ W, d(K, U_W) ≤ 6 D(K)` on every finite F₂-space, from I2 and
       `martonInput_of_finrank_le_one` (H4c): a support `{a, b}` lies in the coset
