@@ -1,6 +1,7 @@
 import Mathlib
 import EntropyLean.MartonOneBit
 import EntropyLean.MartonSmoothing
+import EntropyLean.MartonFinrankLeOne
 
 /-!
 # Transport of the entropic Marton bound along linear equivalences (roadmap item I1)
@@ -20,10 +21,13 @@ Proved here, for finite F₂-spaces `V`, `V'`:
   carried by a coset `x + U` is the image of a law on `U` (`restrictLaw U K x`) under `U ↪ V`
   followed by translation by `x` (roadmap item I2b);
 * `marton_of_support_subset_coset`: (35) on `U` gives (35) for every law carried by a coset of `U`
-  (roadmap item I2b).
+  (roadmap item I2b);
+* `marton_of_card_lawSupport_le_two`: (35) for every law with at most two points in its support,
+  on every finite F₂-space (roadmap item I3; the support lies in a coset of a subspace of dimension
+  at most one, where (35) holds by `martonInput_of_finrank_le_one`).
 
-What this file does NOT prove: the entropic Marton bound (35) itself in any dimension `≥ 2`, nor
-the two-point case (roadmap item I3).
+What this file does NOT prove: the entropic Marton bound (35) itself in any dimension `≥ 2`, only
+the special cases above; nor the product cases (roadmap items I4, I5).
 -/
 
 namespace EntropyLean
@@ -227,5 +231,54 @@ theorem marton_of_support_subset_coset (U : Submodule (ZMod 2) V) [Fintype U]
     _ = 6 * entropyIncrement K := by rw [hD]
 
 end Coset
+
+/-- A finset with at most two elements that contains `a` lies in `{a, b}` for some `b`. -/
+theorem exists_pair_of_card_le_two {α : Type*} {s : Finset α} (hs : s.card ≤ 2) {a : α}
+    (ha : a ∈ s) : ∃ b, ∀ v ∈ s, v = a ∨ v = b := by
+  classical
+  by_cases h : ∃ b ∈ s, b ≠ a
+  · obtain ⟨b, hb, hba⟩ := h
+    refine ⟨b, fun v hv => ?_⟩
+    by_contra hne
+    have hne' := not_or.mp hne
+    have h3 : 2 < s.card := by
+      first
+        | exact Finset.two_lt_card.mpr ⟨a, ha, b, hb, v, hv, hba.symm, Ne.symm hne'.1, Ne.symm hne'.2⟩
+        | exact Finset.two_lt_card_iff.mpr
+            ⟨a, b, v, ha, hb, hv, hba.symm, Ne.symm hne'.1, Ne.symm hne'.2⟩
+    omega
+  · exact ⟨a, fun v hv => Or.inl (Classical.byContradiction fun hva => h ⟨v, hv, hva⟩)⟩
+
+section TwoPoint
+
+variable {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+
+omit [Fintype V] in
+/-- The span of one vector has dimension at most one. -/
+theorem finrank_span_singleton_le_one (w : V) :
+    Module.finrank (ZMod 2) (Submodule.span (ZMod 2) ({w} : Set V)) ≤ 1 := by
+  first
+    | exact (finrank_span_le_card ({w} : Set V)).trans (by simp)
+    | simpa using finrank_span_finset_le_card ({w} : Finset V)
+    | (by_cases h0 : w = 0 <;> simp_all [finrank_span_singleton])
+
+/-- **I3.** The entropic Marton bound (35) for every law with at most two points in its support,
+on every finite F₂-space: the support `{a, b}` lies in the coset `a + span {b − a}`. -/
+theorem marton_of_card_lawSupport_le_two (K : PMF V) (hK : (lawSupport K).card ≤ 2) :
+    ∃ W : Submodule (ZMod 2) V, ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K := by
+  classical
+  obtain ⟨a, ha⟩ := lawSupport_nonempty K
+  obtain ⟨b, hb⟩ := exists_pair_of_card_le_two hK ha
+  haveI : Fintype (Submodule.span (ZMod 2) ({b - a} : Set V)) := Fintype.ofFinite _
+  refine marton_of_support_subset_coset (Submodule.span (ZMod 2) ({b - a} : Set V))
+    (martonInput_of_finrank_le_one (finrank_span_singleton_le_one (b - a))) K a ?_
+  intro v hv
+  rcases hb v ((mem_lawSupport K v).mpr hv) with h | h
+  · rw [h, sub_self]
+    exact Submodule.zero_mem _
+  · rw [h]
+    exact Submodule.subset_span (Set.mem_singleton _)
+
+end TwoPoint
 
 end EntropyLean
