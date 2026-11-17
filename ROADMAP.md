@@ -893,9 +893,35 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
     `marton_prodLaw_of_exists`, `MartonInput.marton_prodLaw` in the new file
     `EntropyLean/MartonProduct.lean` (51b4912). CI green at 51b4912; ticked by the formalize task
     2026-11-17 21:57 UTC.
-- [ ] I5. Independent bits (`EntropyLean/MartonProduct.lean`): (35) for every law on
+- [x] I5. Independent bits (`EntropyLean/MartonProduct.lean`): (35) for every law on
       `Fin n → ZMod 2` whose coordinates are independent (`marton_of_indep_coords`), by induction on
       `n` from I4, I1 and `martonInput_zmod2` (H4c).
+  - Written by the formalize task 2026-11-17 22:08 UTC (uncompiled at push): `finConsEquiv`,
+    `piLaw`, `piLaw_succ`, `IndepCoords`, `marton_map_linearEquiv`, `martonInput_fin_zero`,
+    `marton_piLaw`, `marton_of_indep_coords` in `EntropyLean/MartonProduct.lean` (d56f5cd).
+    Independence is defined as `IndepCoords K : ∃ P, K = piLaw n P`, with `piLaw n P` the iterated
+    product of the laws `P i`. CI green at d56f5cd; ticked by the formalize task
+    2026-11-17 22:36 UTC.
+
+## J. Independent coordinates, made intrinsic
+
+Added by the formalize task 2026-11-17 22:36 UTC (section I is done; B1 is Josiah's decision and G4
+waits for it). I5 defines independent coordinates as being of the form `piLaw n P`. These items
+connect that definition to the usual one (the law is the product of its coordinate marginals) and
+remove the dependence on the standard coordinates. None of them proves the entropic Marton theorem,
+and none may add a `sorry` to `Statements.lean`.
+
+- [ ] J1. Masses of `piLaw` (`EntropyLean/MartonProduct.lean`): `piLaw_apply :
+      piLaw n P v = ∏ i, P i (v i)`, by induction on `n` from `prodLaw_apply`,
+      `pmf_map_apply_injective` (along `finConsEquiv n`) and `Fin.prod_univ_succ`.
+- [ ] J2. Independence as a property of the law (`EntropyLean/MartonProduct.lean`): the
+      coordinate marginals `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i`, and
+      `indepCoords_iff : IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (from J1), so
+      I5 covers exactly the laws that are the product of their coordinate marginals.
+- [ ] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
+      equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
+      `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
+      `IndepCoords (K.map e)` (`marton_of_indepCoords_map`), from I5 and `marton_map_linearEquiv`.
 
 ## Not attempted here
 
