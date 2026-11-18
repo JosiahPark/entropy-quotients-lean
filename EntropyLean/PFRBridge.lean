@@ -2,6 +2,7 @@ import EntropyLean.MathlibForPFR
 import EntropyLean.Information
 import EntropyLean.ConditionalBSG
 import EntropyLean.MartonSmoothing
+import EntropyLean.MartonConst
 import PFR.ImprovedPFR
 
 /-!
@@ -31,16 +32,26 @@ Proved here, between PFR's language and the library's:
   `uniformSub W` is uniform on `W` in PFR's sense, so a measurable variable that is uniform on
   `W` in PFR's sense has the law `uniformSub W`.
 
-What this file does NOT prove: the bound (35) for the `PMF`-based definitions of this library
-(`MartonInput`, `MartonBound`). That is roadmap item B1f, which combines `pfr_single_variable`
-with the agreements above. Theorems 1.1, 1.2 and 8.2 are NOT proved by this file.
+Proved here, in the library's language (roadmap item B1f):
+* `martonBoundConst_five : MartonBoundConst.{0} 5`: the entropic Marton bound (35) with constant
+  5, for every law on every finite F₂-space in `Type`. It has no hypothesis: it is
+  `pfr_single_variable` for the identity map on `V` with the measure `K.toMeasure`, translated by
+  the agreements above.
+* `martonBound : MartonBound.{0}`: the bound with the paper's constant 6, which is the hypothesis
+  of the rest of the library.
+
+What this file does NOT prove: Theorems 1.1, 1.2 and 8.2 themselves. `EntropyLean/Statements.lean`
+states them, and they follow from `martonBound` by the `…_of_marton` theorems of
+`EntropyLean/UniverseTransport.lean`. The proof of the Marton bound is PFR's, not this
+repository's: this file only imports it and translates it.
 
 Imports. `EntropyLean.MathlibForPFR` is Mathlib without the six modules whose declarations have
 the same names as declarations of PFR; that file gives the list and the reasons. It is imported
 here together with `PFR.ImprovedPFR`, so the build of this file checks that the rest of Mathlib
 and the part of PFR used here have no other name in common. `EntropyLean.Information` is imported
-for `entropyBits_eq_div_log`, `EntropyLean.ConditionalBSG` for `sub_eq_add_of_zmod2`, and
-`EntropyLean.MartonSmoothing` for `uniformSub_toReal`.
+for `entropyBits_eq_div_log`, `EntropyLean.ConditionalBSG` for `sub_eq_add_of_zmod2`,
+`EntropyLean.MartonSmoothing` for `uniformSub_toReal`, and `EntropyLean.MartonConst` for
+`MartonBoundConst`.
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -150,5 +161,34 @@ theorem identDistrib_uniformSub {Ω : Type*} [MeasurableSpace Ω] {μ : Measure 
     (hU : Measurable U) (hunif : IsUniform (W : Set V) U μ) :
     IdentDistrib U (id : V → V) μ (uniformSub W).toMeasure :=
   IdentDistrib.of_isUniform (H := (W : Set V)) hU measurable_id hunif (isUniform_uniformSub W)
+
+/-- **B1f.** The entropic Marton bound (35) with constant 5, for every law `K` on every finite
+F₂-space `V` in `Type`: some subspace `W` has `d(K, U_W) ≤ 5 D(K)`. No hypothesis: this is PFR's
+theorem (`pfr_single_variable`) for the identity map on `V` with the measure `K.toMeasure`,
+translated by `rdist_toMeasure` and `identDistrib_uniformSub`. -/
+theorem martonBoundConst_five : MartonBoundConst.{0} 5 := by
+  intro V _ _ _
+  refine ⟨fun K => ?_⟩
+  letI : MeasureSpace V := @MeasureSpace.mk V ⊤ (@PMF.toMeasure V ⊤ K)
+  haveI : MeasurableSingletonClass V := ⟨fun _ => MeasurableSpace.measurableSet_top⟩
+  haveI : IsProbabilityMeasure (ℙ : Measure V) := PMF.toMeasure.isProbabilityMeasure K
+  obtain ⟨H, Ω, mΩ, U, hP, hU, hunif, hbound⟩ :=
+    pfr_single_variable (id : V → V) measurable_id
+  refine ⟨H, ?_⟩
+  have hb : rdist (id : V → V) U K.toMeasure ℙ ≤
+      5 * rdist (id : V → V) (id : V → V) K.toMeasure K.toMeasure := hbound
+  have h1 : rdist (id : V → V) U K.toMeasure ℙ = ruzsaDist K (uniformSub H) * Real.log 2 := by
+    rw [ProbabilityTheory.IdentDistrib.rdist_congr_right measurable_id.aemeasurable
+      (identDistrib_uniformSub H hU hunif), rdist_toMeasure]
+  have h2 : rdist (id : V → V) (id : V → V) K.toMeasure K.toMeasure =
+      entropyIncrement K * Real.log 2 := by
+    rw [rdist_toMeasure, ruzsaDist_self]
+  rw [h1, h2, ← mul_assoc] at hb
+  exact le_of_mul_le_mul_right hb (Real.log_pos one_lt_two)
+
+/-- **B1f.** The entropic Marton bound (35) as the rest of the library uses it (constant 6), with
+no hypothesis. -/
+theorem martonBound : MartonBound.{0} :=
+  martonBoundConst_five.toMartonBound (by norm_num)
 
 end EntropyLean
