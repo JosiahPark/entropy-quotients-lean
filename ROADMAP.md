@@ -88,10 +88,17 @@ and no hypotheses beyond the paper's.
       this for random variables on a probability space, with entropy in nats, `H` a
       `Submodule (ZMod 2) G` and `U` uniform on it (`IsUniform`); B1d–B1e translate that to the
       `PMF` definitions (both sides of (35) scale by `log 2`).
-  - [ ] B1b. Dependency: `require PFR` at `ebe2d96` in `lakefile.toml`, with the entries for `PFR`
+  - [x] B1b. Dependency: `require PFR` at `ebe2d96` in `lakefile.toml`, with the entries for `PFR`
         and its own dependencies `AddCombi` and `checkdecls` in `lake-manifest.json`. In
         `.github/workflows/lean.yml`, a longer job timeout and a cache for the PFR build (the first
         build compiles the 45 PFR modules). No Lean file imports PFR yet.
+    - Written by the formalize task 2026-11-18 17:07 UTC: `lakefile.toml` and `lake-manifest.json`
+      (2b427b6; the three manifest entries were written by hand, copied from PFR's own manifest,
+      because `lake update` cannot be run in the task's session) and `.github/workflows/lean.yml`
+      (7c800bf: job timeout 90 minutes; the PFR build is restored and saved with `actions/cache`).
+      CI green at 2b427b6: Lake cloned PFR, AddCombi and checkdecls and built the library as
+      before, in 4 minutes. Nothing of PFR is compiled until a file imports it. Ticked by the
+      formalize task 2026-11-18 17:12 UTC.
   - [ ] B1c. First import (`EntropyLean/PFRBridge.lean`, a new file importing `PFR.ImprovedPFR`):
         in PFR's language, for a measurable `X : Ω → G` on a probability space,
         `∃ H U, IsUniform H U ∧ d[X # U] ≤ 5 * d[X # X]` (`pfr_single_variable`), from
