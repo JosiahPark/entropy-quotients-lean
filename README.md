@@ -17,6 +17,8 @@ Mathlib v4.35.0 on every push (see the Actions tab); the library first compiled 
 - [ROADMAP.md](ROADMAP.md): the ordered work list.
 - [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md): chart of how the paper's results depend on each
   other, coloured by Lean status (GitHub renders it as a diagram).
+- [docs/THEOREMS.md](docs/THEOREMS.md): the full theorem list, every theorem and lemma of the
+  library by file, each with a link to its source line.
 
 ## Numerical constants
 
@@ -37,7 +39,7 @@ Proposition 9.3 is [docs/NUMERICAL_TABLE.md](docs/NUMERICAL_TABLE.md).
 | `EntropyLean/Families.lean` | Weighted families, `h(𝒫)`, `e(𝒫)`, `F_𝒫(W)`, averaged sparsity, quotient family `q_G 𝒫`, convolution family `𝒫 * 𝒫` (eqs. (12)–(13)) | `meanEntropy_quotient`, `conv_weights_sum` |
 | `EntropyLean/Bernoulli.lean` | Binary entropy `h₂`, Bernoulli increment and defect (Prop. 9.3) | `binaryEntropy_eq_zero_of_not_mem`, `bernoulli_parameter_mem_Ioo` |
 | `EntropyLean/Statements.lean` | Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1, Proposition 9.3 | Lemma 4.1, Lemma 9.1 and Proposition 9.3 (proofs in `RatioSparsification.lean`, `Variational.lean` and `ScaleNecessaryProof.lean`) and the algebraic step `E ≤ θH ⇒ H ≤ (1+ε)D` (`entropy_le_increment_of_defect_le`); Theorems 1.1, 1.2, 8.2 are `sorry` |
-| `EntropyLean/*.lean` (the other 55 files) | One file per roadmap item, from entropy facts (`EntropyFacts.lean`) to Lemma 8.1 (`RatioGrowthProof.lean`); each starts with a docstring saying what it proves and what it does not | see [ROADMAP.md](ROADMAP.md), which names the file and theorems of every item |
+| `EntropyLean/*.lean` (the other files) | One file per roadmap item, from entropy facts (`EntropyFacts.lean`) to Lemma 8.1 (`RatioGrowthProof.lean`); each starts with a docstring saying what it proves and what it does not | see [ROADMAP.md](ROADMAP.md), which names the file and theorems of every item, and [docs/THEOREMS.md](docs/THEOREMS.md), which lists every theorem |
 | `EntropyLean/FeatureMap.lean` | Separate p-frame symmetric-power feature map (not part of this paper; not imported by the root module `EntropyLean.lean`) | nothing (2 `sorry`) |
 | `archive/` | The five original draft files, unchanged | — |
 | `paper/` | The arXiv PDF | — |
@@ -61,15 +63,24 @@ lake exe cache get
 lake build
 lake env lean EntropyLean/FeatureMap.lean
 python3 scripts/audit_sorries.py
+node scripts/theorem_list.js > docs/THEOREMS.md   # regenerate the theorem list
 ```
+
+The build also compiles the part of the PFR project that the library imports (roadmap item B1);
+`lake exe cache get` only fetches Mathlib.
 
 ## Next proof work
 
-See [ROADMAP.md](ROADMAP.md). Items A–F are done apart from the entropy-backend decision B1,
-which is Josiah's: Proposition 9.3 is proved, and Corollary 9.4 is proved from the conclusion of
-Theorem 1.1 (or from the entropic Marton bound (35)). Section G is done apart from G4 (which
-waits on B1): with (35) as the only hypothesis, Theorems 1.1, 1.2 and 8.2 hold with the constant
-311 in place of 320 (`EntropyLean/ConstantSlack.lean`), and with a Marton constant `C` in place of
-6 they hold with `48C + 17 + 2 log₂(1 + C)` (`EntropyLean/MartonChainConst.lean`). The only input
-not proved here is the entropic Marton bound (35) itself. The paper cites it from Gowers, Green,
-Manners and Tao rather than proving it, and every result above takes it as a hypothesis.
+See [ROADMAP.md](ROADMAP.md). Items A–J are done apart from B1 and G4: Proposition 9.3 is proved,
+and Corollary 9.4 is proved from the conclusion of Theorem 1.1 (or from the entropic Marton bound
+(35)). With (35) as the only hypothesis, Theorems 1.1, 1.2 and 8.2 hold with the constant 311 in
+place of 320 (`EntropyLean/ConstantSlack.lean`), and with a Marton constant `C` in place of 6 they
+hold with `48C + 17 + 2 log₂(1 + C)` (`EntropyLean/MartonChainConst.lean`).
+
+The only input not proved here is the entropic Marton bound (35) itself. The paper cites it from
+Gowers, Green, Manners and Tao rather than proving it, and every result above takes it as a
+hypothesis. Roadmap item B1 replaces that hypothesis by the theorem of the
+[PFR project](https://github.com/teorth/pfr), which this repository now requires, pinned to PFR's
+last commit on Lean v4.35.0. PFR proves the bound, with constant 5, for random variables on a
+probability space. What remains (B1c–B1f) is to translate it to the `PMF`-based definitions used
+here. Until that is done, Theorems 1.1, 1.2 and 8.2 keep their `sorry`.
