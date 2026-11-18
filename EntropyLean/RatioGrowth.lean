@@ -43,8 +43,8 @@ structure FiniteF2Family where
 attribute [instance] FiniteF2Family.acg FiniteF2Family.mod FiniteF2Family.fin
 
 /-- **Lemma 8.1** (ratio growth), equation (39), as a proposition for all finite `F₂`-spaces in
-universe `u`. The hypothesis `d ≥ 40√λ` is written `1600 λ ≤ d²`. Not proved here; used only
-as a hypothesis. -/
+universe `u`. The hypothesis `d ≥ 40√λ` is written `1600 λ ≤ d²`. Used here only as a
+hypothesis; `ratio_growth_lemma` in `EntropyLean/Statements.lean` proves it. -/
 def RatioGrowth : Prop :=
   ∀ (W : Type u) [AddCommGroup W] [Module (ZMod 2) W] [Fintype W] (lam : ℝ)
     (P : WeightedFamily W), 0 < lam → P.IsSparse lam → 0 < P.meanEntropy →

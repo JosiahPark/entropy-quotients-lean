@@ -21,7 +21,8 @@ Also: `conv_comm_law`, `interaction_comm`, `WeightedFamily.pair` with `meanEntro
 `meanInteraction_pair` and their quotient versions.
 
 What this file does NOT prove: Theorem 8.2, which enters only as the explicit hypothesis
-`hrig : WeightedFamilyRigidity`; hence Corollary 9.2 itself is NOT proved unconditionally.
+`hrig : WeightedFamilyRigidity`. Corollary 9.2 with no hypothesis is
+`two_input_almost_additivity` in `EntropyLean/Statements.lean`.
 -/
 
 universe u

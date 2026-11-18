@@ -15,7 +15,8 @@ This file proves
   `dim W ≤ H(K) + 12 D(K) ≤ 13 H(K)`, with no further hypotheses.
 
 What this file does NOT prove: the entropic Marton bound (35) itself. It enters only as the
-hypothesis `hM : MartonInput V` and is not proved anywhere in this repository.
+hypothesis `hM : MartonInput V`; `martonBound` in `EntropyLean/PFRBridge.lean` proves it, and
+`marton_consequence` in `EntropyLean/Statements.lean` is (36) with no hypothesis.
 -/
 
 namespace EntropyLean

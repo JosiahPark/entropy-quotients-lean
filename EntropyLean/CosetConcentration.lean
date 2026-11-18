@@ -29,9 +29,10 @@ Proved here, for a finite `F₂`-space `V`:
   constant 320 and the entropic Marton bound (35) on spaces in `Type` (`MartonBound.{0}`) as the
   only hypothesis; `coset_concentration_311_of_marton` is the same with 311 (item G3).
 
-What this file does NOT prove: Corollary 9.4 unconditionally. Theorem 1.1 enters as the
-hypothesis `hT`, or through the entropic Marton bound (35), which is not proved in this
-repository.
+What this file does NOT prove: Corollary 9.4 with no hypothesis. Theorem 1.1 enters as the
+hypothesis `hT`, or through the entropic Marton bound (35). The hypothesis-free forms are
+`coset_concentration` and `exists_large_coset` in `EntropyLean/Statements.lean`, from
+`martonBound`.
 -/
 
 universe u

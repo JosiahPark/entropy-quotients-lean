@@ -91,7 +91,8 @@ theorem meanInteraction_singleton_quotient [AddCommGroup V] [Module (ZMod 2) V] 
 end WeightedFamily
 
 /-- **Theorem 8.2** (weighted-family logarithmic rigidity, constant 320) as a proposition, for
-all finite `F₂`-spaces in universe `u`. Not proved here; used only as a hypothesis. -/
+all finite `F₂`-spaces in universe `u`. Used here only as a hypothesis; Theorem 8.2 itself is
+`weighted_family_rigidity` in `EntropyLean/Statements.lean`. -/
 def WeightedFamilyRigidity : Prop :=
   ∀ (W : Type u) [AddCommGroup W] [Module (ZMod 2) W] [Fintype W] (lam : ℝ),
     0 < lam ∧ lam < 1 → ∀ P : WeightedFamily W, P.IsSparse lam → 0 < P.meanEntropy →

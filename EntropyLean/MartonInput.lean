@@ -19,8 +19,9 @@ This file
   `dim W ≤ H(K) + 12 D(K) ≤ 13 H(K)`, from (35) and the two uniform-smoothing facts
   `d(K, U_W) = H(q_W K) + (dim W − H(K)) / 2` and `d(K, U_W) ≥ |dim W − H(K)| / 2`.
 
-What this file does NOT prove: the entropic Marton theorem (35) itself (it is a hypothesis here
-and is not proved anywhere in this repository), and the two uniform-smoothing facts, which
+What this file does NOT prove: the entropic Marton theorem (35) itself (it is a hypothesis here;
+`martonBound` in `EntropyLean/PFRBridge.lean` proves it from the PFR project), and the two
+uniform-smoothing facts, which
 enter `MartonInput.consequence_of_smoothing` as explicit hypotheses `hsmooth`, `hlow`
 (roadmap items D7b, D7c prove them and remove these hypotheses).
 -/
