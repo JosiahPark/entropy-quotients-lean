@@ -159,7 +159,8 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
         `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` and
         `weighted_family_rigidity_of_marton_univ` applied to `martonBound`, and record the output
         of `#print axioms` for the three theorems here. Only then may Theorems 1.1, 1.2 and 8.2 be
-        called proved.
+        called proved. Then update the statuses in `docs/DEPENDENCIES.md`: its section "What is
+        left" lists the boxes that wait for this item.
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - Done through B2a–B2c below (each has its own note); ticked once all of them had compiled.
