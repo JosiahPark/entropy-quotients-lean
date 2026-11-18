@@ -8,14 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
       # Installs the pinned Lean toolchain and downloads the prebuilt Mathlib cache.
       - uses: leanprover/lean-action@v1
         id: setup
-        timeout-minutes: 12
+        timeout-minutes: 20
         continue-on-error: true
         with:
           build: false
@@ -29,12 +29,31 @@ jobs:
           export PATH="$HOME/.elan/bin:$PATH"
           lake exe cache get
 
+      # The PFR dependency (roadmap item B1) is compiled from source: 45 modules. Keep its build
+      # between runs; it changes only with the toolchain or the manifest.
+      - name: Restore the PFR build
+        id: pfr-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/packages/PFR/.lake/build
+          key: pfr-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}
+
       - name: Build library
         shell: bash
         run: |
           export PATH="$HOME/.elan/bin:$PATH"
           set -o pipefail
           lake build 2>&1 | tee build.log
+
+      # Saved also when the library itself fails to build (PFR is built before it), but not when
+      # the job was cancelled or timed out, which could leave a partial PFR build.
+      - name: Save the PFR build
+        if: (success() || failure()) && steps.pfr-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/packages/PFR/.lake/build
+          key: ${{ steps.pfr-cache.outputs.cache-primary-key }}
 
       - name: List open proof obligations (sorry)
         if: always()
