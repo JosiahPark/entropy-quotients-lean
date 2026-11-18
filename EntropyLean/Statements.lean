@@ -2,14 +2,24 @@ import EntropyLean.Families
 import EntropyLean.Variational
 import EntropyLean.RatioSparsification
 import EntropyLean.ScaleNecessaryProof
+import EntropyLean.UniverseTransport
+import EntropyLean.PFRBridge
 
 /-!
-# Main results of arXiv:2610.38525: statements (open) and the elementary steps (proved)
+# Main results of arXiv:2610.38525
 
-Every `sorry` below is an open proof obligation, **not** a certified theorem. The statements are
-checked against the paper (v1, 28 Oct 2026) but have not been independently reviewed.
+Theorems 1.1, 1.2 and 8.2 are proved here from `martonBound`, the entropic Marton bound (35),
+which `EntropyLean/PFRBridge.lean` obtains from the PFR project's theorem
+`entropic_PFR_conjecture_improv`. Each proof is one line: the paper's arguments are in
+`exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` and
+`weighted_family_rigidity_of_marton_univ` (`EntropyLean/UniverseTransport.lean`), which take (35)
+as a hypothesis, and `martonBound` supplies it. The statements are checked against the paper
+(v1, 28 Oct 2026) but have not been independently reviewed.
 
-Open (statement only): Theorem 1.1, Theorem 1.2, Theorem 8.2. Lemma 9.1
+The end of the file makes the build fail if one of the three theorems depends on `sorry` or on
+an axiom other than `propext`, `Classical.choice` and `Quot.sound`.
+
+Also here: Lemma 9.1
 (`variational_sparsification`) is proved from
 `WeightedFamily.variational_sparsification_proof` in `EntropyLean/Variational.lean`; Lemma 4.1
 (`ratio_preserving_sparsification`) from `WeightedFamily.ratio_preserving_sparsification_proof`
@@ -20,9 +30,9 @@ Proved here: `entropy_le_of_defect_le` and `entropy_le_increment_of_defect_le`, 
 in the proof of Theorem 1.1 turning `E(Z) ≤ θ H(Z)` with `θ = ε/(1+ε)` into
 `H(Z) ≤ (1+ε) D(Z)`.
 
-What this file does NOT prove: Theorems 1.1, 1.2 and 8.2 (their proofs here are `sorry`); in
-particular Theorem 1.1 is NOT proved. The entropic Marton theorem (Gowers–Green–Manners–Tao) on
-which the paper relies is not formalized here.
+What this file does NOT prove: the entropic Marton bound itself. Its proof is the PFR project's,
+which this repository imports and does not reprove. The constant is the paper's 320; the
+constant 263 that PFR's Marton constant 5 allows is roadmap item G4.
 -/
 
 namespace EntropyLean
@@ -39,24 +49,24 @@ theorem exponential_entropy_quotient
       (Module.finrank (ZMod 2) G : ℝ) ≤ (2 : ℝ) ^ (320 * (1 + ε) / ε) * entropyBits X ∧
       entropyBits (X.map fun v => G.mkQ v) ≤
         (1 + ε) * entropyIncrement (X.map fun v => G.mkQ v) ∧
-      entropyIncrement (X.map fun v => G.mkQ v) ≤ entropyIncrement X := by
-  sorry
+      entropyIncrement (X.map fun v => G.mkQ v) ≤ entropyIncrement X :=
+  exponential_entropy_quotient_of_marton martonBound ε hε X
 
 /-- **Theorem 1.2** (sparse-law rigidity), equation (7). -/
 theorem sparse_rigidity
     {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
     (lam : ℝ) (hlam : 0 < lam ∧ lam < 1) (Z : PMF V)
     (hsparse : IsSparse lam Z) (hpos : 0 < entropyBits Z) :
-    entropyDefect Z / entropyBits Z ≤ min 1 (320 / Real.logb 2 (1 / lam)) := by
-  sorry
+    entropyDefect Z / entropyBits Z ≤ min 1 (320 / Real.logb 2 (1 / lam)) :=
+  sparse_rigidity_of_marton martonBound lam hlam Z hsparse hpos
 
 /-- **Theorem 8.2** (weighted-family logarithmic rigidity). -/
 theorem weighted_family_rigidity
     {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
     (lam : ℝ) (hlam : 0 < lam ∧ lam < 1) (P : WeightedFamily V)
     (hsparse : P.IsSparse lam) (hpos : 0 < P.meanEntropy) :
-    P.meanInteraction / P.meanEntropy ≤ min 1 (320 / Real.logb 2 (1 / lam)) := by
-  sorry
+    P.meanInteraction / P.meanEntropy ≤ min 1 (320 / Real.logb 2 (1 / lam)) :=
+  weighted_family_rigidity_of_marton_univ martonBound V lam hlam P hsparse hpos
 
 /-- **Lemma 4.1** (ratio-preserving sparsification). The quotient family `𝒫₀ = q_G 𝒫` has
 positive mean entropy, ratio `e(𝒫₀)/h(𝒫₀) ≥ e(𝒫)/h(𝒫)`, is `2λ`-sparse, and `𝒫₀ * 𝒫₀` is
@@ -111,5 +121,25 @@ theorem entropy_le_increment_of_defect_le {V : Type*} [Add V] (ε : ℝ) (hε : 
     entropyBits Z ≤ (1 + ε) * entropyIncrement Z := by
   rw [entropyDefect_eq] at h
   exact entropy_le_of_defect_le ε hε _ _ h
+
+/-! ## Checks
+
+The first three commands fail if a theorem depends on `sorry`. The last one fails if a theorem
+depends on an axiom other than Lean's three standard ones. -/
+
+assert_no_sorry exponential_entropy_quotient
+assert_no_sorry sparse_rigidity
+assert_no_sorry weighted_family_rigidity
+
+#print axioms exponential_entropy_quotient
+#print axioms sparse_rigidity
+#print axioms weighted_family_rigidity
+
+open Lean Elab Command in
+run_cmd
+  for n in [``exponential_entropy_quotient, ``sparse_rigidity, ``weighted_family_rigidity] do
+    for a in (← collectAxioms n) do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains a do
+        throwError "{n} depends on the axiom {a}"
 
 end EntropyLean
