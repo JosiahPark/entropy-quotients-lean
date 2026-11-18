@@ -1,5 +1,7 @@
 import EntropyLean.MathlibForPFR
 import EntropyLean.Information
+import EntropyLean.ConditionalBSG
+import EntropyLean.MartonSmoothing
 import PFR.ImprovedPFR
 
 /-!
@@ -20,17 +22,25 @@ Proved here, between PFR's language and the library's:
   entropy of the measure `K.toMeasure` is the library's entropy of `K`, in nats instead of bits:
   `Hm[K.toMeasure] = entropyBits K * log 2`. The helper `toMeasure_real_singleton` gives the mass
   of a point.
+* `rdist_toMeasure` (roadmap item B1e): for laws `K`, `L` on a finite F₂-space, PFR's Ruzsa
+  distance of the measures `K.toMeasure`, `L.toMeasure` is the library's `ruzsaDist K L`, in nats
+  instead of bits: `rdist id id K.toMeasure L.toMeasure = ruzsaDist K L * log 2`. It rests on
+  `toMeasure_prod_toMeasure` (the product of the two measures is the measure of `prodLaw K L`)
+  and `map_sub_prod_toMeasure` (the law of `A − B` is `conv K L`, since `A − B = A + B` over F₂).
+* `isUniform_uniformSub` and `identDistrib_uniformSub` (roadmap item B1e): the measure of
+  `uniformSub W` is uniform on `W` in PFR's sense, so a measurable variable that is uniform on
+  `W` in PFR's sense has the law `uniformSub W`.
 
 What this file does NOT prove: the bound (35) for the `PMF`-based definitions of this library
-(`MartonInput`, `MartonBound`). That still needs the agreement of PFR's Ruzsa distance with
-`ruzsaDist` and of PFR's uniform variables with `uniformSub` (roadmap items B1e–B1f). Theorems
-1.1, 1.2 and 8.2 are NOT proved by this file.
+(`MartonInput`, `MartonBound`). That is roadmap item B1f, which combines `pfr_single_variable`
+with the agreements above. Theorems 1.1, 1.2 and 8.2 are NOT proved by this file.
 
 Imports. `EntropyLean.MathlibForPFR` is Mathlib without the six modules whose declarations have
 the same names as declarations of PFR; that file gives the list and the reasons. It is imported
 here together with `PFR.ImprovedPFR`, so the build of this file checks that the rest of Mathlib
 and the part of PFR used here have no other name in common. `EntropyLean.Information` is imported
-for `entropyBits_eq_div_log`.
+for `entropyBits_eq_div_log`, `EntropyLean.ConditionalBSG` for `sub_eq_add_of_zmod2`, and
+`EntropyLean.MartonSmoothing` for `uniformSub_toReal`.
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -72,5 +82,73 @@ theorem measureEntropy_toMeasure {α : Type*} [Fintype α] [MeasurableSpace α]
     measureEntropy_of_isProbabilityMeasure K.toMeasure, tsum_fintype]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [toMeasure_real_singleton K a, Real.negMulLog]
+
+/-- The product of the measures of two laws is the measure of their product law. -/
+theorem toMeasure_prod_toMeasure {α β : Type*} [Fintype α] [Fintype β] [MeasurableSpace α]
+    [MeasurableSpace β] [MeasurableSingletonClass α] [MeasurableSingletonClass β]
+    (K : PMF α) (L : PMF β) :
+    K.toMeasure.prod L.toMeasure = (prodLaw K L).toMeasure := by
+  refine Measure.ext_of_singleton fun x => ?_
+  obtain ⟨a, b⟩ := x
+  have h1 : (K.toMeasure.prod L.toMeasure) {(a, b)} = K a * L b := by
+    rw [← Set.singleton_prod_singleton, Measure.prod_prod,
+      PMF.toMeasure_apply_singleton K a (measurableSet_singleton a),
+      PMF.toMeasure_apply_singleton L b (measurableSet_singleton b)]
+  rw [h1, PMF.toMeasure_apply_singleton (prodLaw K L) (a, b) (measurableSet_singleton (a, b)),
+    prodLaw_apply]
+
+/-- Over F₂ the law of `A − B`, for independent `A ∼ K` and `B ∼ L`, is the convolution
+`conv K L`, because `A − B = A + B`. -/
+theorem map_sub_prod_toMeasure {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [MeasurableSpace V] [MeasurableSingletonClass V] (K L : PMF V) :
+    (K.toMeasure.prod L.toMeasure).map (fun x : V × V => x.1 - x.2) = (conv K L).toMeasure := by
+  have hf : (fun x : V × V => x.1 - x.2) = fun x => x.1 + x.2 :=
+    funext fun x => (sub_eq_add_of_zmod2 x.1 x.2).trans (add_comm _ _)
+  have hmeas : Measurable (fun x : V × V => x.1 + x.2) := Measurable.of_discrete
+  rw [hf, toMeasure_prod_toMeasure, PMF.toMeasure_map _ hmeas, prodLaw_map_add]
+
+/-- **B1e.** Distance agreement: for laws `K`, `L` on a finite F₂-space, PFR's Ruzsa distance of
+the measures `K.toMeasure` and `L.toMeasure`, which is in nats, is the library's `ruzsaDist K L`,
+which is in bits, times `log 2`. -/
+theorem rdist_toMeasure {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [MeasurableSpace V] [MeasurableSingletonClass V] (K L : PMF V) :
+    rdist (id : V → V) (id : V → V) K.toMeasure L.toMeasure = ruzsaDist K L * Real.log 2 := by
+  simp only [rdist_def, entropy_def, Measure.map_id]
+  rw [map_sub_prod_toMeasure]
+  simp only [measureEntropy_toMeasure]
+  unfold ruzsaDist
+  ring
+
+/-- **B1e.** The measure of the uniform law `uniformSub W` is uniform on `W` in PFR's sense. -/
+theorem isUniform_uniformSub {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [MeasurableSpace V] [MeasurableSingletonClass V] (W : Submodule (ZMod 2) V) :
+    IsUniform (W : Set V) (id : V → V) (uniformSub W).toMeasure := by
+  constructor
+  · intro x hx y hy
+    have hx' : x ∈ W := hx
+    have hy' : y ∈ W := hy
+    simp only [Set.preimage_id]
+    rw [PMF.toMeasure_apply_singleton _ x (measurableSet_singleton x),
+      PMF.toMeasure_apply_singleton _ y (measurableSet_singleton y)]
+    refine (ENNReal.toReal_eq_toReal_iff' (PMF.apply_ne_top _ _) (PMF.apply_ne_top _ _)).mp ?_
+    rw [uniformSub_toReal, uniformSub_toReal, if_pos hx', if_pos hy']
+  · rw [Set.preimage_id, PMF.toMeasure_apply_eq_zero_iff _ MeasurableSet.of_discrete,
+      Set.disjoint_compl_right_iff_subset]
+    intro v hv
+    by_contra hvW
+    have hvW' : v ∉ W := hvW
+    have h0 : (uniformSub W v).toReal = 0 := by rw [uniformSub_toReal, if_neg hvW']
+    rcases (ENNReal.toReal_eq_zero_iff _).mp h0 with h | h
+    · exact (PMF.mem_support_iff _ _).mp hv h
+    · exact PMF.apply_ne_top _ _ h
+
+/-- **B1e.** A measurable variable that is uniform on a subspace `W` in PFR's sense has the law
+`uniformSub W`. -/
+theorem identDistrib_uniformSub {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    [IsProbabilityMeasure μ] {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [MeasurableSpace V] [MeasurableSingletonClass V] (W : Submodule (ZMod 2) V) {U : Ω → V}
+    (hU : Measurable U) (hunif : IsUniform (W : Set V) U μ) :
+    IdentDistrib U (id : V → V) μ (uniformSub W).toMeasure :=
+  IdentDistrib.of_isUniform (H := (W : Set V)) hU measurable_id hunif (isUniform_uniformSub W)
 
 end EntropyLean
