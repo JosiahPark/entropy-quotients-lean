@@ -127,9 +127,10 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
       `Mathlib.MeasureTheory.Measure.ResolventTransform`. Every file of the library then started
       with `import Mathlib`, so no file could import both the library and PFR. B1d1 removed that
       obstacle.
-  - [ ] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
+  - [x] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
         PFR's `Hm[K.toMeasure] = entropyBits K * log 2` (`measureEntropy_toMeasure`).
         Split by the formalize task 2026-11-18, because of the import clash noted under B1c:
+    - Done through B1d1 and B1d2 below (each has its own note); ticked once both had compiled.
     - [x] B1d1. Imports: a new file `EntropyLean/MathlibForPFR.lean` that imports every module of
           Mathlib except the six named under B1c, and `import EntropyLean.MathlibForPFR` in
           place of `import Mathlib` in every file of the library (`FeatureMap.lean` is not
@@ -144,8 +145,12 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
         the 64 other files that had it (ce6a73c: the first line of each file and nothing else).
         CI green at ce6a73c: all 70 files of `EntropyLean/` were rebuilt, with the same five
         `sorry` warnings as before. Ticked by the formalize task 2026-11-18 18:15 UTC.
-    - [ ] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
+    - [x] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
           `EntropyLean.Information` (for `entropyBits_eq_div_log`).
+      - Written by the formalize task 2026-11-18 18:31 UTC (uncompiled at push):
+        `toMeasure_real_singleton` (`K.toMeasure.real {a} = (K a).toReal`) and
+        `measureEntropy_toMeasure` in `EntropyLean/PFRBridge.lean` (00c4f8e). CI green at
+        00c4f8e. Ticked by the formalize task 2026-11-18 18:37 UTC.
   - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
         over F₂ (the law of `A − B` under the product measure is `conv K L`), and the law of a
         variable that is uniform on `W` is `uniformSub W`.
