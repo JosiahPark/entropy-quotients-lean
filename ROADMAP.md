@@ -951,13 +951,16 @@ and none may add a `sorry` to `Statements.lean`.
     `indepCoords_iff` in `EntropyLean/MartonProduct.lean` (ce89f7e). `piLaw_map_eval` was proved
     by induction on `n` (`prodLaw_map_fst`, `prodLaw_map_snd`) rather than by the sum route above.
     CI green at ce89f7e; ticked by the formalize task 2026-11-18 02:45 UTC.
-- [ ] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
+- [x] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
       equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
       `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
       `IndepCoords (K.map e)` (`marton_of_indepCoords_map`), from I5 and `marton_map_linearEquiv`.
   - Planned route (formalize task 2026-11-17; not yet checked in Lean): apply
     `marton_of_indep_coords` to `K.map e`, then transport the bound back along `e.symm` with
     `marton_map_linearEquiv`, using `(K.map e).map e.symm = K`.
+  - Written by the formalize task 2026-11-18 02:52 UTC (uncompiled at push):
+    `marton_of_indepCoords_map` in `EntropyLean/MartonProduct.lean` (bdc7536), by the planned
+    route. CI green at bdc7536; ticked by the formalize task 2026-11-18 02:57 UTC. Section J is done.
 
 ## Not attempted here
 
