@@ -25,7 +25,10 @@ pair. This file proves
   `piLaw n P` is the law of independent coordinates with laws `P i` in the usual sense;
 * `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i` and `indepCoords_iff : IndepCoords K ↔
   ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (roadmap item J2): `IndepCoords K` holds exactly
-  when `K` is the product of its coordinate marginals.
+  when `K` is the product of its coordinate marginals;
+* `marton_of_indepCoords_map` (roadmap item J3): (35) for every law `K` on a finite F₂-space `V`
+  with `IndepCoords (K.map e)` for some linear equivalence `e : V ≃ₗ F₂ⁿ`, that is, for every law
+  whose coordinates in some basis are independent.
 
 What this file does NOT prove: the entropic Marton bound (35) itself, nor (35) for laws on
 `V₁ × V₂` that are not products (so `MartonInput (V₁ × V₂)` is NOT derived from `MartonInput V₁`
@@ -280,5 +283,24 @@ theorem indepCoords_iff {n : ℕ} (K : PMF (Fin n → ZMod 2)) :
     ext v
     rw [piLaw_apply]
     exact h v
+
+/-! ## Independent coordinates in any basis (roadmap item J3) -/
+
+/-- **J3.** For a linear equivalence `e : V ≃ₗ F₂ⁿ` (for instance the coordinates of a basis),
+the entropic Marton bound (35) holds for every law `K` on `V` whose image `K.map e` has independent
+coordinates. -/
+theorem marton_of_indepCoords_map {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    {n : ℕ} (e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)) (K : PMF V) (hK : IndepCoords (K.map e)) :
+    ∃ W : Submodule (ZMod 2) V, ruzsaDist K (uniformSub W) ≤ 6 * entropyIncrement K := by
+  obtain ⟨W, hW⟩ := marton_of_indep_coords (K.map e) hK
+  have h := marton_map_linearEquiv e.symm (K.map e) hW
+  have hK' : (K.map e).map e.symm = K := by
+    rw [PMF.map_comp]
+    have hid : (e.symm ∘ e : V → V) = id := funext fun v => e.symm_apply_apply v
+    first
+      | rw [hid, PMF.map_id]
+      | simp only [hid, PMF.map_id]
+  rw [hK'] at h
+  exact ⟨_, h⟩
 
 end EntropyLean
