@@ -962,6 +962,31 @@ and none may add a `sorry` to `Statements.lean`.
     `marton_of_indepCoords_map` in `EntropyLean/MartonProduct.lean` (bdc7536), by the planned
     route. CI green at bdc7536; ticked by the formalize task 2026-11-18 02:57 UTC. Section J is done.
 
+## K. Closure properties of (35), law by law
+
+Added by the formalize task 2026-11-18 04:21 UTC (section J is done; B1 is Josiah's decision and G4
+waits for it). Sections H–J prove (35) for particular laws. These items show that the laws
+satisfying (35) are closed under translation, under restriction to a coset and under products of
+any finite number of factors, and combine these facts. None of them proves the entropic Marton
+theorem, and none may add a `sorry` to `Statements.lean`.
+
+- [ ] K1. Translates (`EntropyLean/MartonTransport.lean`): `marton_map_add_const`: if
+      `d(K, U_W) ≤ 6 D(K)`, then `d(K.map (· + x), U_W) ≤ 6 D(K.map (· + x))` with the same
+      witness `W`, from `ruzsaDist_map_add_const`, `ruzsaDist_comm` and
+      `entropyIncrement_map_add_const`.
+- [ ] K2. Cosets, law by law (`EntropyLean/MartonTransport.lean`): `marton_of_restrictLaw`: if `K`
+      is supported in the coset `x + U` and the law `restrictLaw U K x` on `U` satisfies (35) with
+      witness `W`, then `K` satisfies (35) with witness `W.map U.subtype`. I2
+      (`marton_of_support_subset_coset`) is the case where `MartonInput U` holds; I2 stays as it is.
+- [ ] K3. Independent blocks (`EntropyLean/MartonBlocks.lean`, a new file): for a finite F₂-space
+      `V`, the law `blockLaw n P` on `Fin n → V` of `n` independent blocks with laws `P i` (built
+      like `piLaw`, with a linear equivalence `V × (Fin n → V) ≃ₗ (Fin (n + 1) → V)`), and
+      `marton_blockLaw`: if every `P i` satisfies (35), so does `blockLaw n P`, by induction on `n`
+      from I4 and `marton_map_linearEquiv`, as in I5.
+- [ ] K4. Independent coordinates on a coset (`EntropyLean/MartonBlocks.lean`): (35) for every law
+      `K` supported in a coset `x + U` whose restriction `restrictLaw U K x` has independent
+      coordinates in some basis of `U` (`marton_of_coset_indepCoords`), from K2 and J3.
+
 ## Not attempted here
 
 - Improving the constant beyond what the paper's argument gives (a new proof of Theorem 8.2 with
