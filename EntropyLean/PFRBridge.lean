@@ -1,4 +1,3 @@
-import Mathlib
 import PFR.ImprovedPFR
 
 /-!
@@ -18,6 +17,11 @@ What this file does NOT prove: the bound (35) for the `PMF`-based definitions of
 (`MartonInput`, `MartonBound`). That needs the agreement of PFR's entropy and Ruzsa distance with
 `entropyBits` and `ruzsaDist` (roadmap items B1d–B1f). Theorems 1.1, 1.2 and 8.2 are NOT proved
 by this file.
+
+This file does not start with `import Mathlib`, unlike the rest of the library: importing all of
+Mathlib together with PFR fails, because `ProbabilityTheory.IdentDistrib.prodMk` is declared both
+in `Mathlib.Probability.IdentDistribIndep` and in `PFR.Mathlib.Probability.IdentDistrib`. The
+Mathlib modules that PFR itself imports are enough here.
 -/
 
 open MeasureTheory ProbabilityTheory
