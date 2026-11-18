@@ -939,7 +939,7 @@ and none may add a `sorry` to `Statements.lean`.
   - Written by the formalize task 2026-11-17 22:45 UTC (uncompiled at push): `finConsEquiv_apply`,
     `piLaw_apply` in `EntropyLean/MartonProduct.lean` (c8ab90a). CI green at c8ab90a; ticked by
     the formalize task 2026-11-17 22:58 UTC.
-- [ ] J2. Independence as a property of the law (`EntropyLean/MartonProduct.lean`): the
+- [x] J2. Independence as a property of the law (`EntropyLean/MartonProduct.lean`): the
       coordinate marginals `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i`, and
       `indepCoords_iff : IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (from J1), so
       I5 covers exactly the laws that are the product of their coordinate marginals.
@@ -947,6 +947,10 @@ and none may add a `sorry` to `Statements.lean`.
     `piLaw_apply` over the other coordinates with `Finset.prod_univ_sum`, using that each `P j` has
     total mass one; for the converse in `indepCoords_iff`, take `P i := K.map fun w => w i` and
     conclude with `PMF.ext` and `piLaw_apply`.
+  - Written by the formalize task 2026-11-18 02:40 UTC (uncompiled at push): `piLaw_map_eval`,
+    `indepCoords_iff` in `EntropyLean/MartonProduct.lean` (ce89f7e). `piLaw_map_eval` was proved
+    by induction on `n` (`prodLaw_map_fst`, `prodLaw_map_snd`) rather than by the sum route above.
+    CI green at ce89f7e; ticked by the formalize task 2026-11-18 02:45 UTC.
 - [ ] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
       equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
       `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
