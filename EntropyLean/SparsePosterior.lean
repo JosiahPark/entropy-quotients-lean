@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.MartonStep
 import EntropyLean.PosteriorDoublingAvg
 import EntropyLean.PosteriorClosure

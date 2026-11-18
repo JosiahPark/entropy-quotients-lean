@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.MartonConvEntropy
 import EntropyLean.QuotientFacts
 import EntropyLean.EntropyFacts

@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.MartonConst
 import EntropyLean.RigidityArithParam
 import EntropyLean.UniverseTransport

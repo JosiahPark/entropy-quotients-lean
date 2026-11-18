@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.Interaction
 import EntropyLean.DoubleTrial
 import EntropyLean.MartonTransport

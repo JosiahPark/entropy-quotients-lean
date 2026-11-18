@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.RuzsaDistance
 import EntropyLean.Posterior
 

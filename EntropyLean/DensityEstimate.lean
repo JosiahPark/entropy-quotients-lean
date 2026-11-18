@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.Fibring
 import EntropyLean.Supermodular
 import EntropyLean.Variational

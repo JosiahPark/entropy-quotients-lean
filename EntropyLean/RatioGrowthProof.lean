@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.RatioGrowth
 import EntropyLean.SparsePosterior
 import EntropyLean.FourSampleSplitting

@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.BernoulliExpansion
 import EntropyLean.BernoulliLaw
 import EntropyLean.MartonInput

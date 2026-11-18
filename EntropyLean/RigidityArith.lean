@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 
 /-!
 # Iteration arithmetic of Theorem 8.2 (item D1)

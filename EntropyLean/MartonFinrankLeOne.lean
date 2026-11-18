@@ -1,4 +1,4 @@
-import Mathlib
+import EntropyLean.MathlibForPFR
 import EntropyLean.MartonOneBit
 import EntropyLean.MartonBernoulliIneq
 
