@@ -7,6 +7,8 @@ unchecked item; tick it (`- [x]`) only after CI shows it compiled. The dependenc
 [docs/roadmap.html](docs/roadmap.html) is an interactive map of this file (open it in a browser; it reads
 this file live from main). [docs/PARALLEL_EFFORTS.md](docs/PARALLEL_EFFORTS.md) records two independent
 Grok attempts at the same formalization and how they compare with this repository.
+[docs/THEOREMS.md](docs/THEOREMS.md) is the full theorem list: every theorem and lemma of the library, by
+file, with a link to its source line.
 
 Markers: `- [ ]` open, `- [x]` done and compiled, `- [-]` deliberately skipped (with a reason).
 
@@ -64,15 +66,47 @@ and no hypotheses beyond the paper's.
 
 ## B. Information-theory layer
 
-- [ ] B1. Decide the entropy backend and record the decision here: (i) continue with the
-      `PMF`-based definitions, or (ii) depend on the PFR project (github.com/teorth/pfr), which
-      formalizes Shannon entropy, Ruzsa distance and an entropic PFR theorem. Check its
-      toolchain against Lean 4.35.0 and whether its constant matches the 6 in (35). If (ii),
-      prove `entropyBits` agrees with PFR's entropy divided by `log 2`.
-  - Note from Grok's report of 2026-11-15 ([numerics/](numerics/README.md)): the report states that
-    PFR's entropic theorem has constant at most 6 (11/2 from GGMT's bound with `X₁ = X₂`), so
-    (ii) would turn the hypothesis `MartonInput V` into a theorem. Not checked here; the toolchain
-    check is still open.
+- [ ] B1. Entropy backend: take the entropic Marton bound (35) from the PFR project
+      (github.com/teorth/pfr), which formalizes Shannon entropy, Ruzsa distance and the entropic
+      PFR theorem, and keep the `PMF`-based definitions here. Decided by Josiah on 2026-11-18. The
+      work is to prove `MartonBound.{0}` from PFR's theorem; that removes the hypothesis from
+      D7–D10 and the `sorry` from Theorems 1.1, 1.2 and 8.2. Split by the formalize task 2026-11-18:
+  - [x] B1a. Compatibility check: PFR's toolchain against Lean 4.35.0, and PFR's constant against
+        the 6 in (35). No Lean change.
+    - Checked by the formalize task 2026-11-18 17:01 UTC. Toolchain: PFR commit `ebe2d96` ("Bump to
+      v4.35.0", 2026-10-16) uses Lean v4.35.0 and Mathlib `56a0058` (tag v4.35.0), exactly as this
+      repository does, and the eight further packages in both manifests (plausible,
+      LeanSearchClient, importGraph, proofwidgets, aesop, Qq, batteries, Cli) are at the same
+      revisions. PFR's master is already on Lean v4.36.0-rc2, so the dependency has to be pinned
+      to `ebe2d96`. `PFR.ImprovedPFR` and `PFR.EntropyPFR` import 45 PFR modules (about 12,000
+      lines, none from PFR's dependency AddCombi), and none of the 45 contains `sorry`, `axiom` or
+      `opaque`. Constant: `entropic_PFR_conjecture` (`η = 1/9`) gives
+      `d[X₁;U_H] + d[X₂;U_H] ≤ 11 d[X₁;X₂]` with each term at most `6 d[X₁;X₂]`, and
+      `entropic_PFR_conjecture_improv` (`η = 1/8`) gives the sum `≤ 10 d[X₁;X₂]` with each term at
+      most `11/2 d[X₁;X₂]`. For `X₁ = X₂ = X` the improved sum bound is `d[X;U_H] ≤ 5 d[X;X]`, and
+      over F₂ `d[X;X] = H(X + X') − H(X) = D(X)`, so (35) holds with 5 in place of 6. PFR states
+      this for random variables on a probability space, with entropy in nats, `H` a
+      `Submodule (ZMod 2) G` and `U` uniform on it (`IsUniform`); B1d–B1e translate that to the
+      `PMF` definitions (both sides of (35) scale by `log 2`).
+  - [ ] B1b. Dependency: `require PFR` at `ebe2d96` in `lakefile.toml`, with the entries for `PFR`
+        and its own dependencies `AddCombi` and `checkdecls` in `lake-manifest.json`. In
+        `.github/workflows/lean.yml`, a longer job timeout and a cache for the PFR build (the first
+        build compiles the 45 PFR modules). No Lean file imports PFR yet.
+  - [ ] B1c. First import (`EntropyLean/PFRBridge.lean`, a new file importing `PFR.ImprovedPFR`):
+        in PFR's language, for a measurable `X : Ω → G` on a probability space,
+        `∃ H U, IsUniform H U ∧ d[X # U] ≤ 5 * d[X # X]` (`pfr_single_variable`), from
+        `entropic_PFR_conjecture_improv` with `X₀₁ = X₀₂ = X`.
+  - [ ] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
+        PFR's `Hm[K.toMeasure] = entropyBits K * log 2` (`measureEntropy_toMeasure`).
+  - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
+        over F₂ (the law of `A − B` under the product measure is `conv K L`), and the law of a
+        variable that is uniform on `W` is `uniformSub W`.
+  - [ ] B1f. `martonBoundConst_five : MartonBoundConst.{0} 5` and `martonBound : MartonBound.{0}`
+        from B1c–B1e. Then replace the three `sorry`s in `EntropyLean/Statements.lean` by
+        `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` and
+        `weighted_family_rigidity_of_marton_univ` applied to `martonBound`, and record the output
+        of `#print axioms` for the three theorems here. Only then may Theorems 1.1, 1.2 and 8.2 be
+        called proved.
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - Done through B2a–B2c below (each has its own note); ticked once all of them had compiled.
@@ -584,7 +618,7 @@ and no hypotheses beyond the paper's.
       in `EntropyLean.lean`). CI green at 323be41 (checked in the same run, no new warnings); BEXP
       marked proved in docs/DEPENDENCIES.md (46b5eae).
 - [x] E3. Prove `exponential_scale_necessary` from E1, E2 and `bernoulli_parameter_mem_Ioo`.
-  - Suggested route (formalize task 2026-11-15; not yet checked in Lean): only E1 and E2a are
+  - Route (carried out in E3a–E3c below): only E1 and E2a are
     needed. Take `m = 1` and `X` the image of `bernoulliBit p` under the injective additive map
     `b ↦ fun _ => b`, so `H(X) = h₂(p)` and `E(X) = bernoulliDefect p`. For `G = ⊥`,
     `H(q_G X) = H(X)` and the hypothesis gives `(1 + ε) E(X) ≤ ε H(X)`, which fails for
@@ -617,16 +651,13 @@ and no hypotheses beyond the paper's.
         104 and deprecated `push_neg` at 44, 141. Ticked by the formalize task 2026-11-15 23:25 UTC.
     - [x] E3b2. `scale_log_eventually`: for `0 < a` and `c < a`, eventually
           `c ≤ −(ε logb 2 (h₂(scaleParam a ε)))` (`EntropyLean/ScaleNecessaryLog.lean`, importing
-          `EntropyLean.ScaleNecessaryLimit`). Suggested route: for `ε ≤ 1/2`,
-          `h₂(p) ≤ p (a + 1)/ε` (`binaryEntropy_le`, `half_le_log_two`); `x²/4 ≤ eˣ` (from
-          `eˣ = (e^(x/2))²` and `1 + x/2 ≤ e^(x/2)`) gives `(a + 1)/ε ≤ exp((a − c) log 2 / ε)` once
-          `16 ε (a + 1) ≤ (a − c)²`; then `ε log h₂(p) ≤ −c log 2`. Use `scale_eventually_of_lt`.
+          `EntropyLean.ScaleNecessaryLimit`).
       - Written by the formalize task 2026-11-15 23:25 UTC (uncompiled at push): `slog_logb_scaleParam`,
         `slog_entropy_le`, `slog_entropy_pos`, `slog_small`, `scale_log_of_le`, `scale_log_eventually`
         (0f7ea55). The proofs are those of `ScaleNecessaryProof.lean` on branch `formalize-efg`
         (38f8074; that file compiled in the branch's CI run, which failed only in
         `CosetConcentration.lean`), with renamed declarations so that a later merge does not clash.
-        They use `log x ≤ x − 1` instead of the `x²/4 ≤ eˣ` route above.
+        They use `log x ≤ x − 1`.
         CI green at 0f7ea55 (main) and at a3d1d61 (branch `formalize-efg-v2`, which builds this file
         and uses `scale_log_eventually` in E3c). Ticked by Claude 2026-11-15 23:35 UTC.
   - [x] E3c. `exponential_scale_necessary` from E3a and E3b: `C(ε) ≥ 1/h₂(p) > 0`, so
@@ -733,36 +764,24 @@ what its proof actually gives.
     hypothesis of (43) (approached as `d ↑ 1`). With the parametric chain of G2 the hypothesis
     `1568 λ ≤ d²` gives `305 + 2 log₂ 7 ≈ 310.61`, still 311 as an integer.
     CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
-- [ ] G4. Constant from the PFR backend: only if B1 chooses PFR, check which Marton constant
-      that project proves and instantiate G2 with it.
-  - Not attempted (Claude, 2026-11-15): B1 is undecided. Once a constant `C` is available as
-    `MartonBoundConst.{0} C`, `exponential_entropy_quotient_of_marton_const` (G2) gives Theorem 1.1
-    with exponent `(48C + 17 + 2 log₂(1 + C))(1+ε)/ε`; for `C = 11/2` that constant is about 286.4.
+- [ ] G4. Constant from the PFR backend: instantiate G2 with the Marton constant that the PFR
+      project proves (B1). `martonRigidityConst_five_lt : martonRigidityConst 5 < 263`, and
+      Theorems 1.1, 1.2 and 8.2 with 263 in place of 320 from `martonBoundConst_five` (B1f).
+  - B1a (formalize task 2026-11-18) found the constant: PFR's `entropic_PFR_conjecture_improv`
+    gives `d[X;U_H] ≤ 5 d[X;X]` for a single variable, so `C = 5` and
+    `48C + 17 + 2 log₂(1 + C) = 257 + 2 log₂ 6 ≈ 262.2`. (For `C = 11/2` the constant is about
+    286.4; H5 did that arithmetic.) Waits for B1f.
 
-## H. Toward green: the Marton frontier
+## H. Special cases of the Marton bound (35)
 
-Added by the formalize task 2026-11-15 (no unchecked item was actionable: B1 is Josiah's
-decision and G4 waits for it). Every amber node of docs/DEPENDENCIES.md (E36, L71, L81, T82, T12,
-T11, C92, C94) is already proved in Lean from the single hypothesis `MartonBound.{0}` (35), so the
-remaining distance to green is the external node MAR. These items make that visible and prove
-the cases of (35) that need no new ideas. None of them proves the entropic Marton theorem, and
-none may add a `sorry` to `Statements.lean`.
+Added by the formalize task 2026-11-15, while the backend decision B1 was open. Every amber node
+of docs/DEPENDENCIES.md (E36, L71, L81, T82, T12, T11, C92, C94) is proved in Lean from the single
+hypothesis `MartonBound.{0}` (35), so the remaining distance to green is the external node MAR,
+which B1 now takes from the PFR project. Sections H, I and J prove (35) directly, without PFR, for
+the laws that need no new ideas. None of their items proves the entropic Marton theorem, and none
+adds a `sorry` to `Statements.lean`. (H1, a change to the chart, was reverted at Josiah's request
+on 2026-11-17 and is no longer listed.)
 
-- [x] H1. Chart: add a class `conditional` ("proved in Lean from (35) as a hypothesis") to
-      docs/DEPENDENCIES.md, move E36, L71, L81, T82, T12, T11, C92, C94 to it, and put the Lean
-      names in their labels (`MartonInput.consequence`, `sparse_posterior_estimate`,
-      `ratio_growth_of_marton`, `weighted_family_rigidity_of_marton_univ`,
-      `sparse_rigidity_of_marton`, `exponential_entropy_quotient_of_marton`,
-      `coset_concentration_of_marton`). Docs only; no Lean change.
-  - Written by the formalize task 2026-11-16 03:45 UTC (uncompiled at push): docs/DEPENDENCIES.md now has
-    class `conditional` (lilac, with a legend row and a note under "Reading the chart"); E36, L71, L81,
-    T82, T12, T11, C92, C94 moved to it with the Lean names above (C92 as
-    `two_input_almost_additivity_of_rigidity` + `weighted_family_rigidity_of_marton_univ`) (4d14fc1).
-    No node is `stated` any more; the open `sorry`s are the statements of Theorems 1.1, 1.2, 8.2 in
-    `Statements.lean` (3) and `FeatureMap.lean` (2).
-    CI green at 4d14fc1 (docs only); ticked by the formalize task 2026-11-16 03:51 UTC.
-    Chart labels and classes reverted to their state before 4d14fc1 at Josiah's request, 2026-11-17
-    (e69f1c3); the eight nodes are amber (`stated`) again.
 - [x] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
       d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
       `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
@@ -855,12 +874,9 @@ none may add a `sorry` to `Statements.lean`.
 
 ## I. More special cases of (35)
 
-Added by the formalize task 2026-11-16 20:45 UTC (no unchecked item was actionable: B1 is Josiah's
-decision and G4 waits for it). Section H proved (35) when `H(K) ≤ 12 D(K)`, when
-`dim V − H(K) ≤ 12 D(K)`, when `D(K) = 0`, and on every space of dimension at most one. These items
-cover more laws with the same tools (transport, translation, products), so they move the external
-node MAR of docs/DEPENDENCIES.md toward green only in that sense. None of them proves the entropic
-Marton theorem, and none may add a `sorry` to `Statements.lean`.
+Added by the formalize task 2026-11-16 20:45 UTC. Section H proved (35) when `H(K) ≤ 12 D(K)`,
+when `dim V − H(K) ≤ 12 D(K)`, when `D(K) = 0`, and on every space of dimension at most one. These
+items cover more laws with the same tools (transport, translation, products).
 
 - [x] I1. Transport along linear equivalences (`EntropyLean/MartonTransport.lean`, a new file):
       `ruzsaDist_map_addEquiv : d(K.map e, L.map e) = d(K, L)` for `e : V ≃+ V'`,
@@ -927,11 +943,9 @@ Marton theorem, and none may add a `sorry` to `Statements.lean`.
 
 ## J. Independent coordinates, made intrinsic
 
-Added by the formalize task 2026-11-17 22:36 UTC (section I is done; B1 is Josiah's decision and G4
-waits for it). I5 defines independent coordinates as being of the form `piLaw n P`. These items
-connect that definition to the usual one (the law is the product of its coordinate marginals) and
-remove the dependence on the standard coordinates. None of them proves the entropic Marton theorem,
-and none may add a `sorry` to `Statements.lean`.
+Added by the formalize task 2026-11-17 22:36 UTC. I5 defines independent coordinates as being of
+the form `piLaw n P`. These items connect that definition to the usual one (the law is the product
+of its coordinate marginals) and remove the dependence on the standard coordinates.
 
 - [x] J1. Masses of `piLaw` (`EntropyLean/MartonProduct.lean`): `piLaw_apply :
       piLaw n P v = ∏ i, P i (v i)`, by induction on `n` from `prodLaw_apply`,
@@ -943,55 +957,25 @@ and none may add a `sorry` to `Statements.lean`.
       coordinate marginals `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i`, and
       `indepCoords_iff : IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (from J1), so
       I5 covers exactly the laws that are the product of their coordinate marginals.
-  - Planned route (formalize task 2026-11-17; not yet checked in Lean): for `piLaw_map_eval`, sum
-    `piLaw_apply` over the other coordinates with `Finset.prod_univ_sum`, using that each `P j` has
-    total mass one; for the converse in `indepCoords_iff`, take `P i := K.map fun w => w i` and
-    conclude with `PMF.ext` and `piLaw_apply`.
   - Written by the formalize task 2026-11-18 02:40 UTC (uncompiled at push): `piLaw_map_eval`,
-    `indepCoords_iff` in `EntropyLean/MartonProduct.lean` (ce89f7e). `piLaw_map_eval` was proved
-    by induction on `n` (`prodLaw_map_fst`, `prodLaw_map_snd`) rather than by the sum route above.
+    `indepCoords_iff` in `EntropyLean/MartonProduct.lean` (ce89f7e). `piLaw_map_eval` is proved
+    by induction on `n` (`prodLaw_map_fst`, `prodLaw_map_snd`); the converse of `indepCoords_iff`
+    takes `P i := K.map fun w => w i` and uses `piLaw_apply`.
     CI green at ce89f7e; ticked by the formalize task 2026-11-18 02:45 UTC.
 - [x] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
       equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
       `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
       `IndepCoords (K.map e)` (`marton_of_indepCoords_map`), from I5 and `marton_map_linearEquiv`.
-  - Planned route (formalize task 2026-11-17; not yet checked in Lean): apply
-    `marton_of_indep_coords` to `K.map e`, then transport the bound back along `e.symm` with
-    `marton_map_linearEquiv`, using `(K.map e).map e.symm = K`.
   - Written by the formalize task 2026-11-18 02:52 UTC (uncompiled at push):
-    `marton_of_indepCoords_map` in `EntropyLean/MartonProduct.lean` (bdc7536), by the planned
-    route. CI green at bdc7536; ticked by the formalize task 2026-11-18 02:57 UTC. Section J is done.
-
-## K. Closure properties of (35), law by law
-
-Added by the formalize task 2026-11-18 04:21 UTC (section J is done; B1 is Josiah's decision and G4
-waits for it). Sections H–J prove (35) for particular laws. These items show that the laws
-satisfying (35) are closed under translation, under restriction to a coset and under products of
-any finite number of factors, and combine these facts. None of them proves the entropic Marton
-theorem, and none may add a `sorry` to `Statements.lean`.
-
-- [ ] K1. Translates (`EntropyLean/MartonTransport.lean`): `marton_map_add_const`: if
-      `d(K, U_W) ≤ 6 D(K)`, then `d(K.map (· + x), U_W) ≤ 6 D(K.map (· + x))` with the same
-      witness `W`, from `ruzsaDist_map_add_const`, `ruzsaDist_comm` and
-      `entropyIncrement_map_add_const`.
-- [ ] K2. Cosets, law by law (`EntropyLean/MartonTransport.lean`): `marton_of_restrictLaw`: if `K`
-      is supported in the coset `x + U` and the law `restrictLaw U K x` on `U` satisfies (35) with
-      witness `W`, then `K` satisfies (35) with witness `W.map U.subtype`. I2
-      (`marton_of_support_subset_coset`) is the case where `MartonInput U` holds; I2 stays as it is.
-- [ ] K3. Independent blocks (`EntropyLean/MartonBlocks.lean`, a new file): for a finite F₂-space
-      `V`, the law `blockLaw n P` on `Fin n → V` of `n` independent blocks with laws `P i` (built
-      like `piLaw`, with a linear equivalence `V × (Fin n → V) ≃ₗ (Fin (n + 1) → V)`), and
-      `marton_blockLaw`: if every `P i` satisfies (35), so does `blockLaw n P`, by induction on `n`
-      from I4 and `marton_map_linearEquiv`, as in I5.
-- [ ] K4. Independent coordinates on a coset (`EntropyLean/MartonBlocks.lean`): (35) for every law
-      `K` supported in a coset `x + U` whose restriction `restrictLaw U K x` has independent
-      coordinates in some basis of `U` (`marton_of_coset_indepCoords`), from K2 and J3.
+    `marton_of_indepCoords_map` in `EntropyLean/MartonProduct.lean` (bdc7536): it applies
+    `marton_of_indep_coords` to `K.map e` and transports the bound back along `e.symm` with
+    `marton_map_linearEquiv`. CI green at bdc7536; ticked by the formalize task 2026-11-18
+    02:57 UTC.
 
 ## Not attempted here
 
 - Improving the constant beyond what the paper's argument gives (a new proof of Theorem 8.2 with
   a better iteration); item G only tracks and tightens the existing argument.
-
-- A proof of the entropic Marton theorem itself (Gowers–Green–Manners–Tao); it is the paper's
-  one external input.
+- A new proof of the entropic Marton theorem (Gowers–Green–Manners–Tao), the paper's one external
+  input: B1 takes it from the PFR project instead of proving it again here.
 - Constructive or algorithmic versions (Section 10).
