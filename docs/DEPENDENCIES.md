@@ -8,10 +8,12 @@ the Lean status at commit time, and [ROADMAP.md](../ROADMAP.md) is the ordered w
 | Colour | Meaning |
 | --- | --- |
 | green | proved in Lean: no `sorry`, no hypothesis beyond the paper's statement |
-| violet | conditional proof: proved in Lean with no `sorry`, from a named hypothesis that is the entropic Marton bound (35) or a result that rests on it |
-| amber | stated in Lean without that hypothesis; the proof is `sorry` |
+| violet | conditional proof: no `sorry`, but from a named hypothesis that rests on (35) |
+| amber | stated in Lean; the proof is `sorry` |
 | grey | not yet stated in Lean |
-| blue | external input: cited in the paper, not proved there |
+| blue | external: proved outside this repository |
+
+At present every box is green except the PFR project's theorem, which is blue.
 
 ```mermaid
 flowchart TD
@@ -48,24 +50,24 @@ flowchart TD
   PFR["PFR project: the entropic Marton theorem in Lean<br/>entropic_PFR_conjecture_improv, for random variables"]:::external
   B1C["(35) for one random variable, with constant 5<br/>pfr_single_variable (B1c)"]:::proved
   B1D["PFR's entropy of a law K is H(K) log 2<br/>measureEntropy_toMeasure (B1d)"]:::proved
-  B1E["PFR's Ruzsa distance of two laws is d(K, L) log 2;<br/>a variable uniform on W has law uniformSub W (B1e)"]:::missing
-  MAR["Entropic Marton bound (35) for laws<br/>the hypothesis MartonBound, until B1f proves martonBound"]:::external
-  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)<br/>MartonInput.consequence, from (35)"]:::conditional
-  L71["Lemma 7.1: sparse posterior estimate<br/>WeightedFamily.sparse_posterior_estimate, from (35)"]:::conditional
+  B1E["PFR's Ruzsa distance of two laws is d(K, L) log 2;<br/>a variable uniform on W has law uniformSub W<br/>rdist_toMeasure, identDistrib_uniformSub (B1e)"]:::proved
+  MAR["Entropic Marton bound (35) for laws, constant 6<br/>martonBound (B1f), from PFR's constant 5"]:::proved
+  E36["(36): H(q_V K) ≤ 12D(K), dim V ≤ 13H(K)<br/>marton_consequence"]:::proved
+  L71["Lemma 7.1: sparse posterior estimate<br/>WeightedFamily.sparse_posterior_lemma"]:::proved
 
   %% Section 8
-  L81["Lemma 8.1: ratio growth<br/>ratio_growth_of_marton_univ, from (35)"]:::conditional
+  L81["Lemma 8.1: ratio growth<br/>ratio_growth_lemma"]:::proved
   ARITH["Iteration arithmetic (42)–(43):<br/>d log₂(1/λ) < 320<br/>rigidity_iteration_bound"]:::proved
-  T82["Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity is sorry;<br/>from (35): weighted_family_rigidity_of_marton_univ"]:::stated
-  T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity is sorry;<br/>from (35): sparse_rigidity_of_marton"]:::stated
+  T82["Theorem 8.2: weighted-family rigidity<br/>weighted_family_rigidity"]:::proved
+  T12["Theorem 1.2: sparse-law rigidity<br/>sparse_rigidity"]:::proved
 
   %% Section 9
   L91["Lemma 9.1: variational sparsification<br/>variational_sparsification"]:::proved
-  T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient is sorry;<br/>from (35): exponential_entropy_quotient_of_marton"]:::stated
-  C92["Corollary 9.2: two-input almost-additivity<br/>two_input_almost_additivity_of_rigidity, from Theorem 8.2"]:::conditional
+  T11["Theorem 1.1: exponential entropy quotient<br/>exponential_entropy_quotient"]:::proved
+  C92["Corollary 9.2: two-input almost-additivity<br/>two_input_almost_additivity"]:::proved
   BEXP["Bernoulli expansions of h₂(p), 2h₂(p) − h₂(2p(1−p))<br/>binaryEntropy_ge, binaryEntropy_le, bernoulliDefect_ge, bernoulliDefect_le"]:::proved
   P93["Proposition 9.3: exponential scale is necessary<br/>exponential_scale_necessary"]:::proved
-  C94["Corollary 9.4: subspace-coset concentration<br/>coset_concentration_of_marton, from (35)"]:::conditional
+  C94["Corollary 9.4: subspace-coset concentration<br/>coset_concentration, exists_large_coset"]:::proved
 
   DEF --> ID
   DEF --> NN
@@ -121,33 +123,20 @@ flowchart TD
 
 ## Reading the chart
 
-- The only external input is the entropic Marton bound (35). The paper cites it from Gowers,
-  Green, Manners and Tao; in Lean it is the hypothesis `MartonBound` (`MartonInput V` on one
-  space), never an axiom.
-- Everything that does not use (35) is green: the results of Sections 2 to 6, Lemma 9.1, the
-  iteration arithmetic (42)–(43), and Proposition 9.3, which needs only Bernoulli calculus.
-- Everything that uses (35) is proved from it. The violet boxes have no `sorry`; they carry (35),
-  or Theorem 8.2, as a named hypothesis. Theorems 8.2, 1.2 and 1.1 are amber because
-  `EntropyLean/Statements.lean` also states them without the hypothesis, and those three
-  statements are the only `sorry`s outside `FeatureMap.lean`.
-- Roadmap item B1 takes (35) from the PFR project instead of assuming it. PFR's theorem is
-  imported (B1c) and PFR's entropy agrees with the entropy used here (B1d). The Ruzsa distance
-  and the uniform laws are next (B1e), and then the bound for laws (B1f).
+- Every result in the chart is proved in Lean with no `sorry` and no hypothesis beyond its
+  statement. `EntropyLean/Statements.lean` states Theorems 1.1, 1.2 and 8.2 and the other main
+  results, and ends with checks that fail the build if one of them depends on `sorry` or on an
+  axiom other than `propext`, `Classical.choice` and `Quot.sound`.
+- The paper's one external input, the entropic Marton bound (35) of Gowers, Green, Manners and
+  Tao, is not reproved here. It comes from the PFR project's Lean proof (the blue box):
+  `pfr_single_variable` specialises PFR's theorem to one random variable, and
+  `measureEntropy_toMeasure`, `rdist_toMeasure` and `identDistrib_uniformSub` translate PFR's
+  entropy, Ruzsa distance and uniform variables to the definitions used here (roadmap item B1).
+  `martonBound` is the result: (35) with the paper's constant 6, from PFR's constant 5.
+- Proposition 9.3 needs only Bernoulli calculus; it does not use (35).
 
 ## What is left
 
-No argument of the paper is missing from this list. Every row waits for (35) to become a theorem
-about laws, which is roadmap items B1e and B1f.
-
-| Result | State in Lean | Waits for |
-| --- | --- | --- |
-| Entropic Marton bound (35) for laws | hypothesis `MartonBound`; PFR's theorem imported, entropy agreement proved | B1e: agreement of the Ruzsa distance and of uniform laws. B1f: `martonBound` |
-| (36), Lemma 7.1, Lemma 8.1 | proved from (35) | B1f, which supplies the hypothesis |
-| Theorem 8.2 | `weighted_family_rigidity` is `sorry`; `weighted_family_rigidity_of_marton_univ` proves it from (35) | B1f, which replaces the `sorry` |
-| Theorem 1.2 | `sparse_rigidity` is `sorry`; `sparse_rigidity_of_marton` proves it from (35) | B1f, which replaces the `sorry` |
-| Theorem 1.1 | `exponential_entropy_quotient` is `sorry`; `exponential_entropy_quotient_of_marton` proves it from (35) | B1f, which replaces the `sorry` |
-| Corollary 9.2 | `two_input_almost_additivity_of_rigidity` proves it from Theorem 8.2 as a hypothesis | Theorem 8.2 without `sorry` |
-| Corollary 9.4 | `coset_concentration_of_marton` proves it from (35) | B1f, which supplies the hypothesis |
-
-Beyond the paper, one roadmap item is open: G4, the constant 263 in place of 320, from PFR's
-Marton constant 5. It waits for B1f as well.
+Nothing in the chart. Beyond the paper, roadmap item G4 is open: the constant 263 in place of 320
+in Theorems 1.1, 1.2 and 8.2, from PFR's Marton constant 5. Constructive or algorithmic versions
+(Section 10 of the paper) are not attempted.
