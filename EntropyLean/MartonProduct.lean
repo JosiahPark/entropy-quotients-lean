@@ -22,7 +22,10 @@ pair. This file proves
   `marton_of_indep_coords`: (35) for every law on `Fin n → ZMod 2` with independent coordinates
   (roadmap item I5, by induction on `n` from `martonInput_zmod2` and `marton_prodLaw`);
 * `finConsEquiv_apply` and `piLaw_apply : piLaw n P v = ∏ i, P i (v i)` (roadmap item J1), so
-  `piLaw n P` is the law of independent coordinates with laws `P i` in the usual sense.
+  `piLaw n P` is the law of independent coordinates with laws `P i` in the usual sense;
+* `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i` and `indepCoords_iff : IndepCoords K ↔
+  ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (roadmap item J2): `IndepCoords K` holds exactly
+  when `K` is the product of its coordinate marginals.
 
 What this file does NOT prove: the entropic Marton bound (35) itself, nor (35) for laws on
 `V₁ × V₂` that are not products (so `MartonInput (V₁ × V₂)` is NOT derived from `MartonInput V₁`
@@ -237,5 +240,45 @@ theorem piLaw_apply (n : ℕ) :
           rw [prodLaw_apply, ih]
           try rfl
       _ = ∏ i, P i (v i) := (Fin.prod_univ_succ fun i => P i (v i)).symm
+
+/-! ## Independence as a property of the law (roadmap item J2) -/
+
+/-- **J2.** The coordinate marginals of `piLaw n P` are the laws `P i`. -/
+theorem piLaw_map_eval (n : ℕ) :
+    ∀ (P : Fin n → PMF (ZMod 2)) (i : Fin n), (piLaw n P).map (fun v => v i) = P i := by
+  induction n with
+  | zero =>
+    first
+      | exact fun _ i => i.elim0
+      | exact fun _ i => absurd i.isLt (Nat.not_lt_zero _)
+  | succ n ih =>
+    intro P i
+    rw [piLaw_succ, PMF.map_comp]
+    refine Fin.cases ?_ (fun j => ?_) i
+    · have hf : ((fun v : Fin (n + 1) → ZMod 2 => v 0) ∘ finConsEquiv n) = Prod.fst := by
+        funext x
+        simp [finConsEquiv_apply]
+      first
+        | rw [hf, prodLaw_map_fst]
+        | simp only [hf, prodLaw_map_fst]
+    · have hf : ((fun v : Fin (n + 1) → ZMod 2 => v j.succ) ∘ finConsEquiv n) =
+          (fun w : Fin n → ZMod 2 => w j) ∘ Prod.snd := by
+        funext x
+        simp [finConsEquiv_apply]
+      rw [hf, ← PMF.map_comp, prodLaw_map_snd, ih]
+
+/-- **J2.** A law on `Fin n → ZMod 2` has independent coordinates exactly when it is the product
+of its coordinate marginals. -/
+theorem indepCoords_iff {n : ℕ} (K : PMF (Fin n → ZMod 2)) :
+    IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i) := by
+  unfold IndepCoords
+  constructor
+  · rintro ⟨P, rfl⟩ v
+    simp only [piLaw_apply, piLaw_map_eval]
+  · intro h
+    refine ⟨fun i => K.map fun w => w i, ?_⟩
+    ext v
+    rw [piLaw_apply]
+    exact h v
 
 end EntropyLean
