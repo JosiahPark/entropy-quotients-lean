@@ -143,7 +143,7 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
         further name clash. Then `import EntropyLean.MathlibForPFR` replaced `import Mathlib` in
         the 64 other files that had it (ce6a73c: the first line of each file and nothing else).
         CI green at ce6a73c: all 70 files of `EntropyLean/` were rebuilt, with the same five
-        `sorry` warnings as before. Ticked by the formalize task 2026-11-18 18:17 UTC.
+        `sorry` warnings as before. Ticked by the formalize task 2026-11-18 18:15 UTC.
     - [ ] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
           `EntropyLean.Information` (for `entropyBits_eq_div_log`).
   - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
