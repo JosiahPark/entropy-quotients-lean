@@ -17,6 +17,9 @@ An analytic input that is not proved here enters as a named hypothesis or struct
 as a hidden assumption. No item claims that Theorem 1.1 is proved until its proof has no `sorry`
 and no hypotheses beyond the paper's.
 
+Imports: a file of the library that needs Mathlib starts with `import EntropyLean.MathlibForPFR`,
+not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the one exception.
+
 ## Done (v0.2, CI-verified at 9130247)
 
 - [x] Definitions: `entropyBits`, `conv`, `entropyIncrement`, `entropyDefect`, `interaction`,
@@ -113,23 +116,34 @@ and no hypotheses beyond the paper's.
       2026-11-18 17:31 UTC.
     - Import clash, found by comparing the declaration names of the 45 PFR modules with those
       of Mathlib v4.35.0 (a scan of the sources, so names that Lean generates automatically are
-      not covered, and CI has confirmed only the first): four PFR declarations have the name of
-      a declaration in a Mathlib module that PFR does not import. They are
+      not covered; CI confirmed the first at ac92ec2 and, at 8574f9a, that there is no other):
+      four PFR declarations have the name of a declaration in a Mathlib module that PFR does not
+      import. They are
       `ProbabilityTheory.IdentDistrib.prodMk` (`Mathlib.Probability.IdentDistribIndep`),
       `ProbabilityTheory.CondIndepFun` and `ProbabilityTheory.condIndepFun_iff`
       (`Mathlib.Probability.Independence.Conditional`), and `MeasureTheory.Measure.support`
       (`Mathlib.MeasureTheory.Measure.Support`). Three further Mathlib modules import these:
       `Mathlib.Probability.Independence.ZeroOne`, `Mathlib.Dynamics.Ergodic.EmpiricalMeasure` and
-      `Mathlib.MeasureTheory.Measure.ResolventTransform`. Every file of the library starts with
-      `import Mathlib`, so at present no file can import both the library and PFR.
+      `Mathlib.MeasureTheory.Measure.ResolventTransform`. Every file of the library then started
+      with `import Mathlib`, so no file could import both the library and PFR. B1d1 removed that
+      obstacle.
   - [ ] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
         PFR's `Hm[K.toMeasure] = entropyBits K * log 2` (`measureEntropy_toMeasure`).
         Split by the formalize task 2026-11-18, because of the import clash noted under B1c:
-    - [ ] B1d1. Imports: a new file `EntropyLean/MathlibForPFR.lean` that imports every module of
+    - [x] B1d1. Imports: a new file `EntropyLean/MathlibForPFR.lean` that imports every module of
           Mathlib except the six named under B1c, and `import EntropyLean.MathlibForPFR` in
           place of `import Mathlib` in every file of the library (`FeatureMap.lean` is not
           touched). This replaces the task's rule that each new file starts with
-          `import Mathlib`, so it waits for Josiah's agreement.
+          `import Mathlib`; Josiah agreed on 2026-11-18.
+      - Written by the formalize task 2026-11-18 18:01 UTC (uncompiled at push): the new file
+        `EntropyLean/MathlibForPFR.lean` (8574f9a). It is Mathlib's own `Mathlib.lean` at v4.35.0
+        without the six `public import` lines, and it proves nothing. In the same commit
+        `PFRBridge.lean` imports it together with `PFR.ImprovedPFR`. CI green at 8574f9a, so
+        Mathlib without the six modules loads together with the 45 PFR modules: there is no
+        further name clash. Then `import EntropyLean.MathlibForPFR` replaced `import Mathlib` in
+        the 64 other files that had it (ce6a73c: the first line of each file and nothing else).
+        CI green at ce6a73c: all 70 files of `EntropyLean/` were rebuilt, with the same five
+        `sorry` warnings as before. Ticked by the formalize task 2026-11-18 18:17 UTC.
     - [ ] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
           `EntropyLean.Information` (for `entropyBits_eq_div_log`).
   - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`

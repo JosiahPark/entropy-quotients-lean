@@ -40,6 +40,7 @@ Proposition 9.3 is [docs/NUMERICAL_TABLE.md](docs/NUMERICAL_TABLE.md).
 | `EntropyLean/Bernoulli.lean` | Binary entropy `h₂`, Bernoulli increment and defect (Prop. 9.3) | `binaryEntropy_eq_zero_of_not_mem`, `bernoulli_parameter_mem_Ioo` |
 | `EntropyLean/Statements.lean` | Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1, Proposition 9.3 | Lemma 4.1, Lemma 9.1 and Proposition 9.3 (proofs in `RatioSparsification.lean`, `Variational.lean` and `ScaleNecessaryProof.lean`) and the algebraic step `E ≤ θH ⇒ H ≤ (1+ε)D` (`entropy_le_increment_of_defect_le`); Theorems 1.1, 1.2, 8.2 are `sorry` |
 | `EntropyLean/*.lean` (the other files) | One file per roadmap item, from entropy facts (`EntropyFacts.lean`) to Lemma 8.1 (`RatioGrowthProof.lean`); each starts with a docstring saying what it proves and what it does not | see [ROADMAP.md](ROADMAP.md), which names the file and theorems of every item, and [docs/THEOREMS.md](docs/THEOREMS.md), which lists every theorem |
+| `EntropyLean/MathlibForPFR.lean` | The import list of Mathlib without the six modules whose declarations have the same names as declarations of the PFR project; the library files import it in place of `import Mathlib` (roadmap item B1d1) | nothing (imports only) |
 | `EntropyLean/FeatureMap.lean` | Separate p-frame symmetric-power feature map (not part of this paper; not imported by the root module `EntropyLean.lean`) | nothing (2 `sorry`) |
 | `archive/` | The five original draft files, unchanged | — |
 | `paper/` | The arXiv PDF | — |
@@ -69,6 +70,11 @@ node scripts/theorem_list.js > docs/THEOREMS.md   # regenerate the theorem list
 The build also compiles the part of the PFR project that the library imports (roadmap item B1);
 `lake exe cache get` only fetches Mathlib.
 
+A library file imports `EntropyLean.MathlibForPFR`, not `Mathlib`. PFR and Mathlib declare four
+names in common, so no file can import both; `EntropyLean/MathlibForPFR.lean` is Mathlib without
+the six modules involved (roadmap item B1d1). `FeatureMap.lean` is the exception and still
+imports `Mathlib`.
+
 ## Next proof work
 
 See [ROADMAP.md](ROADMAP.md). Items A–J are done apart from B1 and G4: Proposition 9.3 is proved,
@@ -83,5 +89,5 @@ hypothesis. Roadmap item B1 replaces that hypothesis by the theorem of the
 [PFR project](https://github.com/teorth/pfr), which this repository now requires, pinned to PFR's
 last commit on Lean v4.35.0. PFR proves the bound, with constant 5, for random variables on a
 probability space, and `EntropyLean/PFRBridge.lean` imports that theorem (B1c). What remains
-(B1d–B1f) is to translate it to the `PMF`-based definitions used here. Until that is done,
+(B1d2–B1f) is to translate it to the `PMF`-based definitions used here. Until that is done,
 Theorems 1.1, 1.2 and 8.2 keep their `sorry`.
