@@ -4,6 +4,7 @@ import EntropyLean.RatioSparsification
 import EntropyLean.ScaleNecessaryProof
 import EntropyLean.UniverseTransport
 import EntropyLean.PFRBridge
+import EntropyLean.CosetConcentration
 
 /-!
 # Main results of arXiv:2610.38525
@@ -16,8 +17,10 @@ which `EntropyLean/PFRBridge.lean` obtains from the PFR project's theorem
 as a hypothesis, and `martonBound` supplies it. The statements are checked against the paper
 (v1, 28 Oct 2026) but have not been independently reviewed.
 
-The end of the file makes the build fail if one of the three theorems depends on `sorry` or on
-an axiom other than `propext`, `Classical.choice` and `Quot.sound`.
+The section after them states, with no hypothesis, the other results of the paper that were
+proved from (35) or from Theorem 8.2: equation (36), Lemmas 7.1 and 8.1, and Corollaries 9.2
+and 9.4. The end of the file makes the build fail if any of these theorems depends on `sorry` or
+on an axiom other than `propext`, `Classical.choice` and `Quot.sound`.
 
 Also here: Lemma 9.1
 (`variational_sparsification`) is proved from
@@ -122,14 +125,97 @@ theorem entropy_le_increment_of_defect_le {V : Type*} [Add V] (ε : ℝ) (hε : 
   rw [entropyDefect_eq] at h
   exact entropy_le_of_defect_le ε hε _ _ h
 
+/-! ## The other results that rested on (35)
+
+Each of these was proved earlier with the entropic Marton bound (35), or with Theorem 8.2, as an
+explicit hypothesis (the `…_of_marton` and `…_of_rigidity` theorems). Here `martonBound` and
+`weighted_family_rigidity_of_marton_univ` supply the hypothesis, so they hold with none. -/
+
+universe u
+
+/-- **Equation (36)**, with no hypothesis: every law `K` on a finite F₂-space in `Type` has a
+subspace `W` with `H(q_W K) ≤ 12 D(K)` and `dim W ≤ H(K) + 12 D(K) ≤ 13 H(K)`. -/
+theorem marton_consequence {V : Type} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    (K : PMF V) :
+    ∃ W : Submodule (ZMod 2) V,
+      entropyBits (K.map fun v => W.mkQ v) ≤ 12 * entropyIncrement K ∧
+      (Module.finrank (ZMod 2) W : ℝ) ≤ entropyBits K + 12 * entropyIncrement K ∧
+      (Module.finrank (ZMod 2) W : ℝ) ≤ 13 * entropyBits K :=
+  (martonBound V).consequence K
+
+/-- **Lemma 7.1** (37), with no hypothesis: if the posterior family `𝒬 = Post 𝒫` is `ρ`-sparse
+(`ρ ≥ 0`), then `e(𝒬) ≤ 36 J + 14 √ρ e(𝒫)`, where `J = I(A ; B | S, T)`. -/
+theorem WeightedFamily.sparse_posterior_lemma {V : Type} [Fintype V] [AddCommGroup V]
+    [Module (ZMod 2) V] (P : WeightedFamily V) {rho : ℝ} (hsp : P.posterior.IsSparse rho)
+    (hrho : 0 ≤ rho) :
+    P.posterior.meanInteraction ≤
+      36 * P.fourSampleJ + 14 * Real.sqrt rho * P.meanInteraction :=
+  P.sparse_posterior_estimate (martonBound V) hsp hrho
+
+/-- **Lemma 8.1** (ratio growth), equation (39), with no hypothesis, in every universe. -/
+theorem ratio_growth_lemma : RatioGrowth.{u} :=
+  ratio_growth_of_marton_univ martonBound
+
+/-- **Corollary 9.2** (two-input almost-additivity), with no hypothesis: (45), (46), the additive
+error `s(q_G U, q_G Y) ≤ α(H(U) + H(Y))` and both mixed-input bounds. -/
+theorem two_input_almost_additivity {V : Type*} [AddCommGroup V] [Module (ZMod 2) V]
+    [Fintype V] (α : ℝ) (hα : 0 < α ∧ α < 1) (U Y : PMF V) :
+    ∃ G : Submodule (ZMod 2) V,
+      (Module.finrank (ZMod 2) G : ℝ) ≤
+        (2 : ℝ) ^ (320 / α) * ((entropyBits U + entropyBits Y) / 2) ∧
+      (1 - α) * (entropyBits (U.map fun v => G.mkQ v) + entropyBits (Y.map fun v => G.mkQ v)) ≤
+        entropyBits (conv (U.map fun v => G.mkQ v) (Y.map fun v => G.mkQ v)) ∧
+      interaction (U.map fun v => G.mkQ v) (Y.map fun v => G.mkQ v) ≤
+        α * (entropyBits U + entropyBits Y) ∧
+      entropyBits (U.map fun v => G.mkQ v) ≤ entropyBits (conv U Y) - entropyBits Y +
+        α * (entropyBits (U.map fun v => G.mkQ v) + entropyBits (Y.map fun v => G.mkQ v)) ∧
+      entropyBits (Y.map fun v => G.mkQ v) ≤ entropyBits (conv U Y) - entropyBits U +
+        α * (entropyBits (U.map fun v => G.mkQ v) + entropyBits (Y.map fun v => G.mkQ v)) :=
+  two_input_almost_additivity_of_rigidity (weighted_family_rigidity_of_marton_univ martonBound)
+    α hα U Y
+
+open Classical in
+open scoped Pointwise in
+/-- **Corollary 9.4** (subspace-coset concentration), with no hypothesis: for `0 < α < η ≤ 1` and
+nonempty `A` with `|A + A| ≤ |A|^(2−η)` there is a subspace `G` with
+`dim G ≤ 2^(320/α) log₂ |A|` on whose cosets `A` concentrates. -/
+theorem coset_concentration {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [DecidableEq V] {α η : ℝ} (hα : 0 < α)
+    (hαη : α < η) (hη : η ≤ 1) (A : Finset V) (hA : A.Nonempty)
+    (hAA : ((A + A).card : ℝ) ≤ (A.card : ℝ) ^ (2 - η)) :
+    ∃ G : Submodule (ZMod 2) V,
+      (Module.finrank (ZMod 2) G : ℝ) ≤ (2 : ℝ) ^ ((320 : ℝ) / α) * Real.logb 2 (A.card : ℝ) ∧
+      (η - α) / (1 - α) * Real.logb 2 (A.card : ℝ) ≤
+        1 / (A.card : ℝ) * ∑ a ∈ A, Real.logb 2 ((A.filter fun b => b - a ∈ G).card : ℝ) :=
+  coset_concentration_of_marton martonBound hα hαη hη A hA hAA
+
+open Classical in
+open scoped Pointwise in
+/-- **Corollary 9.4, last assertion**, with no hypothesis: some coset of `G` meets `A` in at least
+`|A|^(η−α)` points. -/
+theorem exists_large_coset {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] [Fintype V]
+    [DecidableEq V] {α η : ℝ} (hα : 0 < α)
+    (hαη : α < η) (hη : η ≤ 1) (A : Finset V) (hA : A.Nonempty)
+    (hAA : ((A + A).card : ℝ) ≤ (A.card : ℝ) ^ (2 - η)) :
+    ∃ G : Submodule (ZMod 2) V,
+      (Module.finrank (ZMod 2) G : ℝ) ≤ (2 : ℝ) ^ ((320 : ℝ) / α) * Real.logb 2 (A.card : ℝ) ∧
+      ∃ a ∈ A, (A.card : ℝ) ^ (η - α) ≤ ((A.filter fun b => b - a ∈ G).card : ℝ) :=
+  exists_large_coset_of_marton martonBound hα hαη hη A hA hAA
+
 /-! ## Checks
 
-The first three commands fail if a theorem depends on `sorry`. The last one fails if a theorem
-depends on an axiom other than Lean's three standard ones. -/
+The `assert_no_sorry` commands fail if a theorem depends on `sorry`. The last command fails if
+a theorem depends on an axiom other than Lean's three standard ones. -/
 
 assert_no_sorry exponential_entropy_quotient
 assert_no_sorry sparse_rigidity
 assert_no_sorry weighted_family_rigidity
+assert_no_sorry marton_consequence
+assert_no_sorry WeightedFamily.sparse_posterior_lemma
+assert_no_sorry ratio_growth_lemma
+assert_no_sorry two_input_almost_additivity
+assert_no_sorry coset_concentration
+assert_no_sorry exists_large_coset
 
 #print axioms exponential_entropy_quotient
 #print axioms sparse_rigidity
@@ -137,7 +223,9 @@ assert_no_sorry weighted_family_rigidity
 
 open Lean Elab Command in
 run_cmd
-  for n in [``exponential_entropy_quotient, ``sparse_rigidity, ``weighted_family_rigidity] do
+  for n in [``exponential_entropy_quotient, ``sparse_rigidity, ``weighted_family_rigidity,
+      ``marton_consequence, ``WeightedFamily.sparse_posterior_lemma, ``ratio_growth_lemma,
+      ``two_input_almost_additivity, ``coset_concentration, ``exists_large_coset] do
     for a in (← collectAxioms n) do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains a do
         throwError "{n} depends on the axiom {a}"
