@@ -105,7 +105,7 @@ theorem map_sub_prod_toMeasure {V : Type*} [AddCommGroup V] [Module (ZMod 2) V] 
   have hf : (fun x : V × V => x.1 - x.2) = fun x => x.1 + x.2 :=
     funext fun x => (sub_eq_add_of_zmod2 x.1 x.2).trans (add_comm _ _)
   have hmeas : Measurable (fun x : V × V => x.1 + x.2) := Measurable.of_discrete
-  rw [hf, toMeasure_prod_toMeasure, PMF.toMeasure_map _ hmeas, prodLaw_map_add]
+  rw [hf, toMeasure_prod_toMeasure, PMF.toMeasure_map _ _ hmeas, prodLaw_map_add]
 
 /-- **B1e.** Distance agreement: for laws `K`, `L` on a finite F₂-space, PFR's Ruzsa distance of
 the measures `K.toMeasure` and `L.toMeasure`, which is in nats, is the library's `ruzsaDist K L`,
