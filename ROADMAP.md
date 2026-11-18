@@ -36,7 +36,7 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
 - [x] Statements with `sorry`: Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1,
       Proposition 9.3 (`EntropyLean/Statements.lean`).
   - Written in the v0.2 consolidation; CI green at 9130247. Lemma 4.1, Lemma 9.1 and
-    Proposition 9.3 were proved later (C4, C1, E3); Theorems 1.1, 1.2 and 8.2 still have `sorry`.
+    Proposition 9.3 were proved later (C4, C1, E3), and Theorems 1.1, 1.2 and 8.2 in B1f.
 
 ## A. Entropy basics (`EntropyLean/Basic.lean` or `EntropyLean/EntropyFacts.lean`)
 
@@ -69,11 +69,12 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
 
 ## B. Information-theory layer
 
-- [ ] B1. Entropy backend: take the entropic Marton bound (35) from the PFR project
+- [x] B1. Entropy backend: take the entropic Marton bound (35) from the PFR project
       (github.com/teorth/pfr), which formalizes Shannon entropy, Ruzsa distance and the entropic
       PFR theorem, and keep the `PMF`-based definitions here. Decided by Josiah on 2026-11-18. The
       work is to prove `MartonBound.{0}` from PFR's theorem; that removes the hypothesis from
       D7–D10 and the `sorry` from Theorems 1.1, 1.2 and 8.2. Split by the formalize task 2026-11-18:
+  - Done through B1a–B1f below (each has its own note); ticked once all of them had compiled.
   - [x] B1a. Compatibility check: PFR's toolchain against Lean 4.35.0, and PFR's constant against
         the 6 in (35). No Lean change.
     - Checked by the formalize task 2026-11-18 17:01 UTC. Toolchain: PFR commit `ebe2d96` ("Bump to
@@ -151,16 +152,40 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
         `toMeasure_real_singleton` (`K.toMeasure.real {a} = (K a).toReal`) and
         `measureEntropy_toMeasure` in `EntropyLean/PFRBridge.lean` (00c4f8e). CI green at
         00c4f8e. Ticked by the formalize task 2026-11-18 18:37 UTC.
-  - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
+  - [x] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
         over F₂ (the law of `A − B` under the product measure is `conv K L`), and the law of a
         variable that is uniform on `W` is `uniformSub W`.
-  - [ ] B1f. `martonBoundConst_five : MartonBoundConst.{0} 5` and `martonBound : MartonBound.{0}`
+    - Written by the formalize task 2026-11-18 19:38 UTC (uncompiled at push):
+      `toMeasure_prod_toMeasure`, `map_sub_prod_toMeasure`, `rdist_toMeasure`,
+      `isUniform_uniformSub`, `identDistrib_uniformSub` in `EntropyLean/PFRBridge.lean`
+      (fdd0fca). CI failed at fdd0fca: `PMF.toMeasure_map` takes the map as its first explicit
+      argument. a865a09 has the same message and changes nothing (an upload that GitHub
+      processed twice). Fixed at 91a2c20, CI green. Ticked by the formalize task 2026-11-18
+      20:20 UTC.
+  - [x] B1f. `martonBoundConst_five : MartonBoundConst.{0} 5` and `martonBound : MartonBound.{0}`
         from B1c–B1e. Then replace the three `sorry`s in `EntropyLean/Statements.lean` by
         `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` and
         `weighted_family_rigidity_of_marton_univ` applied to `martonBound`, and record the output
         of `#print axioms` for the three theorems here. Only then may Theorems 1.1, 1.2 and 8.2 be
         called proved. Then update the statuses in `docs/DEPENDENCIES.md`: its section "What is
         left" lists the boxes that wait for this item.
+    - Written by the formalize task 2026-11-18 19:51 UTC (uncompiled at push):
+      `martonBoundConst_five` (PFR's theorem for the identity map on `V` with the measure
+      `K.toMeasure`, translated by B1d and B1e) and `martonBound` in `EntropyLean/PFRBridge.lean`
+      (94cfa62), CI green. Then the three `sorry`s in `EntropyLean/Statements.lean` were replaced
+      by the three theorems above applied to `martonBound` (b6e3ad2), with `assert_no_sorry` for
+      each and a `run_cmd` that fails the build if one of them depends on an axiom other than
+      `propext`, `Classical.choice` and `Quot.sound`. CI green at b6e3ad2, where `#print axioms`
+      printed, for each of `exponential_entropy_quotient`, `sparse_rigidity` and
+      `weighted_family_rigidity`: `depends on axioms: [propext, Classical.choice, Quot.sound]`.
+      **Theorems 1.1, 1.2 and 8.2 are proved: no `sorry`, no hypothesis.** The only `sorry`s left
+      are the two in `FeatureMap.lean`, which is not part of the paper. In 0667cec the same file
+      states with no hypothesis the other results that rested on (35): `marton_consequence`
+      ((36)), `WeightedFamily.sparse_posterior_lemma` (Lemma 7.1), `ratio_growth_lemma`
+      (Lemma 8.1), `two_input_almost_additivity` (Corollary 9.2), `coset_concentration` and
+      `exists_large_coset` (Corollary 9.4), under the same checks; CI green. cc202f1 corrects six
+      docstrings that still called (35), Theorem 8.2 or Lemma 8.1 unproved. Ticked by the formalize
+      task 2026-11-18 20:20 UTC.
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - Done through B2a–B2c below (each has its own note); ticked once all of them had compiled.
@@ -824,7 +849,7 @@ what its proof actually gives.
   - B1a (formalize task 2026-11-18) found the constant: PFR's `entropic_PFR_conjecture_improv`
     gives `d[X;U_H] ≤ 5 d[X;X]` for a single variable, so `C = 5` and
     `48C + 17 + 2 log₂(1 + C) = 257 + 2 log₂ 6 ≈ 262.2`. (For `C = 11/2` the constant is about
-    286.4; H5 did that arithmetic.) Waits for B1f.
+    286.4; H5 did that arithmetic.) B1f is done, so `martonBoundConst_five` is available.
 
 ## H. Special cases of the Marton bound (35)
 

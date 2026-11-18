@@ -5,14 +5,17 @@ Lean 4 / Mathlib formalization work for
 > Josiah Park, *Dimension-free exponential entropy quotients over 𝔽₂*, arXiv:2610.38525v1 (28 Oct 2026).
 > The paper is included at [`paper/2610.38525v1.pdf`](paper/2610.38525v1.pdf).
 
-**Status: research blueprint, not a verified proof.** Theorems 1.1, 1.2 and 8.2 are stated in
-Lean with `sorry`; Proposition 9.3 is proved. Most of the paper's supporting results are proved
-without `sorry`: Lemmas 2.1, 2.2, 3.1, 4.1, 5.1, 6.1–6.3 and 9.1; (36), Lemma 7.1 and Lemma 8.1 from the
-entropic Marton theorem (35), the paper's one external input, which enters as a hypothesis
-(`MartonInput V`, `MartonBound`); Theorem 8.2 from (35) for spaces in `Type`; and Theorems 1.1,
-1.2 and Corollary 9.2 from Theorem 8.2. GitHub Actions compiles the project with Lean 4.35.0 and
-Mathlib v4.35.0 on every push (see the Actions tab); the library first compiled at commit
-`9130247`.
+**Status: Theorems 1.1, 1.2 and 8.2 are proved in Lean, with no `sorry` and no hypothesis.** So
+is every other result in the dependency chart: Lemmas 2.1, 2.2, 3.1, 4.1, 5.1, 6.1–6.3, 7.1, 8.1
+and 9.1, equation (36), Corollaries 9.2 and 9.4, and Proposition 9.3 (`EntropyLean/Statements.lean`
+states the main ones). The paper's one external input, the entropic Marton theorem (35) of
+Gowers, Green, Manners and Tao, is not reproved here: it comes from the Lean proof in the
+[PFR project](https://github.com/teorth/pfr), which this repository imports and translates to its
+own definitions (`EntropyLean/PFRBridge.lean`). The build fails if one of the main results
+depends on `sorry` or on an axiom other than Lean's standard `propext`, `Classical.choice` and
+`Quot.sound`. The Lean statements were checked against the paper but have not been independently
+reviewed. GitHub Actions compiles the project with Lean 4.35.0 and Mathlib v4.35.0 on every push
+(see the Actions tab); the library first compiled at commit `9130247`.
 
 - [ROADMAP.md](ROADMAP.md): the ordered work list.
 - [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md): chart of how the paper's results depend on each
@@ -38,7 +41,8 @@ Proposition 9.3 is [docs/NUMERICAL_TABLE.md](docs/NUMERICAL_TABLE.md).
 | `EntropyLean/Basic.lean` | Entropy in bits `H`, convolution, increment `D`, defect `E`, interaction `s`, subspace defect `F_P(W)`, single-law sparsity (eqs. (1), (6), (8), (10)) | `entropyBits_eq_sum`, `entropyDefect_eq` (`E = H − D`), `interaction_self` (`s(P,P) = E(P)`) |
 | `EntropyLean/Families.lean` | Weighted families, `h(𝒫)`, `e(𝒫)`, `F_𝒫(W)`, averaged sparsity, quotient family `q_G 𝒫`, convolution family `𝒫 * 𝒫` (eqs. (12)–(13)) | `meanEntropy_quotient`, `conv_weights_sum` |
 | `EntropyLean/Bernoulli.lean` | Binary entropy `h₂`, Bernoulli increment and defect (Prop. 9.3) | `binaryEntropy_eq_zero_of_not_mem`, `bernoulli_parameter_mem_Ioo` |
-| `EntropyLean/Statements.lean` | Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1, Proposition 9.3 | Lemma 4.1, Lemma 9.1 and Proposition 9.3 (proofs in `RatioSparsification.lean`, `Variational.lean` and `ScaleNecessaryProof.lean`) and the algebraic step `E ≤ θH ⇒ H ≤ (1+ε)D` (`entropy_le_increment_of_defect_le`); Theorems 1.1, 1.2, 8.2 are `sorry` |
+| `EntropyLean/Statements.lean` | Theorem 1.1, Theorem 1.2, Theorem 8.2, Lemma 4.1, Lemma 9.1, Proposition 9.3; with no hypothesis, (36), Lemmas 7.1 and 8.1, Corollaries 9.2 and 9.4 | All of them. Theorems 1.1, 1.2 and 8.2 from `martonBound`; the file ends with checks that fail the build if one of its theorems depends on `sorry` or on a non-standard axiom |
+| `EntropyLean/PFRBridge.lean` | The entropic Marton bound (35) from the PFR project | `martonBound` ((35) with the paper's constant 6) and `martonBoundConst_five` (constant 5), and the agreement of PFR's entropy, Ruzsa distance and uniform variables with the ones used here (roadmap item B1) |
 | `EntropyLean/*.lean` (the other files) | One file per roadmap item, from entropy facts (`EntropyFacts.lean`) to Lemma 8.1 (`RatioGrowthProof.lean`); each starts with a docstring saying what it proves and what it does not | see [ROADMAP.md](ROADMAP.md), which names the file and theorems of every item, and [docs/THEOREMS.md](docs/THEOREMS.md), which lists every theorem |
 | `EntropyLean/MathlibForPFR.lean` | The import list of Mathlib without the six modules whose declarations have the same names as declarations of the PFR project; the library files import it in place of `import Mathlib` (roadmap item B1d1) | nothing (imports only) |
 | `EntropyLean/FeatureMap.lean` | Separate p-frame symmetric-power feature map (not part of this paper; not imported by the root module `EntropyLean.lean`) | nothing (2 `sorry`) |
@@ -77,19 +81,14 @@ imports `Mathlib`.
 
 ## Next proof work
 
-See [ROADMAP.md](ROADMAP.md). Items A–J are done apart from B1 and G4: Proposition 9.3 is proved,
-and Corollary 9.4 is proved from the conclusion of Theorem 1.1 (or from the entropic Marton bound
-(35)). With (35) as the only hypothesis, Theorems 1.1, 1.2 and 8.2 hold with the constant 311 in
-place of 320 (`EntropyLean/ConstantSlack.lean`), and with a Marton constant `C` in place of 6 they
-hold with `48C + 17 + 2 log₂(1 + C)` (`EntropyLean/MartonChainConst.lean`).
+See [ROADMAP.md](ROADMAP.md). Every item is done apart from G4. Besides the paper's results, two
+improvements of the constant 320 are proved from (35): 311 (`EntropyLean/ConstantSlack.lean`), and
+`48C + 17 + 2 log₂(1 + C)` for a Marton constant `C` in place of 6
+(`EntropyLean/MartonChainConst.lean`).
 
-The only input not proved here is the entropic Marton bound (35) itself. The paper cites it from
-Gowers, Green, Manners and Tao rather than proving it, and every result above takes it as a
-hypothesis. Roadmap item B1 replaces that hypothesis by the theorem of the
-[PFR project](https://github.com/teorth/pfr), which this repository now requires, pinned to PFR's
-last commit on Lean v4.35.0. PFR proves the bound, with constant 5, for random variables on a
-probability space. `EntropyLean/PFRBridge.lean` imports that theorem (B1c) and shows that PFR's
-entropy of a law is the entropy used here, in nats instead of bits (B1d). What remains (B1e–B1f)
-is the same agreement for the Ruzsa distance and for uniform laws, and then the bound itself for
-the `PMF`-based definitions used here. Until that is done, Theorems 1.1, 1.2 and 8.2 keep their
-`sorry`.
+The entropic Marton bound (35) is taken from the [PFR project](https://github.com/teorth/pfr),
+pinned to PFR's last commit on Lean v4.35.0 (roadmap item B1). PFR proves it, with constant 5, for
+random variables on a probability space. `EntropyLean/PFRBridge.lean` translates PFR's entropy,
+Ruzsa distance and uniform variables to the `PMF`-based definitions used here, and proves
+`martonBound`, the bound with the paper's constant 6, with no hypothesis. The open item G4 uses
+PFR's constant 5 to replace 320 by 263 in Theorems 1.1, 1.2 and 8.2.
