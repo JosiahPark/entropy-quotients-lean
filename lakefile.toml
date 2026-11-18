@@ -7,6 +7,13 @@ name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
 rev = "v4.35.0"
 
+# The entropic Marton bound (35) is taken from the PFR project (roadmap item B1). This commit is
+# PFR's last one on Lean v4.35.0 and Mathlib v4.35.0; its master is on a later toolchain.
+[[require]]
+name = "PFR"
+git = "https://github.com/teorth/pfr.git"
+rev = "ebe2d96230b1abb190f74592aace441a0f10fe09"
+
 [[lean_lib]]
 name = "EntropyLean"
 globs = ["EntropyLean", "EntropyLean.+"]
