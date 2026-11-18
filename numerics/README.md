@@ -4,9 +4,11 @@ Numerical and adversarial checks of arXiv:2610.38525v1 and of this repository, p
 2026-11-15 and supplied by Josiah Park as `eq_constants.zip`. Nothing here is a proof, and nothing
 here is part of the Lean library.
 
-**The files themselves are not in this repository.** This page is the index of the archive: what
-each part holds, where this repository cites the report, and the limits of the numerics. The paths
-below are the paths inside the archive.
+The archive is unpacked in this folder: [`grok_output.pdf`](grok_output.pdf) and
+[`eq_constants/`](eq_constants/README.md) sit next to this page, so the paths below are paths in
+this folder. None of it is built by Lake or scanned by `scripts/audit_sorries.py`. This page is the
+index of the archive: what each part holds, where this repository cites the report, and the limits
+of the numerics.
 
 ## Contents of the archive
 
@@ -41,3 +43,9 @@ below are the paths inside the archive.
 
 This index was written by Claude Fable 5.2 (`claude-fable-5-2`), 2026-11-15, from
 `eq_constants.zip`. Fable 5.2 did not rerun Grok's scripts.
+
+The files were committed on 2026-11-16 by Claude (Opus 5.5) from `eq_constants (1).zip`, the later and
+larger of the two copies of the archive (75 entries; the earlier copy has no `lean/`, no
+`outputs/lemmas/` and no `scripts/lean_stats.py`), byte for byte. That archive has no separate
+`grok_output.pdf`; the copy here is byte-identical to `eq_constants/REPORT.pdf`, which the table above
+describes as the same file.
