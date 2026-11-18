@@ -99,12 +99,39 @@ and no hypotheses beyond the paper's.
       CI green at 2b427b6: Lake cloned PFR, AddCombi and checkdecls and built the library as
       before, in 4 minutes. Nothing of PFR is compiled until a file imports it. Ticked by the
       formalize task 2026-11-18 17:12 UTC.
-  - [ ] B1c. First import (`EntropyLean/PFRBridge.lean`, a new file importing `PFR.ImprovedPFR`):
+  - [x] B1c. First import (`EntropyLean/PFRBridge.lean`, a new file importing `PFR.ImprovedPFR`):
         in PFR's language, for a measurable `X : Ω → G` on a probability space,
         `∃ H U, IsUniform H U ∧ d[X # U] ≤ 5 * d[X # X]` (`pfr_single_variable`), from
         `entropic_PFR_conjecture_improv` with `X₀₁ = X₀₂ = X`.
+    - Written by the formalize task 2026-11-18 17:16 UTC (uncompiled at push):
+      `pfr_single_variable` in the new file `EntropyLean/PFRBridge.lean` (ac92ec2). CI failed at
+      ac92ec2: the file imported `Mathlib` and `PFR.ImprovedPFR`, and
+      `ProbabilityTheory.IdentDistrib.prodMk` is declared both in
+      `Mathlib.Probability.IdentDistribIndep` and in `PFR.Mathlib.Probability.IdentDistrib`. Fixed
+      at f4f2239 by importing only `PFR.ImprovedPFR`. CI green at f4f2239: the 45 PFR modules
+      built in 3.5 minutes and are cached for later runs. Ticked by the formalize task
+      2026-11-18 17:31 UTC.
+    - Import clash, found by comparing the declaration names of the 45 PFR modules with those
+      of Mathlib v4.35.0 (a scan of the sources, so names that Lean generates automatically are
+      not covered, and CI has confirmed only the first): four PFR declarations have the name of
+      a declaration in a Mathlib module that PFR does not import. They are
+      `ProbabilityTheory.IdentDistrib.prodMk` (`Mathlib.Probability.IdentDistribIndep`),
+      `ProbabilityTheory.CondIndepFun` and `ProbabilityTheory.condIndepFun_iff`
+      (`Mathlib.Probability.Independence.Conditional`), and `MeasureTheory.Measure.support`
+      (`Mathlib.MeasureTheory.Measure.Support`). Three further Mathlib modules import these:
+      `Mathlib.Probability.Independence.ZeroOne`, `Mathlib.Dynamics.Ergodic.EmpiricalMeasure` and
+      `Mathlib.MeasureTheory.Measure.ResolventTransform`. Every file of the library starts with
+      `import Mathlib`, so at present no file can import both the library and PFR.
   - [ ] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
         PFR's `Hm[K.toMeasure] = entropyBits K * log 2` (`measureEntropy_toMeasure`).
+        Split by the formalize task 2026-11-18, because of the import clash noted under B1c:
+    - [ ] B1d1. Imports: a new file `EntropyLean/MathlibForPFR.lean` that imports every module of
+          Mathlib except the six named under B1c, and `import EntropyLean.MathlibForPFR` in
+          place of `import Mathlib` in every file of the library (`FeatureMap.lean` is not
+          touched). This replaces the task's rule that each new file starts with
+          `import Mathlib`, so it waits for Josiah's agreement.
+    - [ ] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
+          `EntropyLean.Information` (for `entropyBits_eq_div_log`).
   - [ ] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
         over F₂ (the law of `A − B` under the product measure is `conv K L`), and the law of a
         variable that is uniform on `W` is `uniformSub W`.

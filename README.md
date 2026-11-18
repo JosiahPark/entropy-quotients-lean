@@ -82,5 +82,6 @@ Gowers, Green, Manners and Tao rather than proving it, and every result above ta
 hypothesis. Roadmap item B1 replaces that hypothesis by the theorem of the
 [PFR project](https://github.com/teorth/pfr), which this repository now requires, pinned to PFR's
 last commit on Lean v4.35.0. PFR proves the bound, with constant 5, for random variables on a
-probability space. What remains (B1c–B1f) is to translate it to the `PMF`-based definitions used
-here. Until that is done, Theorems 1.1, 1.2 and 8.2 keep their `sorry`.
+probability space, and `EntropyLean/PFRBridge.lean` imports that theorem (B1c). What remains
+(B1d–B1f) is to translate it to the `PMF`-based definitions used here. Until that is done,
+Theorems 1.1, 1.2 and 8.2 keep their `sorry`.
