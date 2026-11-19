@@ -22,7 +22,9 @@ as a hidden assumption. No item claims that Theorem 1.1 is proved until its proo
 and no hypotheses beyond the paper's.
 
 Imports: a file of the library that needs Mathlib starts with `import EntropyLean.MathlibForPFR`,
-not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the one exception.
+not with `import Mathlib` (item B1d1 gives the reason).
+
+Scope: `EntropyLean/FeatureMap.lean`, a separate stub, is outside this roadmap and its map.
 
 ## Done (v0.2, CI-verified at 9130247)
 
@@ -110,8 +112,8 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
   - [x] B1d. Entropy agreement. `measureEntropy_toMeasure`: PFR's entropy of the measure of a law
     is `Hm[K.toMeasure] = entropyBits K * log 2`. In two parts, B1d1 and B1d2.
   - [x] B1d1. Imports (part of B1d). `EntropyLean/MathlibForPFR.lean` is Mathlib without the six
-    modules named under B1c; every library file except `FeatureMap.lean` imports it instead of
-    `Mathlib`. Josiah agreed to this change of the import rule on 2026-11-18.
+    modules named under B1c; every file of the formalization imports it instead of `Mathlib`.
+    Josiah agreed to this change of the import rule on 2026-11-18.
   - Written by the formalize task 2026-11-18 18:01 UTC: 8574f9a (the new file, imported by
     `PFRBridge.lean` together with PFR) and ce6a73c (the first line of 64 files); CI green at
     both, so nothing else clashes.

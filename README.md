@@ -45,7 +45,7 @@ Proposition 9.3 is [docs/NUMERICAL_TABLE.md](docs/NUMERICAL_TABLE.md).
 | `EntropyLean/PFRBridge.lean` | The entropic Marton bound (35) from the PFR project | `martonBound` ((35) with the paper's constant 6) and `martonBoundConst_five` (constant 5), and the agreement of PFR's entropy, Ruzsa distance and uniform variables with the ones used here (roadmap item B1) |
 | `EntropyLean/*.lean` (the other files) | One file per roadmap item, from entropy facts (`EntropyFacts.lean`) to Lemma 8.1 (`RatioGrowthProof.lean`); each starts with a docstring saying what it proves and what it does not | see [ROADMAP.md](ROADMAP.md), which names the file and theorems of every item, and [docs/THEOREMS.md](docs/THEOREMS.md), which lists every theorem |
 | `EntropyLean/MathlibForPFR.lean` | The import list of Mathlib without the six modules whose declarations have the same names as declarations of the PFR project; the library files import it in place of `import Mathlib` (roadmap item B1d1) | nothing (imports only) |
-| `EntropyLean/FeatureMap.lean` | Separate p-frame symmetric-power feature map (not part of this paper; not imported by the root module `EntropyLean.lean`) | nothing (2 `sorry`) |
+| `EntropyLean/FeatureMap.lean` | A separate stub, not part of this paper or its roadmap | nothing (2 `sorry`) |
 | `archive/` | The five original draft files, unchanged | — |
 | `paper/` | The arXiv PDF | — |
 | `missing/` | Draft declarations with no counterpart in the library, collected verbatim (not built) | — |
@@ -59,14 +59,13 @@ Proposition 9.3 is [docs/NUMERICAL_TABLE.md](docs/NUMERICAL_TABLE.md).
 - Lemma 9.1 now states the full conclusion (`q_G 𝒫` is λ-sparse), and Lemma 4.1 includes the convolution-family clause (`𝒫₀ * 𝒫₀` is 4λ-sparse), using the new `WeightedFamily.quotient` and `WeightedFamily.convFamily`.
 - Proposition 9.3 is stated as "for every `c < 2`, eventually `c ≤ ε log₂ C(ε)`", which is what `liminf ≥ 2` means. Lean's `liminf` on `ℝ` returns a junk value for functions unbounded above, so the `liminf` form could be false for the wrong reason.
 - The Bernoulli placeholder target is replaced by a proved lemma.
-- A CI workflow builds the library and the FeatureMap module and lists every `sorry`.
+- A CI workflow builds the library and lists every `sorry`.
 
 ## Build
 
 ```sh
 lake exe cache get
 lake build
-lake env lean EntropyLean/FeatureMap.lean
 python3 scripts/audit_sorries.py
 node scripts/theorem_list.js > docs/THEOREMS.md   # regenerate the theorem list
 ```
@@ -74,10 +73,9 @@ node scripts/theorem_list.js > docs/THEOREMS.md   # regenerate the theorem list
 The build also compiles the part of the PFR project that the library imports (roadmap item B1);
 `lake exe cache get` only fetches Mathlib.
 
-A library file imports `EntropyLean.MathlibForPFR`, not `Mathlib`. PFR and Mathlib declare four
-names in common, so no file can import both; `EntropyLean/MathlibForPFR.lean` is Mathlib without
-the six modules involved (roadmap item B1d1). `FeatureMap.lean` is the exception and still
-imports `Mathlib`.
+A file of the formalization imports `EntropyLean.MathlibForPFR`, not `Mathlib`. PFR and Mathlib
+declare four names in common, so no file can import both; `EntropyLean/MathlibForPFR.lean` is
+Mathlib without the six modules involved (roadmap item B1d1).
 
 ## Next proof work
 
