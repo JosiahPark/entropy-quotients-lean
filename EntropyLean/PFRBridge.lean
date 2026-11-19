@@ -6,52 +6,43 @@ import EntropyLean.MartonConst
 import PFR.ImprovedPFR
 
 /-!
-# Bridge to the PFR project (roadmap item B1)
+# The entropic Marton bound (35) from the PFR project
 
-The paper's one external input is the entropic Marton bound (35). Roadmap item B1 takes it from
-the PFR project (github.com/teorth/pfr), where it is the theorem `entropic_PFR_conjecture_improv`,
-stated for random variables on probability spaces with entropy in nats.
+This file is the library's entropy backend (roadmap item B1). It proves
 
-Proved here, in PFR's language:
-* `pfr_single_variable` (roadmap item B1c): for a measurable `X : Ω₀ → G` with values in a finite
-  F₂-space `G` there are a subspace `H` of `G` and a random variable `U`, uniform on `H`, with
-  `d[X # U] ≤ 5 * d[X # X]`. This is PFR's bound `d[X₁ # U] + d[X₂ # U] ≤ 10 * d[X₁ # X₂]` with
-  `X₁ = X₂ = X`.
+    martonBound : MartonBound.{0}
 
-Proved here, between PFR's language and the library's:
-* `measureEntropy_toMeasure` (roadmap item B1d2): for a law `K : PMF α` on a finite type, PFR's
-  entropy of the measure `K.toMeasure` is the library's entropy of `K`, in nats instead of bits:
-  `Hm[K.toMeasure] = entropyBits K * log 2`. The helper `toMeasure_real_singleton` gives the mass
-  of a point.
-* `rdist_toMeasure` (roadmap item B1e): for laws `K`, `L` on a finite F₂-space, PFR's Ruzsa
-  distance of the measures `K.toMeasure`, `L.toMeasure` is the library's `ruzsaDist K L`, in nats
-  instead of bits: `rdist id id K.toMeasure L.toMeasure = ruzsaDist K L * log 2`. It rests on
-  `toMeasure_prod_toMeasure` (the product of the two measures is the measure of `prodLaw K L`)
-  and `map_sub_prod_toMeasure` (the law of `A − B` is `conv K L`, since `A − B = A + B` over F₂).
-* `isUniform_uniformSub` and `identDistrib_uniformSub` (roadmap item B1e): the measure of
-  `uniformSub W` is uniform on `W` in PFR's sense, so a measurable variable that is uniform on
-  `W` in PFR's sense has the law `uniformSub W`.
+that is, the entropic Marton bound (35) with the paper's constant 6, with no hypothesis. The rest
+of the library takes (35) as a hypothesis; `EntropyLean/Statements.lean` supplies it from here and
+so proves Theorems 1.1, 1.2 and 8.2.
 
-Proved here, in the library's language (roadmap item B1f):
-* `martonBoundConst_five : MartonBoundConst.{0} 5`: the entropic Marton bound (35) with constant
-  5, for every law on every finite F₂-space in `Type`. It has no hypothesis: it is
-  `pfr_single_variable` for the identity map on `V` with the measure `K.toMeasure`, translated by
-  the agreements above.
-* `martonBound : MartonBound.{0}`: the bound with the paper's constant 6, which is the hypothesis
-  of the rest of the library.
+The proof of the bound is not this repository's. The PFR project (github.com/teorth/pfr) proves it
+in Lean, with constant 5, as `entropic_PFR_conjecture_improv`. This file imports that theorem and
+translates it, in three steps.
 
-What this file does NOT prove: Theorems 1.1, 1.2 and 8.2 themselves. `EntropyLean/Statements.lean`
-states them, and they follow from `martonBound` by the `…_of_marton` theorems of
-`EntropyLean/UniverseTransport.lean`. The proof of the Marton bound is PFR's, not this
-repository's: this file only imports it and translates it.
+1. **PFR's theorem for one variable** (`pfr_single_variable`, B1c). For a measurable `X` with
+   values in a finite F₂-space there is a variable `U`, uniform on a subspace, with
+   `d[X # U] ≤ 5 * d[X # X]`. This is PFR's bound `d[X₁ # U] + d[X₂ # U] ≤ 10 * d[X₁ # X₂]` with
+   `X₁ = X₂ = X`.
+2. **Translation** (B1d, B1e). PFR works with random variables on probability spaces and entropy
+   in nats; the library works with laws (`PMF`) and entropy in bits. For laws `K` and `L`:
+   * `measureEntropy_toMeasure`: `Hm[K.toMeasure] = entropyBits K * log 2`;
+   * `rdist_toMeasure`: `rdist id id K.toMeasure L.toMeasure = ruzsaDist K L * log 2`, through
+     `toMeasure_prod_toMeasure` and `map_sub_prod_toMeasure` (over F₂, `A − B = A + B`);
+   * `isUniform_uniformSub` and `identDistrib_uniformSub`: a variable that is uniform on a
+     subspace `W` has the law `uniformSub W`.
+3. **The bound for laws** (B1f). `martonBoundConst_five` applies step 1 to the identity map on `V`
+   under the measure `K.toMeasure` and translates with step 2. Both sides of (35) scale by
+   `log 2`, so the constant stays 5; `martonBound` weakens it to the paper's 6.
 
-Imports. `EntropyLean.MathlibForPFR` is Mathlib without the six modules whose declarations have
-the same names as declarations of PFR; that file gives the list and the reasons. It is imported
-here together with `PFR.ImprovedPFR`, so the build of this file checks that the rest of Mathlib
-and the part of PFR used here have no other name in common. `EntropyLean.Information` is imported
-for `entropyBits_eq_div_log`, `EntropyLean.ConditionalBSG` for `sub_eq_add_of_zmod2`,
-`EntropyLean.MartonSmoothing` for `uniformSub_toReal`, and `EntropyLean.MartonConst` for
-`MartonBoundConst`.
+What this file does NOT prove: Theorems 1.1, 1.2 and 8.2 themselves, which `Statements.lean`
+derives from `martonBound`; and the Marton bound itself, whose proof is PFR's.
+
+Imports. `EntropyLean.MathlibForPFR` is Mathlib without the six modules that declare names PFR
+also declares (that file lists them). Importing it together with `PFR.ImprovedPFR` checks that
+nothing else clashes. The other four imports supply `entropyBits_eq_div_log` (`Information`),
+`sub_eq_add_of_zmod2` (`ConditionalBSG`), `uniformSub_toReal` (`MartonSmoothing`) and
+`MartonBoundConst` (`MartonConst`).
 -/
 
 open MeasureTheory ProbabilityTheory
@@ -59,6 +50,8 @@ open MeasureTheory ProbabilityTheory
 namespace EntropyLean
 
 universe uG
+
+/-! ## Step 1: PFR's theorem for one random variable -/
 
 /-- **B1c.** PFR's improved entropic theorem for a single random variable: a measurable `X` with
 values in a finite F₂-space is within Ruzsa distance `5 * d[X # X]` of a variable `U` that is
@@ -76,6 +69,8 @@ theorem pfr_single_variable {Ω₀ : Type*} [MeasureSpace Ω₀]
   refine ⟨H, Ω, mΩ, U, hP, hU, hunif, ?_⟩
   have h : d[X # U] + d[X # U] ≤ 10 * d[X # X] := hsum
   linarith
+
+/-! ## Step 2: translation between PFR's language and the library's -/
 
 /-- The mass that the measure of a law `K` gives to a point, as a real number. -/
 theorem toMeasure_real_singleton {α : Type*} [MeasurableSpace α] [MeasurableSingletonClass α]
@@ -161,6 +156,8 @@ theorem identDistrib_uniformSub {Ω : Type*} [MeasurableSpace Ω] {μ : Measure 
     (hU : Measurable U) (hunif : IsUniform (W : Set V) U μ) :
     IdentDistrib U (id : V → V) μ (uniformSub W).toMeasure :=
   IdentDistrib.of_isUniform (H := (W : Set V)) hU measurable_id hunif (isUniform_uniformSub W)
+
+/-! ## Step 3: the bound for laws -/
 
 /-- **B1f.** The entropic Marton bound (35) with constant 5, for every law `K` on every finite
 F₂-space `V` in `Type`: some subspace `W` has `d(K, U_W) ≤ 5 D(K)`. No hypothesis: this is PFR's
