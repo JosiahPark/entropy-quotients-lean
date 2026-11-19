@@ -69,123 +69,68 @@ not with `import Mathlib` (item B1d1 gives the reason). `FeatureMap.lean` is the
 
 ## B. Information-theory layer
 
-- [x] B1. Entropy backend: take the entropic Marton bound (35) from the PFR project
-      (github.com/teorth/pfr), which formalizes Shannon entropy, Ruzsa distance and the entropic
-      PFR theorem, and keep the `PMF`-based definitions here. Decided by Josiah on 2026-11-18. The
-      work is to prove `MartonBound.{0}` from PFR's theorem; that removes the hypothesis from
-      D7–D10 and the `sorry` from Theorems 1.1, 1.2 and 8.2. Split by the formalize task 2026-11-18:
-  - Done through B1a–B1f below (each has its own note); ticked once all of them had compiled.
-  - [x] B1a. Compatibility check: PFR's toolchain against Lean 4.35.0, and PFR's constant against
-        the 6 in (35). No Lean change.
-    - Checked by the formalize task 2026-11-18 17:01 UTC. Toolchain: PFR commit `ebe2d96` ("Bump to
-      v4.35.0", 2026-10-16) uses Lean v4.35.0 and Mathlib `56a0058` (tag v4.35.0), exactly as this
-      repository does, and the eight further packages in both manifests (plausible,
-      LeanSearchClient, importGraph, proofwidgets, aesop, Qq, batteries, Cli) are at the same
-      revisions. PFR's master is already on Lean v4.36.0-rc2, so the dependency has to be pinned
-      to `ebe2d96`. `PFR.ImprovedPFR` and `PFR.EntropyPFR` import 45 PFR modules (about 12,000
-      lines, none from PFR's dependency AddCombi), and none of the 45 contains `sorry`, `axiom` or
-      `opaque`. Constant: `entropic_PFR_conjecture` (`η = 1/9`) gives
-      `d[X₁;U_H] + d[X₂;U_H] ≤ 11 d[X₁;X₂]` with each term at most `6 d[X₁;X₂]`, and
-      `entropic_PFR_conjecture_improv` (`η = 1/8`) gives the sum `≤ 10 d[X₁;X₂]` with each term at
-      most `11/2 d[X₁;X₂]`. For `X₁ = X₂ = X` the improved sum bound is `d[X;U_H] ≤ 5 d[X;X]`, and
-      over F₂ `d[X;X] = H(X + X') − H(X) = D(X)`, so (35) holds with 5 in place of 6. PFR states
-      this for random variables on a probability space, with entropy in nats, `H` a
-      `Submodule (ZMod 2) G` and `U` uniform on it (`IsUniform`); B1d–B1e translate that to the
-      `PMF` definitions (both sides of (35) scale by `log 2`).
-  - [x] B1b. Dependency: `require PFR` at `ebe2d96` in `lakefile.toml`, with the entries for `PFR`
-        and its own dependencies `AddCombi` and `checkdecls` in `lake-manifest.json`. In
-        `.github/workflows/lean.yml`, a longer job timeout and a cache for the PFR build (the first
-        build compiles the 45 PFR modules). No Lean file imports PFR yet.
-    - Written by the formalize task 2026-11-18 17:07 UTC: `lakefile.toml` and `lake-manifest.json`
-      (2b427b6; the three manifest entries were written by hand, copied from PFR's own manifest,
-      because `lake update` cannot be run in the task's session) and `.github/workflows/lean.yml`
-      (7c800bf: job timeout 90 minutes; the PFR build is restored and saved with `actions/cache`).
-      CI green at 2b427b6: Lake cloned PFR, AddCombi and checkdecls and built the library as
-      before, in 4 minutes. Nothing of PFR is compiled until a file imports it. Ticked by the
-      formalize task 2026-11-18 17:12 UTC.
-  - [x] B1c. First import (`EntropyLean/PFRBridge.lean`, a new file importing `PFR.ImprovedPFR`):
-        in PFR's language, for a measurable `X : Ω → G` on a probability space,
-        `∃ H U, IsUniform H U ∧ d[X # U] ≤ 5 * d[X # X]` (`pfr_single_variable`), from
-        `entropic_PFR_conjecture_improv` with `X₀₁ = X₀₂ = X`.
-    - Written by the formalize task 2026-11-18 17:16 UTC (uncompiled at push):
-      `pfr_single_variable` in the new file `EntropyLean/PFRBridge.lean` (ac92ec2). CI failed at
-      ac92ec2: the file imported `Mathlib` and `PFR.ImprovedPFR`, and
-      `ProbabilityTheory.IdentDistrib.prodMk` is declared both in
-      `Mathlib.Probability.IdentDistribIndep` and in `PFR.Mathlib.Probability.IdentDistrib`. Fixed
-      at f4f2239 by importing only `PFR.ImprovedPFR`. CI green at f4f2239: the 45 PFR modules
-      built in 3.5 minutes and are cached for later runs. Ticked by the formalize task
-      2026-11-18 17:31 UTC.
-    - Import clash, found by comparing the declaration names of the 45 PFR modules with those
-      of Mathlib v4.35.0 (a scan of the sources, so names that Lean generates automatically are
-      not covered; CI confirmed the first at ac92ec2 and, at 8574f9a, that there is no other):
-      four PFR declarations have the name of a declaration in a Mathlib module that PFR does not
-      import. They are
-      `ProbabilityTheory.IdentDistrib.prodMk` (`Mathlib.Probability.IdentDistribIndep`),
-      `ProbabilityTheory.CondIndepFun` and `ProbabilityTheory.condIndepFun_iff`
-      (`Mathlib.Probability.Independence.Conditional`), and `MeasureTheory.Measure.support`
-      (`Mathlib.MeasureTheory.Measure.Support`). Three further Mathlib modules import these:
-      `Mathlib.Probability.Independence.ZeroOne`, `Mathlib.Dynamics.Ergodic.EmpiricalMeasure` and
-      `Mathlib.MeasureTheory.Measure.ResolventTransform`. Every file of the library then started
-      with `import Mathlib`, so no file could import both the library and PFR. B1d1 removed that
-      obstacle.
-  - [x] B1d. Entropy agreement (`EntropyLean/PFRBridge.lean`): for a law `K` on a finite type,
-        PFR's `Hm[K.toMeasure] = entropyBits K * log 2` (`measureEntropy_toMeasure`).
-        Split by the formalize task 2026-11-18, because of the import clash noted under B1c:
-    - Done through B1d1 and B1d2 below (each has its own note); ticked once both had compiled.
-    - [x] B1d1. Imports: a new file `EntropyLean/MathlibForPFR.lean` that imports every module of
-          Mathlib except the six named under B1c, and `import EntropyLean.MathlibForPFR` in
-          place of `import Mathlib` in every file of the library (`FeatureMap.lean` is not
-          touched). This replaces the task's rule that each new file starts with
-          `import Mathlib`; Josiah agreed on 2026-11-18.
-      - Written by the formalize task 2026-11-18 18:01 UTC (uncompiled at push): the new file
-        `EntropyLean/MathlibForPFR.lean` (8574f9a). It is Mathlib's own `Mathlib.lean` at v4.35.0
-        without the six `public import` lines, and it proves nothing. In the same commit
-        `PFRBridge.lean` imports it together with `PFR.ImprovedPFR`. CI green at 8574f9a, so
-        Mathlib without the six modules loads together with the 45 PFR modules: there is no
-        further name clash. Then `import EntropyLean.MathlibForPFR` replaced `import Mathlib` in
-        the 64 other files that had it (ce6a73c: the first line of each file and nothing else).
-        CI green at ce6a73c: all 70 files of `EntropyLean/` were rebuilt, with the same five
-        `sorry` warnings as before. Ticked by the formalize task 2026-11-18 18:15 UTC.
-    - [x] B1d2. `measureEntropy_toMeasure`, with `PFRBridge.lean` importing
-          `EntropyLean.Information` (for `entropyBits_eq_div_log`).
-      - Written by the formalize task 2026-11-18 18:31 UTC (uncompiled at push):
-        `toMeasure_real_singleton` (`K.toMeasure.real {a} = (K a).toReal`) and
-        `measureEntropy_toMeasure` in `EntropyLean/PFRBridge.lean` (00c4f8e). CI green at
-        00c4f8e. Ticked by the formalize task 2026-11-18 18:37 UTC.
-  - [x] B1e. Distance agreement: `d[id ; K.toMeasure # id ; L.toMeasure] = ruzsaDist K L * log 2`
-        over F₂ (the law of `A − B` under the product measure is `conv K L`), and the law of a
-        variable that is uniform on `W` is `uniformSub W`.
-    - Written by the formalize task 2026-11-18 19:38 UTC (uncompiled at push):
-      `toMeasure_prod_toMeasure`, `map_sub_prod_toMeasure`, `rdist_toMeasure`,
-      `isUniform_uniformSub`, `identDistrib_uniformSub` in `EntropyLean/PFRBridge.lean`
-      (fdd0fca). CI failed at fdd0fca: `PMF.toMeasure_map` takes the map as its first explicit
-      argument. a865a09 has the same message and changes nothing (an upload that GitHub
-      processed twice). Fixed at 91a2c20, CI green. Ticked by the formalize task 2026-11-18
-      20:20 UTC.
-  - [x] B1f. `martonBoundConst_five : MartonBoundConst.{0} 5` and `martonBound : MartonBound.{0}`
-        from B1c–B1e. Then replace the three `sorry`s in `EntropyLean/Statements.lean` by
-        `exponential_entropy_quotient_of_marton`, `sparse_rigidity_of_marton` and
-        `weighted_family_rigidity_of_marton_univ` applied to `martonBound`, and record the output
-        of `#print axioms` for the three theorems here. Only then may Theorems 1.1, 1.2 and 8.2 be
-        called proved. Then update the statuses in `docs/DEPENDENCIES.md`: its section "What is
-        left" lists the boxes that wait for this item.
-    - Written by the formalize task 2026-11-18 19:51 UTC (uncompiled at push):
-      `martonBoundConst_five` (PFR's theorem for the identity map on `V` with the measure
-      `K.toMeasure`, translated by B1d and B1e) and `martonBound` in `EntropyLean/PFRBridge.lean`
-      (94cfa62), CI green. Then the three `sorry`s in `EntropyLean/Statements.lean` were replaced
-      by the three theorems above applied to `martonBound` (b6e3ad2), with `assert_no_sorry` for
-      each and a `run_cmd` that fails the build if one of them depends on an axiom other than
-      `propext`, `Classical.choice` and `Quot.sound`. CI green at b6e3ad2, where `#print axioms`
-      printed, for each of `exponential_entropy_quotient`, `sparse_rigidity` and
-      `weighted_family_rigidity`: `depends on axioms: [propext, Classical.choice, Quot.sound]`.
-      **Theorems 1.1, 1.2 and 8.2 are proved: no `sorry`, no hypothesis.** The only `sorry`s left
-      are the two in `FeatureMap.lean`, which is not part of the paper. In 0667cec the same file
-      states with no hypothesis the other results that rested on (35): `marton_consequence`
-      ((36)), `WeightedFamily.sparse_posterior_lemma` (Lemma 7.1), `ratio_growth_lemma`
-      (Lemma 8.1), `two_input_almost_additivity` (Corollary 9.2), `coset_concentration` and
-      `exists_large_coset` (Corollary 9.4), under the same checks; CI green. cc202f1 corrects six
-      docstrings that still called (35), Theorem 8.2 or Lemma 8.1 unproved. Ticked by the formalize
-      task 2026-11-18 20:20 UTC.
+- [x] B1. Entropy backend: prove the entropic Marton bound (35) from the PFR project instead of
+      assuming it. Result: `martonBound : MartonBound.{0}` in `EntropyLean/PFRBridge.lean`, with
+      no hypothesis, so Theorems 1.1, 1.2 and 8.2 are proved (B1f). Decided by Josiah on
+      2026-11-18; done in six steps, B1a–B1f, ticked once all of them had compiled.
+  - How it works. The PFR project (github.com/teorth/pfr) proves (35) in Lean with constant 5,
+    for random variables on a probability space, with entropy in nats. The library states (35)
+    for laws (`PMF`), with entropy in bits. `PFRBridge.lean` applies PFR's theorem to the
+    identity map on `V` under the measure `K.toMeasure` and translates the three quantities in
+    (35): entropy (B1d), Ruzsa distance and the uniform law on a subspace (B1e). Both sides of
+    (35) scale by `log 2`, so the constant stays 5, below the paper's 6.
+  - [x] B1a. Compatibility. PFR's commit `ebe2d96` uses Lean v4.35.0 and Mathlib `56a0058`, as this
+    repository does, and gives (35) with constant 5. No Lean change.
+  - Checked by the formalize task 2026-11-18 17:01 UTC. The other eight shared packages are at
+    the same revisions; PFR's master has moved to Lean v4.36.0-rc2, hence the pin. The 45 PFR
+    modules used (about 12,000 lines) contain no `sorry`, `axiom` or `opaque`. Constant:
+    `entropic_PFR_conjecture_improv` gives `d[X₁;U] + d[X₂;U] ≤ 10 d[X₁;X₂]`; with
+    `X₁ = X₂ = X` this is `d[X;U] ≤ 5 d[X;X]`, and `d[X;X] = D(X)` over F₂.
+  - [x] B1b. Dependency. `require PFR` at `ebe2d96` (`lakefile.toml`, `lake-manifest.json`) and a
+    cache for the PFR build in `.github/workflows/lean.yml`.
+  - Written by the formalize task 2026-11-18 17:07 UTC: 2b427b6 and 7c800bf; CI green. The
+    manifest entries for `PFR`, `AddCombi` and `checkdecls` were copied by hand from PFR's own.
+  - [x] B1c. First import. `pfr_single_variable`: PFR's theorem for one random variable,
+    `d[X # U] ≤ 5 * d[X # X]` with `U` uniform on a subspace.
+  - Written by the formalize task 2026-11-18 17:16 UTC: ac92ec2, CI failed on the name clash
+    below; fixed at f4f2239 by importing only PFR, CI green. PFR's 45 modules build in 3.5
+    minutes and are cached.
+  - Name clash. Four PFR declarations share their names with Mathlib declarations that PFR does
+    not import, so no file can import both `Mathlib` and PFR:
+    `ProbabilityTheory.IdentDistrib.prodMk`, `ProbabilityTheory.CondIndepFun`,
+    `ProbabilityTheory.condIndepFun_iff` and `MeasureTheory.Measure.support`. They live in
+    `Mathlib.Probability.IdentDistribIndep`, `Mathlib.Probability.Independence.Conditional` and
+    `Mathlib.MeasureTheory.Measure.Support`, which `Mathlib.Probability.Independence.ZeroOne`,
+    `Mathlib.Dynamics.Ergodic.EmpiricalMeasure` and
+    `Mathlib.MeasureTheory.Measure.ResolventTransform` import. B1d1 works around it.
+  - [x] B1d. Entropy agreement. `measureEntropy_toMeasure`: PFR's entropy of the measure of a law
+    is `Hm[K.toMeasure] = entropyBits K * log 2`. In two parts, B1d1 and B1d2.
+  - [x] B1d1. Imports (part of B1d). `EntropyLean/MathlibForPFR.lean` is Mathlib without the six
+    modules named under B1c; every library file except `FeatureMap.lean` imports it instead of
+    `Mathlib`. Josiah agreed to this change of the import rule on 2026-11-18.
+  - Written by the formalize task 2026-11-18 18:01 UTC: 8574f9a (the new file, imported by
+    `PFRBridge.lean` together with PFR) and ce6a73c (the first line of 64 files); CI green at
+    both, so nothing else clashes.
+  - [x] B1d2. `measureEntropy_toMeasure` (part of B1d), with the helper
+    `toMeasure_real_singleton`.
+  - Written by the formalize task 2026-11-18 18:31 UTC: 00c4f8e; CI green.
+  - [x] B1e. Distance and uniform agreement. `rdist_toMeasure`: PFR's Ruzsa distance of two laws
+    is `ruzsaDist K L * log 2` (the law of `A − B` is `conv K L`, as `A − B = A + B` over F₂).
+    `identDistrib_uniformSub`: a variable uniform on a subspace `W` has the law `uniformSub W`.
+  - Written by the formalize task 2026-11-18 19:38 UTC: fdd0fca, CI failed (`PMF.toMeasure_map`
+    takes the map as its first explicit argument); fixed at 91a2c20, CI green. a865a09 is an
+    empty duplicate of fdd0fca.
+  - [x] B1f. The bound and the theorems. `martonBoundConst_five : MartonBoundConst.{0} 5` and
+    `martonBound : MartonBound.{0}`; the three `sorry`s in `EntropyLean/Statements.lean`
+    replaced by the `…_of_marton` theorems applied to `martonBound`.
+  - Written by the formalize task 2026-11-18 19:51 UTC: 94cfa62 and b6e3ad2; CI green.
+    `Statements.lean` ends with `assert_no_sorry` and a check that fails the build on any axiom
+    beyond the standard three. `#print axioms` printed `[propext, Classical.choice, Quot.sound]`
+    for `exponential_entropy_quotient`, `sparse_rigidity` and `weighted_family_rigidity`.
+  - Then 0667cec: (36), Lemmas 7.1 and 8.1 and Corollaries 9.2 and 9.4 with no hypothesis, under
+    the same checks; cc202f1 corrected six docstrings that still called (35) unproved. CI green
+    at both. Ticked by the formalize task 2026-11-18 20:20 UTC.
+
 - [x] B2. Conditional entropy and mutual information for finite joint laws; chain rule;
       `I(A;B|C) ≥ 0` (`EntropyLean/Information.lean`). Split by the hourly task 2026-11-13:
   - Done through B2a–B2c below (each has its own note); ticked once all of them had compiled.
