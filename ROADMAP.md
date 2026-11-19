@@ -12,6 +12,10 @@ file, with a link to its source line.
 
 Markers: `- [ ]` open, `- [x]` done and compiled, `- [-]` deliberately skipped (with a reason).
 
+Status (2026-11-19): every item of the work list is done. G4, the constant 263, is listed under
+Pending generalizations and is not scheduled. Sections H–J, special cases of (35) that B1 made
+unnecessary, are recorded under Superseded by B1. New sections are added only at Josiah's request.
+
 Rules: no `sorry` in a ticked item, no `axiom`, `opaque`, `admit`, `native_decide` or `unsafe`.
 An analytic input that is not proved here enters as a named hypothesis or structure field, never
 as a hidden assumption. No item claims that Theorem 1.1 is proved until its proof has no `sorry`
@@ -788,213 +792,45 @@ what its proof actually gives.
     hypothesis of (43) (approached as `d ↑ 1`). With the parametric chain of G2 the hypothesis
     `1568 λ ≤ d²` gives `305 + 2 log₂ 7 ≈ 310.61`, still 311 as an integer.
     CI green at a3d1d61 (branch `formalize-efg-v2`; same Lean files as cfd43a4); ticked by Claude 2026-11-15 23:35 UTC.
-- [ ] G4. Constant from the PFR backend: instantiate G2 with the Marton constant that the PFR
-      project proves (B1). `martonRigidityConst_five_lt : martonRigidityConst 5 < 263`, and
-      Theorems 1.1, 1.2 and 8.2 with 263 in place of 320 from `martonBoundConst_five` (B1f).
-  - B1a (formalize task 2026-11-18) found the constant: PFR's `entropic_PFR_conjecture_improv`
-    gives `d[X;U_H] ≤ 5 d[X;X]` for a single variable, so `C = 5` and
-    `48C + 17 + 2 log₂(1 + C) = 257 + 2 log₂ 6 ≈ 262.2`. (For `C = 11/2` the constant is about
-    286.4; H5 did that arithmetic.) B1f is done, so `martonBoundConst_five` is available.
 
-## H. Special cases of the Marton bound (35)
+## Pending generalizations
 
-Added by the formalize task 2026-11-15, while the backend decision B1 was open. Every amber node
-of docs/DEPENDENCIES.md (E36, L71, L81, T82, T12, T11, C92, C94) is proved in Lean from the single
-hypothesis `MartonBound.{0}` (35), so the remaining distance to green is the external node MAR,
-which B1 now takes from the PFR project. Sections H, I and J prove (35) directly, without PFR, for
-the laws that need no new ideas. None of their items proves the entropic Marton theorem, and none
-adds a `sorry` to `Statements.lean`. (H1, a change to the chart, was reverted at Josiah's request
-on 2026-11-17 and is no longer listed.)
+Results beyond the paper's statements that the library is ready for but that are not scheduled.
+No task takes them unless Josiah asks.
 
-- [x] H2. Trivial subspaces (`EntropyLean/MartonPartial.lean`): `ruzsaDist_uniformSub_bot :
-      d(K, U_⊥) = H(K)/2` and `ruzsaDist_uniformSub_top : d(K, U_⊤) = (dim V − H(K))/2` (from
-      `ruzsaDist_uniformSub`, D7b2b), hence `marton_of_entropy_le : H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤
-      6 D(K)` and `marton_of_codim_le : dim V − H(K) ≤ 12 D(K) → ∃ W, d(K, U_W) ≤ 6 D(K)`.
-  - Written by the formalize task 2026-11-16 03:51 UTC (uncompiled at push): `entropyBits_map_mkQ_bot`,
-    `entropyBits_map_mkQ_top`, `ruzsaDist_uniformSub_bot`, `ruzsaDist_uniformSub_top`,
-    `marton_of_entropy_le`, `marton_of_codim_le` in the new file `EntropyLean/MartonPartial.lean` (6b740e5).
-    CI green at 6b740e5; ticked by the formalize task 2026-11-16 04:00 UTC (unused `first` fallbacks removed in 082b63e).
-- [x] H3. Zero doubling (`EntropyLean/MartonPartial.lean`): if `D(K) = 0` then (35) holds, i.e.
-      `K` is uniform on a coset `x + W` and `d(K, U_W) = 0` (`marton_of_increment_zero`). Split by
-      the formalize task 2026-11-16 04:00 UTC (there is no equality-case lemma for entropy in the
-      repository yet, so the original H3a/H3b plan was too large for one run):
-  - Done through H3a–H3d below (each has its own note); ticked once all of them had compiled.
-  - [x] H3a. Support of a convolution: `lawSupport K = {v : K v ≠ 0}`, `mem_support_conv_iff`,
-        `lawSupport_conv : lawSupport (P * Q) = lawSupport P + lawSupport Q`.
-    - Written by the formalize task 2026-11-16 04:00 UTC (uncompiled at push): `mem_support_conv_iff`,
-      `lawSupport`, `mem_lawSupport`, `lawSupport_nonempty`, `lawSupport_conv` in
-      `EntropyLean/MartonPartial.lean` (082b63e).
-      CI green at 4a86741; ticked by the formalize task 2026-11-16 04:18 UTC (fallbacks removed in a83d9f2).
-  - [x] H3b. Equality case of subadditivity (`EntropyLean/Information.lean` or a new file):
-        `mutualInfo P = 0 → P = prodLaw (P.map Prod.fst) (P.map Prod.snd)` (`eq_prodLaw_of_mutualInfo_eq_zero`),
-        via the equality case of Jensen for `−x log x` (`StrictConcaveOn.map_sum_eq_iff`).
-    - Written by the formalize task 2026-11-16 04:18 UTC (uncompiled at push): `crossSlack`,
-      `crossSlack_nonneg`, `crossSlack_eq_zero`, `sum_crossSlack`, `eq_prodLaw_of_mutualInfo_eq_zero` in the
-      new file `EntropyLean/MutualInfoZero.lean` (a83d9f2); proved via the strict bound `log y < y − 1`
-      on the pointwise Gibbs slack rather than via Jensen.
-      CI green at 368970f (after a fix: `div_add_div_same` unknown, replaced by `add_div`/`sub_div`);
-      ticked by the formalize task 2026-11-16 04:48 UTC.
-  - [x] H3c. Translates: `D(K) = 0 → ∀ b, K b ≠ 0 → K.map (· + b) = conv K K`
-        (`map_add_eq_conv_of_increment_zero`), from H3b applied to the pair `(B, A + B)`, whose mutual
-        information is `H(K * K) − H(K) = D(K)`.
-    - Written by the formalize task 2026-11-16 04:48 UTC (uncompiled at push): `mutualInfo_snd_add`,
-      `toReal_sub_eq_conv_of_increment_zero`, `map_add_eq_conv_of_increment_zero` in
-      `EntropyLean/MartonPartial.lean` (ec62d4b; the file now imports `EntropyLean.MutualInfoZero`).
-      CI green at ec62d4b and 13b417d (no `MartonPartial.lean` warnings besides the module notice);
-      ticked by the formalize task 2026-11-16 05:33 UTC.
-  - [x] H3d. `S = lawSupport K` is a coset `x + W` of a subspace and `K` is uniform on it, hence
-        `d(K, U_W) = 0` and `marton_of_increment_zero` (uses H3a to get `S + S = S + b`).
-    - Written by the formalize task 2026-11-16 05:33 UTC (uncompiled at push): `lawPeriods`,
-      `mem_lawPeriods`, `pmf_map_add_neg_apply`, `pmf_map_add_neg_apply_of_mem`, `lawPeriodSub`,
-      `mem_lawPeriodSub`, `apply_sub_eq_of_increment_zero`, `sub_mem_lawPeriods`,
-      `mem_lawSupport_iff_of_increment_zero`, `pmf_map_add_neg_apply_of_not_mem`,
-      `map_add_neg_eq_uniformSub_of_increment_zero`, `ruzsaDist_lawPeriodSub_of_increment_zero`,
-      `marton_of_increment_zero` in `EntropyLean/MartonPartial.lean` (b6ea618). `W` is the
-      subspace of periods of `K` (via `AddSubgroup.toZModSubmodule`); for `x` in the support,
-      `K − x = U_W`, so `d(K, U_W) = d(K, K − x) = D(K) = 0` by translation invariance (no entropy
-      computation and no use of H3a needed).
-      CI green at ec3c48f (contains b6ea618; no `MartonPartial.lean` warnings besides the module notice);
-      ticked by the formalize task 2026-11-16 05:53 UTC. With H3a–H3d done, H3 is complete.
-- [x] H4. One-bit spaces (`EntropyLean/MartonPartial.lean`): `martonInput_of_finrank_le_one :
-      finrank V ≤ 1 → MartonInput V`, from H2 and the Bernoulli bounds of E1–E2
-      (`min(h₂(p), 1 − h₂(p)) ≤ 12 (h₂(2p(1−p)) − h₂(p))`). If the real-analysis inequality does
-      not close in one run, prove it for `p ≤ 1/8` first and record the gap. Split by the formalize
-      task 2026-11-16 05:53 UTC:
-  - Done through H4a–H4c below (each has its own note); ticked once all of them had compiled.
-  - [x] H4a. Reduction (`EntropyLean/MartonOneBit.lean`): `martonInput_of_finrank_eq_zero`, invariance of
-        `H` and `D` under an additive equivalence, `eq_bernoulliBit` (every law on `ZMod 2` is
-        Bernoulli), and `martonInput_of_finrank_eq_one_of_bernoulli` ((35) on a one-dimensional space
-        from the Bernoulli inequality as an explicit hypothesis `hB`).
-    - Written by the formalize task 2026-11-16 05:53 UTC (uncompiled at push): `martonInput_of_finrank_eq_zero`,
-      `entropyBits_map_addEquiv`, `entropyIncrement_map_addEquiv`, `eq_bernoulliBit`,
-      `martonInput_of_finrank_eq_one_of_bernoulli` in the new file `EntropyLean/MartonOneBit.lean` (1f3879f).
-      CI green at 1f3879f and 1203638; ticked by the formalize task 2026-11-16 06:09 UTC.
-  - [x] H4b. The Bernoulli inequality (`EntropyLean/MartonOneBit.lean` or a new file): `bernoulli_marton_ineq :
-        0 ≤ p → p ≤ 1 → min (binaryEntropy p) (1 − binaryEntropy p) ≤ 12 * bernoulliIncrement p`;
-        if it does not close in one run, prove the range `p ≤ 1/8` (and its mirror `p ≥ 7/8`) first.
-    - Written by the formalize task 2026-11-16 06:09 UTC (uncompiled at push): `binaryEntropy_one_sub`,
-      `bernoulliIncrement_one_sub`, `negMulLog_mix`, `bernoulli_marton_small_nats`, `bernoulli_concave_step`,
-      `bernoulli_marton_ineq_le_half`, `bernoulli_marton_ineq` in the new file
-      `EntropyLean/MartonBernoulliIneq.lean` (26b5aeb). Full range `0 ≤ p ≤ 1`, no split: for `1/8 < p ≤ 1/2`
-      concavity of `−x log x` at `p` and `1/2` gives `D ≥ 2p(1 − h₂(p))`; for `p ≤ 1/8` the E2a bounds and
-      `log p ≤ −3 log 2`; `p ≥ 1/2` by the symmetry `p ↦ 1 − p`. CI failed at 26b5aeb and fb23d20 (`le_or_lt`
-      no longer exists), fixed at a7857af; CI green at a7857af, a060b7b and 0168b64; ticked by the formalize
-      task 2026-11-16 18:37 UTC.
-  - [x] H4c. `martonInput_of_finrank_le_one : finrank V ≤ 1 → MartonInput V`, from H4a and H4b.
-    - Written by the formalize task 2026-11-16 18:36 UTC (uncompiled at push): `martonInput_of_finrank_le_one`,
-      `martonInput_zmod2` in the new file `EntropyLean/MartonFinrankLeOne.lean` (8e4ebd4).
-      CI green at 8e4ebd4 and 811c6ca; ticked by the formalize task 2026-11-16 19:39 UTC. With H4a–H4c done,
-      H4 is complete.
-- [x] H5. PFR-strength constant, arithmetic only (`EntropyLean/ConstantSlack.lean` or a new file
-      `EntropyLean/MartonConstPFR.lean`): `martonRigidityConst_eleven_half_lt :
-      martonRigidityConst (11/2) < 287` and `exponential_entropy_quotient_287_of_marton_const`
-      (Theorem 1.1 with exponent `287(1+ε)/ε` from `MartonBoundConst.{0} (11/2)`). This does not
-      depend on B1: it only says what a proof of (35) with constant 11/2 would give.
-    - Written by the formalize task 2026-11-16 19:38 UTC (uncompiled at push): `martonRigidityConst_eleven_half_lt`,
-      `weighted_family_rigidity_287_of_marton_const`, `exponential_entropy_quotient_287_of_marton_const`,
-      `sparse_rigidity_287_of_marton_const` in the new file `EntropyLean/MartonConstPFR.lean` (195c6d9):
-      `K(11/2) = 281 + 2 log₂(13/2) < 287`, since `13/2 < 8`.
-      CI green at 195c6d9 and f241ff8; ticked by the formalize task 2026-11-16 20:45 UTC.
+- G4. The constant 263 in place of 320 in Theorems 1.1, 1.2 and 8.2. PFR's
+  `entropic_PFR_conjecture_improv` gives (35) with constant 5 (`martonBoundConst_five`, B1f), and
+  G2 turns a Marton constant `C` into the exponent
+  `martonRigidityConst C = 48C + 17 + 2 log₂(1 + C)`, which is `257 + 2 log₂ 6 ≈ 262.2` at
+  `C = 5`. Still to write: `martonRigidityConst_five_lt : martonRigidityConst 5 < 263`, and the
+  three theorems with 263, from `weighted_family_rigidity_of_marton_const`,
+  `exponential_entropy_quotient_of_marton_const` and `sparse_rigidity_of_marton_const` at
+  `C = 5`. Until then the statements in `EntropyLean/Statements.lean` keep the paper's 320, and
+  G3's theorems applied to `martonBound` give 311.
 
-## I. More special cases of (35)
+## Superseded by B1
 
-Added by the formalize task 2026-11-16 20:45 UTC. Section H proved (35) when `H(K) ≤ 12 D(K)`,
-when `dim V − H(K) ≤ 12 D(K)`, when `D(K) = 0`, and on every space of dimension at most one. These
-items cover more laws with the same tools (transport, translation, products).
+Sections H, I and J were added by the formalize task between 2026-11-15 and 2026-11-17, while B1
+was open, to prove the Marton bound (35) directly for particular laws. B1 now proves (35) for
+every law, so no result depends on them, and they were taken off the work list on 2026-11-19.
+Their files still build and none of their theorems was changed. The full item texts, with notes
+and commits, are in
+[ROADMAP.md at 5bf5c4b](https://github.com/JosiahPark/entropy-quotients-lean/blob/5bf5c4b/ROADMAP.md).
 
-- [x] I1. Transport along linear equivalences (`EntropyLean/MartonTransport.lean`, a new file):
-      `ruzsaDist_map_addEquiv : d(K.map e, L.map e) = d(K, L)` for `e : V ≃+ V'`,
-      `uniformSub_map_linearEquiv : (uniformSub W).map e = uniformSub (W.map e)` for
-      `e : V ≃ₗ[ZMod 2] V'`, and `MartonInput.of_linearEquiv : MartonInput V → MartonInput V'`.
-  - Written by the formalize task 2026-11-16 23:20 UTC: `ruzsaDist_map_of_add_injective`,
-    `entropyIncrement_map_of_add_injective`, `ruzsaDist_map_addEquiv`, `subCard_map_linearEquiv`,
-    `uniformSub_map_linearEquiv`, `MartonInput.of_linearEquiv` and `MartonInput.of_finrank_eq` ((35)
-    depends only on the dimension) in the new file `EntropyLean/MartonTransport.lean` (e2c10ba).
-    CI green at e2c10ba and 14cff1b (unused `first` fallbacks removed); ticked by the formalize task
-    2026-11-17 00:17 UTC.
-- [x] I2. Laws on a coset of a subspace (`EntropyLean/MartonTransport.lean`): for
-      `U : Submodule (ZMod 2) V` and a law `K` with `lawSupport K ⊆ x + U`, (35) for `K` on `V`
-      from (35) on `U` (`marton_of_support_subset_coset`), via `ruzsaDist_map_add_const`
-      (translation) and pushing laws on `U` forward along `U.subtype` (`ruzsaDist_map_injective`,
-      `uniformSub_map_subtype`). Split by the formalize task 2026-11-17 00:17 UTC:
-  - Done through I2a and I2b below (each has its own note); ticked once all of them had compiled.
-  - [x] I2a. Translation and inclusion (`EntropyLean/MartonTransport.lean`): `entropyIncrement_map_add_const :
-        D(K + c) = D(K)` and `uniformSub_map_subtype : (U_W).map U.subtype = U_{W.map U.subtype}` for
-        a subspace `W` of `U`.
-    - Written by the formalize task 2026-11-17 00:15 UTC (uncompiled at push): `entropyIncrement_map_add_const`,
-      `uniformSub_map_subtype` in `EntropyLean/MartonTransport.lean` (375fd95).
-      CI failed at 375fd95 (`ENNReal.zero_toReal` no longer exists), fixed at 02e36b8; CI green at 02e36b8;
-      ticked by the formalize task 2026-11-17 00:57 UTC.
-  - [x] I2b. Restriction to `U` (`EntropyLean/MartonTransport.lean`): the law on `U` of `K − x` when
-        `lawSupport K ⊆ x + U` (`restrictLaw`, with `(restrictLaw K x U).map U.subtype = K − x`), and
-        `marton_of_support_subset_coset` from I1, I2a, `ruzsaDist_map_add_const` and `ruzsaDist_comm`.
-    - Written by the formalize task 2026-11-17 00:51 UTC: `pmf_map_congr_support`, `cosetRetract`,
-      `subtype_cosetRetract`, `restrictLaw`, `restrictLaw_map_subtype`, `restrictLaw_map_subtype_add`,
-      `marton_of_support_subset_coset` (support condition stated as `∀ v, K v ≠ 0 → v − x ∈ U`) in
-      `EntropyLean/MartonTransport.lean` (292a1a5). CI green at 292a1a5; ticked by the formalize task
-      2026-11-17 00:57 UTC.
-- [x] I3. Two-point laws (`EntropyLean/MartonTransport.lean`): `marton_of_card_lawSupport_le_two :
-      (lawSupport K).card ≤ 2 → ∃ W, d(K, U_W) ≤ 6 D(K)` on every finite F₂-space, from I2 and
-      `martonInput_of_finrank_le_one` (H4c): a support `{a, b}` lies in the coset
-      `a + span {b − a}` of a subspace of dimension at most one.
-  - Written by the formalize task 2026-11-17 05:13 UTC: `exists_pair_of_card_le_two`,
-    `finrank_span_singleton_le_one`, `marton_of_card_lawSupport_le_two` in
-    `EntropyLean/MartonTransport.lean` (e76429e). CI green at e76429e; ticked by the formalize task
-    2026-11-17 05:20 UTC.
-- [x] I4. Products (`EntropyLean/MartonProduct.lean`, a new file): for laws `K₁` on `V₁` and `K₂`
-      on `V₂`, `entropyIncrement_prodLaw : D(K₁ ⊗ K₂) = D(K₁) + D(K₂)`, `ruzsaDist_prodLaw :
-      d(K₁ ⊗ K₂, L₁ ⊗ L₂) = d(K₁, L₁) + d(K₂, L₂)`, `uniformSub_prod : U_{W₁ × W₂} = U_{W₁} ⊗ U_{W₂}`
-      (all from `entropyBits_prodLaw`), and `marton_prodLaw`: if (35) holds for `K₁` and for `K₂`,
-      it holds for `K₁ ⊗ K₂` with the witness `W₁.prod W₂`.
-  - Written by the formalize task 2026-11-17 21:52 UTC: `conv_prodLaw`, `entropyIncrement_prodLaw`,
-    `ruzsaDist_prodLaw`, `subCard_prod`, `uniformSub_prod`, `marton_prodLaw`,
-    `marton_prodLaw_of_exists`, `MartonInput.marton_prodLaw` in the new file
-    `EntropyLean/MartonProduct.lean` (51b4912). CI green at 51b4912; ticked by the formalize task
-    2026-11-17 21:57 UTC.
-- [x] I5. Independent bits (`EntropyLean/MartonProduct.lean`): (35) for every law on
-      `Fin n → ZMod 2` whose coordinates are independent (`marton_of_indep_coords`), by induction on
-      `n` from I4, I1 and `martonInput_zmod2` (H4c).
-  - Written by the formalize task 2026-11-17 22:08 UTC (uncompiled at push): `finConsEquiv`,
-    `piLaw`, `piLaw_succ`, `IndepCoords`, `marton_map_linearEquiv`, `martonInput_fin_zero`,
-    `marton_piLaw`, `marton_of_indep_coords` in `EntropyLean/MartonProduct.lean` (d56f5cd).
-    Independence is defined as `IndepCoords K : ∃ P, K = piLaw n P`, with `piLaw n P` the iterated
-    product of the laws `P i`. CI green at d56f5cd; ticked by the formalize task
-    2026-11-17 22:36 UTC.
-  - Checked in the CI log of d56f5cd (formalize task 2026-11-17 22:58 UTC):
-    `EntropyLean.MartonProduct` built with no error and no `sorry`, so the induction step of
-    `marton_piLaw` closes. The only warnings are linter notes (unused `first` alternatives,
-    deprecated `if_pos`/`if_neg`).
-
-## J. Independent coordinates, made intrinsic
-
-Added by the formalize task 2026-11-17 22:36 UTC. I5 defines independent coordinates as being of
-the form `piLaw n P`. These items connect that definition to the usual one (the law is the product
-of its coordinate marginals) and remove the dependence on the standard coordinates.
-
-- [x] J1. Masses of `piLaw` (`EntropyLean/MartonProduct.lean`): `piLaw_apply :
-      piLaw n P v = ∏ i, P i (v i)`, by induction on `n` from `prodLaw_apply`,
-      `pmf_map_apply_injective` (along `finConsEquiv n`) and `Fin.prod_univ_succ`.
-  - Written by the formalize task 2026-11-17 22:45 UTC (uncompiled at push): `finConsEquiv_apply`,
-    `piLaw_apply` in `EntropyLean/MartonProduct.lean` (c8ab90a). CI green at c8ab90a; ticked by
-    the formalize task 2026-11-17 22:58 UTC.
-- [x] J2. Independence as a property of the law (`EntropyLean/MartonProduct.lean`): the
-      coordinate marginals `piLaw_map_eval : (piLaw n P).map (fun v => v i) = P i`, and
-      `indepCoords_iff : IndepCoords K ↔ ∀ v, K v = ∏ i, (K.map fun w => w i) (v i)` (from J1), so
-      I5 covers exactly the laws that are the product of their coordinate marginals.
-  - Written by the formalize task 2026-11-18 02:40 UTC (uncompiled at push): `piLaw_map_eval`,
-    `indepCoords_iff` in `EntropyLean/MartonProduct.lean` (ce89f7e). `piLaw_map_eval` is proved
-    by induction on `n` (`prodLaw_map_fst`, `prodLaw_map_snd`); the converse of `indepCoords_iff`
-    takes `P i := K.map fun w => w i` and uses `piLaw_apply`.
-    CI green at ce89f7e; ticked by the formalize task 2026-11-18 02:45 UTC.
-- [x] J3. Independent coordinates in any basis (`EntropyLean/MartonProduct.lean`): for a linear
-      equivalence `e : V ≃ₗ[ZMod 2] (Fin n → ZMod 2)` (for instance the coordinates
-      `(Module.finBasis (ZMod 2) V).equivFun` of a basis), (35) for every law `K` on `V` with
-      `IndepCoords (K.map e)` (`marton_of_indepCoords_map`), from I5 and `marton_map_linearEquiv`.
-  - Written by the formalize task 2026-11-18 02:52 UTC (uncompiled at push):
-    `marton_of_indepCoords_map` in `EntropyLean/MartonProduct.lean` (bdc7536): it applies
-    `marton_of_indep_coords` to `K.map e` and transports the bound back along `e.symm` with
-    `marton_map_linearEquiv`. CI green at bdc7536; ticked by the formalize task 2026-11-18
-    02:57 UTC.
+- H2–H4: (35) when `H(K) ≤ 12 D(K)` or `dim V − H(K) ≤ 12 D(K)` (`marton_of_entropy_le`,
+  `marton_of_codim_le`), when `D(K) = 0` (`marton_of_increment_zero`, H3a–H3d, with the equality
+  case of subadditivity `eq_prodLaw_of_mutualInfo_eq_zero`), and on spaces of dimension at most
+  one (`martonInput_of_finrank_le_one`, H4a–H4c). Files: `EntropyLean/MartonPartial.lean`,
+  `EntropyLean/MutualInfoZero.lean`, `EntropyLean/MartonOneBit.lean`,
+  `EntropyLean/MartonBernoulliIneq.lean`, `EntropyLean/MartonFinrankLeOne.lean`.
+- H5: the exponent 287 from a Marton constant 11/2 (`martonRigidityConst_eleven_half_lt`,
+  `EntropyLean/MartonConstPFR.lean`). PFR's constant 5 would give 263 (G4 above).
+- I1–I3: transport along linear equivalences (`MartonInput.of_linearEquiv`), laws on a coset of a
+  subspace (`marton_of_support_subset_coset`, I2a, I2b) and two-point laws
+  (`marton_of_card_lawSupport_le_two`), in `EntropyLean/MartonTransport.lean`.
+- I4, I5, J1–J3: products (`marton_prodLaw`) and laws with independent coordinates
+  (`marton_of_indep_coords`, `indepCoords_iff`), in any basis (`marton_of_indepCoords_map`), in
+  `EntropyLean/MartonProduct.lean`.
 
 ## Not attempted here
 

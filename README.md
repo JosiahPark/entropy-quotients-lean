@@ -81,7 +81,7 @@ imports `Mathlib`.
 
 ## Next proof work
 
-See [ROADMAP.md](ROADMAP.md). Every item is done apart from G4. Besides the paper's results, two
+See [ROADMAP.md](ROADMAP.md). Every item is done. Besides the paper's results, two
 improvements of the constant 320 are proved from (35): 311 (`EntropyLean/ConstantSlack.lean`), and
 `48C + 17 + 2 log₂(1 + C)` for a Marton constant `C` in place of 6
 (`EntropyLean/MartonChainConst.lean`).
@@ -90,5 +90,6 @@ The entropic Marton bound (35) is taken from the [PFR project](https://github.co
 pinned to PFR's last commit on Lean v4.35.0 (roadmap item B1). PFR proves it, with constant 5, for
 random variables on a probability space. `EntropyLean/PFRBridge.lean` translates PFR's entropy,
 Ruzsa distance and uniform variables to the `PMF`-based definitions used here, and proves
-`martonBound`, the bound with the paper's constant 6, with no hypothesis. The open item G4 uses
-PFR's constant 5 to replace 320 by 263 in Theorems 1.1, 1.2 and 8.2.
+`martonBound`, the bound with the paper's constant 6, with no hypothesis. One generalization is
+pending and not scheduled (G4 in ROADMAP.md): PFR's constant 5 would replace 320 by 263 in
+Theorems 1.1, 1.2 and 8.2.
