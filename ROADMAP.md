@@ -24,8 +24,6 @@ and no hypotheses beyond the paper's.
 Imports: a file of the library that needs Mathlib starts with `import EntropyLean.MathlibForPFR`,
 not with `import Mathlib` (item B1d1 gives the reason).
 
-Scope: `EntropyLean/FeatureMap.lean`, a separate stub, is outside this roadmap and its map.
-
 ## Done (v0.2, CI-verified at 9130247)
 
 - [x] Definitions: `entropyBits`, `conv`, `entropyIncrement`, `entropyDefect`, `interaction`,
