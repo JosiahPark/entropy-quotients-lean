@@ -137,6 +137,7 @@ flowchart TD
 
 ## What is left
 
-Nothing in the chart. Beyond the paper, roadmap item G4 is open: the constant 263 in place of 320
-in Theorems 1.1, 1.2 and 8.2, from PFR's Marton constant 5. Constructive or algorithmic versions
-(Section 10 of the paper) are not attempted.
+Nothing in the chart, and no roadmap item is open. One generalization beyond the paper is pending
+and not scheduled (G4, under Pending generalizations in ROADMAP.md): the constant 263 in place of
+320 in Theorems 1.1, 1.2 and 8.2, from PFR's Marton constant 5. Constructive or algorithmic
+versions (Section 10 of the paper) are not attempted.
